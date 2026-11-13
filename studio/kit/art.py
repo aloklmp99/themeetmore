@@ -66,7 +66,9 @@ class Cv:
 
 
 # ---------------------------------------------------------------- people
-SKIN = {'krishna': '#4A86D6', 'sudama': '#B87B4F', 'susheela': '#C48A5C'}
+SKIN = {'krishna': '#4A86D6', 'sudama': '#B87B4F', 'susheela': '#C48A5C', 'sita': '#E2A574'}
+SAREE = {'susheela': ('#D9772B', '#9B3B1E', '#B8601F', '#7C2D12', '#F2A33C'),
+         'sita': ('#C8202E', '#F2B632', '#9E1622', '#E8A21C', '#F7C948')}
 
 
 def _arm(c, sh, hand, col, wid, sign):
@@ -148,16 +150,21 @@ def person(kind, Hh=760, arms=None, bundle=False, walk=0.0, eyes='open', mouth='
         c.rect(cx + .2 * u, 7.3 * u, cx + .75 * u, 7.9 * u, hx('#9C8A6A'))
         c.rrect(cx - 1.05 * u, 5.0 * u, cx + 1.05 * u, 5.3 * u, .1 * u, hx('#A9835A'))
     else:  # susheela - saree
-        gc = hx('#D9772B')
+        sc = SAREE.get(kind, SAREE['susheela'])
+        gc = hx(sc[0])
         c.poly([(cx - 1.1 * u, 4.6 * u), (cx + 1.1 * u, 4.6 * u), (cx + 1.9 * u, 9.3 * u), (cx - 1.9 * u, 9.3 * u)], gc)
-        c.poly([(cx - 1.6 * u, 8.6 * u), (cx + 1.6 * u, 8.6 * u), (cx + 1.9 * u, 9.3 * u), (cx - 1.9 * u, 9.3 * u)], hx('#9B3B1E'))
+        c.poly([(cx - 1.6 * u, 8.6 * u), (cx + 1.6 * u, 8.6 * u), (cx + 1.9 * u, 9.3 * u), (cx - 1.9 * u, 9.3 * u)], hx(sc[1]))
         for k in (-.7, 0, .7):
-            c.line([(cx + k * u, 5.2 * u), (cx + k * 1.35 * u, 9.0 * u)], hx('#B8601F'), 2)
+            c.line([(cx + k * u, 5.2 * u), (cx + k * 1.35 * u, 9.0 * u)], hx(sc[2]), 2)
 
     # torso
-    if kind == 'susheela':
-        c.poly([(cx - 1.05 * u, 3.0 * u), (cx + 1.05 * u, 3.0 * u), (cx + .95 * u, 4.8 * u), (cx - .95 * u, 4.8 * u)], hx('#7C2D12'))
-        c.poly([(cx - 1.05 * u, 3.0 * u), (cx + 1.05 * u, 3.0 * u), (cx + 1.9 * u, 6.4 * u), (cx + .9 * u, 6.4 * u)], hx('#F2A33C'))
+    if kind in SAREE:
+        sc = SAREE.get(kind, SAREE['susheela'])
+        c.poly([(cx - 1.05 * u, 3.0 * u), (cx + 1.05 * u, 3.0 * u), (cx + .95 * u, 4.8 * u), (cx - .95 * u, 4.8 * u)], hx(sc[3]))
+        c.poly([(cx - 1.05 * u, 3.0 * u), (cx + 1.05 * u, 3.0 * u), (cx + 1.9 * u, 6.4 * u), (cx + .9 * u, 6.4 * u)], hx(sc[4]))
+        if kind == 'sita':
+            c.line([(cx - .7 * u, 3.15 * u), (cx, 3.9 * u), (cx + .7 * u, 3.15 * u)], hx(GOLD), 5)
+            c.ell(cx, 3.9 * u, .12 * u, .12 * u, hx('#E63946'))
     else:
         c.poly([(cx - tw / 2, 2.95 * u), (cx + tw / 2, 2.95 * u), (cx + tw * .42, 5.3 * u), (cx - tw * .42, 5.3 * u)], skin)
         c.ell(cx, 2.95 * u, tw / 2, .28 * u, skin)
@@ -213,6 +220,11 @@ def person(kind, Hh=760, arms=None, bundle=False, walk=0.0, eyes='open', mouth='
         c.ell(hcx, head_cy - .1 * u, head_r * 1.08, head_r * 1.05, hx('#2A1810'))
         c.ell(hcx, head_cy + .12 * u, head_r * .86, head_r * .9, skin)
         c.ell(hcx, head_cy - head_r * 1.2, .5 * u, .5 * u, hx('#2A1810'))  # bun
+        if kind == 'sita':
+            c.rect(hcx - head_r * .5, head_cy - head_r * .96, hcx + head_r * .5, head_cy - head_r * .86, hx(GOLD))
+            c.line([(hcx, head_cy - head_r * .98), (hcx, head_cy - head_r * .7)], hx('#C0392B'), 3)
+            for sg in (-1, 1):
+                c.ell(hcx + sg * head_r * 1.0, head_cy + .35 * u, .1 * u, .14 * u, hx(GOLD))
 
     # face
     ey = head_cy + .02 * u
@@ -491,6 +503,341 @@ def bg_palace():
 BACKGROUNDS = {'dwarka': bg_dwarka, 'ashram': bg_ashram, 'hut': bg_hut, 'road': bg_road,
                'gate': bg_gate, 'throne': bg_throne, 'palace': bg_palace}
 
+
+
+# ---------------------------------------------------------------- Hanuman / Ravana (added for story 002)
+HSKIN = '#E8792B'; HFACE = '#F6D3A2'
+
+
+def _flame(c, x, y, r, t=0.0):
+    """Stylised flame centred at base (x,y), height ~2.2r."""
+    k = math.sin(t * 9 + x * .05) * .18
+    c.poly([(x - r, y), (x - r * .5, y - r * 1.3), (x + k * r, y - r * 2.3), (x + r * .55, y - r * 1.2), (x + r, y)], hx('#E8461E'))
+    c.poly([(x - r * .62, y), (x - r * .2, y - r * 1.0), (x + k * r * .8, y - r * 1.7), (x + r * .4, y - r * .9), (x + r * .62, y)], hx('#F79A1E'))
+    c.poly([(x - r * .3, y), (x, y - r * 1.05), (x + r * .3, y)], hx('#FFE45C'))
+
+
+def hanuman(Hh=760, arms=None, gada=True, tail_fire=False, bound=False, jump=0.0, eyes='open',
+            mouth='smile', flip=False, namaste=False, ring=False, t=0.0):
+    """Flat-vector Hanuman ji. Feet at bottom centre. jump 0..1 tucks legs (leap pose)."""
+    w = int(Hh * 1.25)
+    pad = int(Hh * .3)
+    c = Cv(w, Hh + pad)
+    c.oy = pad
+    u = Hh / 10.0
+    cx = w / 2 - .3 * u
+    skin = hx(HSKIN)
+    face = hx(HFACE)
+    dark = hx('#2A1208')
+    tw = 2.5 * u
+    if arms is None:
+        arms = ((-1.7, 5.6), (1.9, 4.2))
+    if namaste:
+        arms = ((-.25, 4.0), (.25, 4.0))
+    # tail (behind body): curl rising up on the right
+    tp = [(cx + .6 * u, 5.6 * u), (cx + 2.2 * u, 6.2 * u), (cx + 3.2 * u, 5.0 * u), (cx + 3.3 * u, 3.2 * u),
+          (cx + 2.8 * u, 1.9 * u), (cx + 3.4 * u, 1.0 * u)]
+    c.line(tp, skin, .42 * u)
+    c.line(tp[1:], hx('#C85E1C'), .14 * u)
+    tip = tp[-1]
+    if tail_fire:
+        c.rrect(tip[0] - .32 * u, tip[1] - .1 * u, tip[0] + .32 * u, tip[1] + .5 * u, .1 * u, hx('#D9C6A0'))
+        _flame(c, tip[0], tip[1] + .05 * u, .55 * u, t)
+    else:
+        c.ell(tip[0], tip[1], .3 * u, .3 * u, skin)
+    # legs
+    lift = jump * 1.6 * u
+    for sgn in (-1, 1):
+        fx = cx + sgn * .8 * u
+        if jump > 0:
+            c.line([(fx, 7.6 * u), (fx + sgn * .9 * u * jump, 8.6 * u - lift * .3), (fx, 9.6 * u - lift)], skin, .6 * u)
+            c.ell(fx + sgn * .1 * u, 9.7 * u - lift, .48 * u, .22 * u, skin)
+        else:
+            c.rrect(fx - .32 * u, 7.6 * u, fx + .32 * u, 9.7 * u, .22 * u, skin)
+            c.ell(fx + sgn * .05 * u, 9.75 * u, .5 * u, .22 * u, skin)
+            c.rect(fx - .34 * u, 8.9 * u, fx + .34 * u, 9.05 * u, hx(GOLD))  # anklet
+    # red langot / dhoti with gold border
+    c.poly([(cx - 1.3 * u, 5.1 * u), (cx + 1.3 * u, 5.1 * u), (cx + 1.55 * u, 7.9 * u), (cx - 1.55 * u, 7.9 * u)], hx('#C8202E'))
+    c.rect(cx - 1.55 * u, 7.7 * u, cx + 1.55 * u, 7.95 * u, hx(GOLD))
+    c.poly([(cx - .35 * u, 5.3 * u), (cx + .35 * u, 5.3 * u), (cx + .2 * u, 8.4 * u), (cx - .2 * u, 8.4 * u)], hx('#E8A21C'))
+    c.rrect(cx - 1.35 * u, 4.95 * u, cx + 1.35 * u, 5.35 * u, .1 * u, hx(GOLD))
+    # torso (broad, muscular)
+    c.poly([(cx - tw / 2, 2.95 * u), (cx + tw / 2, 2.95 * u), (cx + tw * .4, 5.2 * u), (cx - tw * .4, 5.2 * u)], skin)
+    c.ell(cx, 3.0 * u, tw / 2, .4 * u, skin)
+    c.arc(cx - .55 * u, 3.7 * u, .6 * u, .35 * u, 20, 160, hx('#C85E1C'), 3)
+    c.arc(cx + .55 * u, 3.7 * u, .6 * u, .35 * u, 20, 160, hx('#C85E1C'), 3)
+    # janeu + gold necklace
+    c.line([(cx - 1.0 * u, 3.0 * u), (cx + .7 * u, 5.0 * u)], hx('#FFF4D6'), 3)
+    c.line([(cx - .8 * u, 3.05 * u), (cx, 3.75 * u), (cx + .8 * u, 3.05 * u)], hx(GOLD), 6)
+    c.ell(cx, 3.8 * u, .16 * u, .16 * u, hx('#E63946'))
+    shL = (cx - tw / 2 + .15 * u, 3.25 * u)
+    shR = (cx + tw / 2 - .15 * u, 3.25 * u)
+    awid = .68 * u
+    hL = (cx + arms[0][0] * u, arms[0][1] * u)
+    hR = (cx + arms[1][0] * u, arms[1][1] * u)
+    if gada and not namaste and not bound:
+        # mace held in right hand, resting on shoulder
+        gx, gy = hR
+        c.line([(gx, gy + .9 * u), (gx + .9 * u, gy - 1.6 * u)], hx('#B8860B'), .26 * u)
+        hdx, hdy = gx + 1.05 * u, gy - 2.1 * u
+        c.ell(hdx, hdy, .78 * u, .82 * u, hx(GOLD2))
+        c.ell(hdx - .15 * u, hdy - .2 * u, .55 * u, .6 * u, hx(GOLD))
+        for k in (-1, 0, 1):
+            c.line([(hdx - .7 * u, hdy + k * .32 * u), (hdx + .7 * u, hdy + k * .32 * u)], hx('#A0700E'), 3)
+        c.poly([(hdx - .14 * u, hdy - .8 * u), (hdx, hdy - 1.25 * u), (hdx + .14 * u, hdy - .8 * u)], hx(GOLD))
+    for sh, hd in ((shL, hL), (shR, hR)):
+        _arm(c, sh, hd, skin, awid, 1)
+        c.rect(sh[0] + (hd[0] - sh[0]) * .82 - .3 * u, sh[1] + (hd[1] - sh[1]) * .82 - .12 * u,
+               sh[0] + (hd[0] - sh[0]) * .82 + .3 * u, sh[1] + (hd[1] - sh[1]) * .82 + .12 * u, hx(GOLD))
+    if ring:
+        c.ell(hL[0], hL[1] - .55 * u, .3 * u, .3 * u, None, hx('#FFD34E'), 5)
+        c.ell(hL[0], hL[1] - .85 * u, .12 * u, .12 * u, hx('#7FD3FF'))
+    if bound:
+        for k in range(4):
+            y = 3.6 * u + k * .55 * u
+            c.line([(cx - tw * .6, y), (cx + tw * .6, y + .25 * u)], hx('#E9D9A8'), 6)
+            c.line([(cx - tw * .6, y), (cx + tw * .6, y + .25 * u)], hx('#FFF6C0', 140), 2)
+    # neck + head
+    c.rect(cx - .35 * u, 2.6 * u, cx + .35 * u, 3.15 * u, skin)
+    hcx, hcy, hr = cx, 1.95 * u, 1.0 * u
+    for sg in (-1, 1):
+        c.ell(hcx + sg * hr * 1.0, hcy + .05 * u, .26 * u, .32 * u, skin)
+        c.ell(hcx + sg * hr * 1.0, hcy + .05 * u, .14 * u, .18 * u, face)
+        c.ell(hcx + sg * hr * 1.02, hcy + .38 * u, .09 * u, .12 * u, hx(GOLD))  # kundal
+    c.ell(hcx, hcy, hr, hr * 1.04, skin)
+    # face plate (lighter) + muzzle
+    c.ell(hcx, hcy + .1 * u, hr * .78, hr * .7, face)
+    c.ell(hcx, hcy + .55 * u, hr * .62, hr * .42, face)
+    c.ell(hcx, hcy + .32 * u, .14 * u, .08 * u, hx('#7A3A1A'))  # nose
+    # eyes / brows
+    ey = hcy - .05 * u
+    for sg in (-1, 1):
+        ex = hcx + sg * .35 * u
+        if eyes == 'open':
+            c.ell(ex, ey, .13 * u, .1 * u, hx('#FFFFFF'))
+            c.ell(ex, ey, .065 * u, .085 * u, dark)
+        else:
+            c.arc(ex, ey, .14 * u, .1 * u, 200, 340, dark, 3)
+        c.line([(ex - sg * .18 * u, ey - .2 * u), (ex + sg * .16 * u, ey - .27 * u)], dark, 3)
+    if mouth == 'smile':
+        c.arc(hcx, hcy + .55 * u, .3 * u, .17 * u, 15, 165, hx('#7A2A2A'), 4)
+    elif mouth == 'open':
+        c.ell(hcx, hcy + .66 * u, .17 * u, .12 * u, hx('#7A2A2A'))
+    else:
+        c.line([(hcx - .16 * u, hcy + .66 * u), (hcx + .16 * u, hcy + .66 * u)], hx('#7A2A2A'), 3)
+    # tilak (sindoor U)
+    c.line([(hcx, hcy - .62 * u), (hcx, hcy - .28 * u)], hx('#E63946'), 5)
+    # mukut
+    by = hcy - hr * .82
+    c.poly([(hcx - .9 * u, by + .15 * u), (hcx - .9 * u, by - .35 * u), (hcx - .55 * u, by - .7 * u), (hcx - .3 * u, by - .35 * u),
+            (hcx, by - 1.15 * u), (hcx + .3 * u, by - .35 * u), (hcx + .55 * u, by - .7 * u), (hcx + .9 * u, by - .35 * u),
+            (hcx + .9 * u, by + .15 * u)], hx(GOLD))
+    c.rect(hcx - .92 * u, by - .05 * u, hcx + .92 * u, by + .18 * u, hx(GOLD2))
+    for k in (-.55, 0, .55):
+        c.ell(hcx + k * u, by + .06 * u, .08 * u, .08 * u, hx('#E63946'))
+    c.ell(hcx, by - .55 * u, .13 * u, .13 * u, hx('#2E9E6E'))
+    im = c.out()
+    return im.transpose(Image.FLIP_LEFT_RIGHT) if flip else im
+
+
+def ravana(Hh=760, angry=False, point=False, seated=False):
+    """Crowned Lanka king with five visible heads (centre + 2 each side)."""
+    w = int(Hh * 1.5)
+    pad = int(Hh * .2)
+    c = Cv(w, Hh + pad)
+    c.oy = pad
+    u = Hh / 10.0
+    cx = w / 2
+    skin = hx('#9C5B3B')
+    dark = hx('#1E0E08')
+    tw = 2.7 * u
+    # legs + dhoti
+    for sg in (-1, 1):
+        fx = cx + sg * .8 * u
+        c.rrect(fx - .34 * u, 8.0 * u, fx + .34 * u, 9.7 * u, .2 * u, skin)
+        c.ell(fx, 9.75 * u, .5 * u, .22 * u, hx('#3A1A0A'))
+    c.poly([(cx - 1.45 * u, 5.0 * u), (cx + 1.45 * u, 5.0 * u), (cx + 1.9 * u, 8.9 * u), (cx - 1.9 * u, 8.9 * u)], hx('#2B1B4F'))
+    c.rect(cx - 1.9 * u, 8.6 * u, cx + 1.9 * u, 8.9 * u, hx(GOLD))
+    # torso with gold armour
+    c.poly([(cx - tw / 2, 2.95 * u), (cx + tw / 2, 2.95 * u), (cx + tw * .42, 5.3 * u), (cx - tw * .42, 5.3 * u)], skin)
+    c.poly([(cx - tw * .45, 3.3 * u), (cx + tw * .45, 3.3 * u), (cx + tw * .4, 5.2 * u), (cx - tw * .4, 5.2 * u)], hx(GOLD2))
+    c.poly([(cx - tw * .38, 3.5 * u), (cx + tw * .38, 3.5 * u), (cx + tw * .33, 5.0 * u), (cx - tw * .33, 5.0 * u)], hx(GOLD))
+    c.ell(cx, 4.2 * u, .3 * u, .3 * u, hx('#B5262F'))
+    c.rrect(cx - 1.5 * u, 4.95 * u, cx + 1.5 * u, 5.3 * u, .1 * u, hx('#B5262F'))
+    # cape
+    c.poly([(cx - tw / 2 - .2 * u, 3.0 * u), (cx - tw / 2 - 1.0 * u, 8.6 * u), (cx - tw / 2 + .3 * u, 8.4 * u)], hx('#7A1A2C'))
+    c.poly([(cx + tw / 2 + .2 * u, 3.0 * u), (cx + tw / 2 + 1.0 * u, 8.6 * u), (cx + tw / 2 - .3 * u, 8.4 * u)], hx('#7A1A2C'))
+    shL = (cx - tw / 2 + .2 * u, 3.3 * u)
+    shR = (cx + tw / 2 - .2 * u, 3.3 * u)
+    _arm(c, shL, (cx - 1.8 * u, 5.6 * u), skin, .62 * u, -1)
+    _arm(c, shR, (cx + 3.3 * u, 2.9 * u) if point else (cx + 1.8 * u, 5.6 * u), skin, .62 * u, 1)
+    c.rect(cx - .35 * u, 2.6 * u, cx + .35 * u, 3.15 * u, skin)
+
+    def head(hcx, hcy, r, main):
+        c.ell(hcx, hcy, r, r * 1.05, skin)
+        ey = hcy
+        for sg in (-1, 1):
+            ex = hcx + sg * .38 * r / .95
+            c.ell(ex, ey, .14 * r, .09 * r, hx('#FFFFFF'))
+            c.ell(ex, ey, .06 * r, .08 * r, dark)
+            if angry:
+                c.line([(ex - sg * .2 * r, ey - .3 * r), (ex + sg * .18 * r, ey - .16 * r)], dark, 4 if main else 3)
+            else:
+                c.line([(ex - .18 * r, ey - .25 * r), (ex + .18 * r, ey - .25 * r)], dark, 3)
+        # moustache
+        c.poly([(hcx, hcy + .35 * r), (hcx - .55 * r, hcy + .5 * r), (hcx - .7 * r, hcy + .3 * r), (hcx - .35 * r, hcy + .38 * r)], dark)
+        c.poly([(hcx, hcy + .35 * r), (hcx + .55 * r, hcy + .5 * r), (hcx + .7 * r, hcy + .3 * r), (hcx + .35 * r, hcy + .38 * r)], dark)
+        if angry and main:
+            c.ell(hcx, hcy + .66 * r, .16 * r, .1 * r, hx('#5A1A1A'))
+        else:
+            c.line([(hcx - .14 * r, hcy + .66 * r), (hcx + .14 * r, hcy + .66 * r)], hx('#5A1A1A'), 3)
+        c.line([(hcx - .25 * r, hcy - .6 * r), (hcx + .25 * r, hcy - .6 * r)], hx('#F4EFE0'), 3)
+        by = hcy - r * .85
+        c.poly([(hcx - .8 * r, by + .15 * r), (hcx - .8 * r, by - .5 * r), (hcx - .4 * r, by - .9 * r), (hcx, by - 1.35 * r),
+                (hcx + .4 * r, by - .9 * r), (hcx + .8 * r, by - .5 * r), (hcx + .8 * r, by + .15 * r)], hx(GOLD))
+        c.rect(hcx - .82 * r, by - .05 * r, hcx + .82 * r, by + .16 * r, hx(GOLD2))
+        c.ell(hcx, by - .45 * r, .13 * r, .13 * r, hx('#E63946'))
+
+    hcy = 1.95 * u
+    for k, (dx, sc) in enumerate(((-2.6, .72), (2.6, .72), (-1.45, .84), (1.45, .84))):
+        head(cx + dx * u, hcy + .15 * u, .95 * u * sc, False)
+    head(cx, hcy, .98 * u, True)
+    return c.out()
+
+
+def _lanka_city(cv, base, gold=True, seed=41):
+    rnd = random.Random(seed)
+    xs = [(60, 230, 150), (220, 320, 190), (420, 260, 160), (660, 300, 200), (870, 360, 220), (1020, 220, 150)]
+    for x, h, w in xs:
+        _dome(cv, x, base, w, h, hx('#C98A1B' if gold else '#6B3A1A'), hx('#E8B84A' if gold else '#8A4A20'), gold='#FFE08A')
+        for k in range(3):
+            wy = base - h * (.2 + k * .25)
+            cv.rect(x - w * .3, wy, x - w * .18, wy + 22, hx('#FFE9A0', 220))
+            cv.rect(x + w * .18, wy, x + w * .3, wy + 22, hx('#FFE9A0', 220))
+
+
+def bg_lanka():
+    """Golden Lanka on Trikuta hills at dusk, across the sea."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1150, hx('#3B1D5A'), hx('#F2994A'))
+    _sun(cv, 820, 860, 120, '#FFE2A0')
+    _hills(cv, 1050, hx('#5C2A3E'), 160, 44)
+    _lanka_city(cv, 1120)
+    cv.rect(0, 1150, W, H, hx('#1F4E6B'))
+    cv.vgrad(1150, H, hx('#2F6F8A'), hx('#102A3E'))
+    for i in range(14):
+        y = 1190 + i * 48
+        for x in range(-40 + (i % 2) * 90, W, 180):
+            cv.arc(x + 70, y, 70, 14, 200, 340, hx('#BFE3E8', 100), 4)
+    cv.rect(0, 1146, W, 1156, hx(GOLD))
+    _sparkles(cv, 22, 42, 100, 700, '#FFFFFF')
+    _vignette(cv)
+    return cv
+
+
+def bg_vatika():
+    """Ashok Vatika: night garden, ashoka tree, moon."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1200, hx('#14234A'), hx('#3E5C7A'))
+    cv.ell(260, 420, 95, 95, hx('#FFF4CF'))
+    _sun(cv, 260, 420, 60, '#FFF8E0')
+    _hills(cv, 1150, hx('#1E3A2E'), 90, 51)
+    cv.rect(0, 1220, W, H, hx('#2F5A34'))
+    cv.vgrad(1220, H, hx('#3F7A3E'), hx('#1E3A22'))
+    # big ashoka tree on the right
+    cv.rect(850, 520, 930, 1300, hx('#4A2E1A'))
+    for (x, y, r, col) in ((890, 470, 260, '#1F5A2E'), (760, 560, 170, '#2B7A3A'), (1010, 580, 170, '#2B7A3A'),
+                           (880, 360, 170, '#3A8A44')):
+        cv.ell(x, y, r, r * .85, hx(col))
+    rnd = random.Random(5)
+    for _ in range(40):  # red ashoka flowers
+        x, y = 650 + rnd.random() * 450, 260 + rnd.random() * 460
+        cv.ell(x, y, 10, 10, hx('#E8462E'))
+    for x, h in ((90, 380), (220, 300)):
+        _tree(cv, x, 1260, h, leaf='#1F5A2E', leaf2='#2B7A3A')
+    _sparkles(cv, 26, 52, 80, 900, '#FFFFFF')
+    _vignette(cv)
+    return cv
+
+
+def bg_court():
+    """Ravana's dark-gold court."""
+    cv = Cv(W, H)
+    cv.vgrad(0, H, hx('#2A0E2E'), hx('#12060F'))
+    cv.rect(0, 1260, W, H, hx('#2A0A12'))
+    cv.vgrad(1260, H, hx('#5A1A22'), hx('#1A0608'))
+    for x in (80, 1000):
+        cv.rect(x - 70, 160, x + 70, 1300, hx('#6B4A12'))
+        cv.rect(x - 50, 180, x + 50, 1280, hx(GOLD2))
+        for k in range(10):
+            cv.line([(x - 46, 240 + k * 105), (x + 46, 240 + k * 105)], hx('#6B4A12'), 5)
+    cv.arc(540, 760, 420, 560, 180, 360, hx(GOLD2), 30)
+    # throne back
+    cv.rrect(330, 560, 750, 1180, 80, hx('#7A1A2C'))
+    cv.rrect(360, 590, 720, 1150, 60, hx('#B5262F'))
+    cv.ell(540, 560, 150, 90, hx(GOLD))
+    for x in (230, 850):  # torches
+        cv.rect(x - 14, 820, x + 14, 1050, hx('#5A3A1A'))
+        cv.ell(x, 820, 40, 14, hx(GOLD2))
+        cv.poly([(x - 34, 818), (x - 16, 760), (x, 700), (x + 18, 760), (x + 34, 818)], hx('#F2671F'))
+        cv.poly([(x - 18, 818), (x, 745), (x + 18, 818)], hx('#FFD34E'))
+        _sun(cv, x, 770, 1, '#F79A1E')
+    _sparkles(cv, 14, 61, 200, 900, '#FFD08A')
+    _vignette(cv)
+    return cv
+
+
+def bg_fire():
+    """Lanka at night, sky glowing (flames drawn per-frame on top)."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1250, hx('#1A0610'), hx('#C2401A'))
+    _hills(cv, 1100, hx('#2A0C14'), 140, 71)
+    _lanka_city(cv, 1300, gold=True, seed=72)
+    cv.rect(0, 1300, W, H, hx('#3A1408'))
+    cv.vgrad(1300, H, hx('#5A2410'), hx('#1A0806'))
+    _vignette(cv)
+    return cv
+
+
+def bg_sea():
+    """Dawn sea with distant shore; Hanuman returns."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1150, hx('#FFD9A0'), hx('#FF9E6B'))
+    _sun(cv, 540, 980, 170, '#FFF1C8')
+    cv.rect(0, 1100, W, H, hx('#2C6F7E'))
+    cv.vgrad(1100, H, hx('#3C8EA0'), hx('#173F52'))
+    for i in range(16):
+        y = 1140 + i * 46
+        for x in range(-40 + (i % 2) * 90, W, 180):
+            cv.arc(x + 70, y, 70, 14, 200, 340, hx('#E9F6F8', 120), 4)
+    cv.rect(0, 1096, W, 1104, hx(GOLD))
+    _hills(cv, 1100, hx('#B5625A'), 40, 81)
+    cv.rect(0, 1100, W, 1104, hx('#E9C38A'))
+    for i, (x, y, r) in enumerate(((200, 300, 70), (820, 420, 90))):
+        cv.ell(x, y, r * 1.6, r * .6, hx('#FFFFFF', 200))
+    _sparkles(cv, 18, 82, 200, 900)
+    _vignette(cv)
+    return cv
+
+
+def bg_ramdarbar():
+    """Soft golden glow halo backdrop for the closing message."""
+    cv = Cv(W, H)
+    cv.vgrad(0, H, hx('#FFE8B0'), hx('#E07A2A'))
+    _sun(cv, 540, 820, 330, '#FFF6DA')
+    for k in range(24):
+        a = k / 24 * 2 * math.pi
+        cv.line([(540 + math.cos(a) * 380, 820 + math.sin(a) * 380), (540 + math.cos(a) * 620, 820 + math.sin(a) * 620)], hx('#FFF1C8', 120), 10)
+    _hills(cv, 1330, hx('#B5532A'), 60, 91)
+    cv.rect(0, 1330, W, H, hx('#8C2B3A'))
+    cv.vgrad(1330, H, hx('#A63A4B'), hx('#4A0E1B'))
+    _sparkles(cv, 30, 92, 150, 1200, '#FFF6C0')
+    _vignette(cv)
+    return cv
+
+
+BACKGROUNDS.update({'lanka': bg_lanka, 'vatika': bg_vatika, 'court': bg_court, 'fire': bg_fire, 'sea': bg_sea,
+                    'glow': bg_ramdarbar})
 
 # ---------------------------------------------------------------- logo
 def make_logo(path='logo.png', width=640):

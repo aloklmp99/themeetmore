@@ -11,7 +11,18 @@
       "category": "हनुमान जी",
       "idx": 2,
       "title": "लंका दहन",
-      "started": "2026-11-13"
+      "started": "2026-11-13",
+      "status": "आवाज़ बन चुकी है (565 क्रेडिट), फ़ाइल डाउनलोड नेटवर्क ब्लॉक से अटकी। दोबारा मत बनाओ!",
+      "voice_ready": {
+        "flow_id": "onQAVx8Ih2mDVniUxDOA",
+        "generation_id": "bufrnt2tFI72Db6jKtc7",
+        "voice_id": "ovcrTRBELQPup0RNagdO",
+        "model_id": "eleven_v4",
+        "credits": 565,
+        "how": "creative_get_generations(flow_id, [generation_id]) से नया full_res_url लो (मुफ़्त), curl से voice.mp3 उतारो। elevenlabsusercontent.com नेटवर्क में अनुमत होना चाहिए।"
+      },
+      "script": "studio/pending/story002_sents.py (SENTS + TAGS, आवाज़ इसी पाठ से बनी)",
+      "art": "studio/kit/art.py में hanuman(), ravana(), person('sita') और पृष्ठभूमियाँ lanka/vatika/court/fire/sea/glow जोड़ी गईं"
     }
   ],
   "next_video_no": 2,
