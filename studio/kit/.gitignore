@@ -1,0 +1,5 @@
+out/
+voice.mp3
+__pycache__/
+*.pyc
+chk_*.png
