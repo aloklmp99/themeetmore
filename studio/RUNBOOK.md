@@ -6,7 +6,7 @@
 ## 0. सिर्फ़ ये टूल (बाक़ी कोई कनेक्टर/टूल इस्तेमाल मत करो)
 यह रन बैकग्राउंड में चलता है, कोई जवाब देने वाला नहीं है। इसलिए जिन टूल की ज़रूरत है वे पहले से मंज़ूर हैं; किसी और टूल को छूना नहीं।
 - कोड और फ़ाइलें: Bash, Read, Write, Edit (Python, PIL, numpy, ffmpeg, git)।
-- ElevenLabs (सिर्फ़ ये 3): `creative_generate_speech` (हिंदी नैरेशन), `creative_get_generations` (बनी हुई आवाज़ का लिंक, रीड-ओनली, मुफ़्त) और `account_get_usage` (क्रेडिट जाँच, रीड-ओनली, मुफ़्त)। `creative_list_voices` की ज़रूरत नहीं (आवाज़ तय है)। बाक़ी हर ElevenLabs टूल मना है।
+- ElevenLabs (सिर्फ़ ये 5): `creative_generate_speech` (हिंदी नैरेशन), `creative_get_generations` (बनी आवाज़ का लिंक), `account_get_usage` (क्रेडिट जाँच), `creative_list_voices` (आवाज़ चुनने/जाँचने के लिए) और `creative_get_model_guide` (v4 में आवाज़ के निर्देश/टैग कैसे लिखें, पढ़ने भर का)। ये पाँचों मुफ़्त हैं सिवाय `creative_generate_speech` के। म्यूज़िक, इमेज, वीडियो, आवाज़ डिज़ाइन, transcribe, एजेंट वगैरह बाक़ी हर ElevenLabs टूल मना है (क्रेडिट बहुत लगते हैं); संगीत कोड से बनता है।
 - Themeetmore (मेरा Reels सर्वर) के सिर्फ़ ये: `ig_account_info`, `check_video_url`, `add_to_inbox`, `list_inbox`, `list_queue`, `list_posted`, `get_auto_settings`, `ig_publishing_limit`। इस सर्वर के सेटिंग बदलने, सीधे पोस्ट करने या रद्द करने वाले टूल कभी नहीं (बिना मालिक के साफ़ "हाँ" के)।
 - GitHub `aloklmp99/themeetmore`: क्लोन, कमिट, पुश (शाखा main)। रिपॉज़िटरी पहले से सेशन में जुड़ी हो तो `add_repo` मत चलाओ; न जुड़ी हो तो `add_repo(access=push)` से जोड़ो।
 - WebSearch/WebFetch: सिर्फ़ कथा की कोई बात या त्योहार की तारीख़ पक्की करने को।
@@ -28,8 +28,10 @@
 - कथा पूरी खत्म होनी चाहिए; आख़िरी वाक्य में सीख, और अंत में "जय …!"।
 - हर वाक्य = एक कैप्शन लाइन। पहला वाक्य आकर्षक हुक हो।
 
-## 3. आवाज़ (हर वीडियो में सिर्फ़ एक बार)
-- `creative_generate_speech`: `model_id=eleven_v4`, `voice_id=ovcrTRBELQPup0RNagdO` (Pranit, भक्ति नैरेशन), `generations_count=1`। **कभी दोबारा/रीट्राई नहीं** (हर बार ~600 क्रेडिट कटते हैं)। `estimate_only` से पहले जाँच सकते हो (क्रेडिट नहीं लगते)।
+## 3. आवाज़ (हर वीडियो में सिर्फ़ एक बार; आवाज़ हर वीडियो में एक ही)
+- **आवाज़ तय और एक ही रहेगी।** `studio/progress.json` के `voice` में जो `voice_id` है वही हर वीडियो में इस्तेमाल करो (अभी: Pranit, `ovcrTRBELQPup0RNagdO`)। पहले `creative_list_voices` (languages=["hi"], use_cases=["narrative_story"], gender="male", search="devotional") से जाँचो कि यह आवाज़ अब भी उपलब्ध है। उपलब्ध न हो तभी उसी तरह की (हिंदी, पुरुष, भक्ति/कथा वाली, शांत) सबसे मिलती आवाज़ चुनो, उसे `progress.json` के `voice` में लिखकर कमिट+पुश करो, ताकि आगे सब रन वही आवाज़ लें। बिना वजह आवाज़ कभी मत बदलो।
+- `creative_generate_speech`: `model_id=eleven_v4`, चुनी हुई वही `voice_id`, `generations_count=1`। **कभी दोबारा/रीट्राई नहीं।** `estimate_only` से पहले जाँच सकते हो (क्रेडिट नहीं लगते)।
+- कथा के हिसाब से आवाज़ को निखार सकते हो: पहले `creative_get_model_guide` (eleven_v4) पढ़ो, फिर स्क्रिप्ट में ज़रूरत भर के छोटे आवाज़-निर्देश/टैग (जैसे धीमे, भावुक, ज़ोर देकर) लगाओ। नियम: सिर्फ़ 3-6 टैग; टैग भी अक्षर/क्रेडिट गिने जाते हैं, इसलिए कुल पाठ ~570 अक्षर के अंदर रखो; टैग कैप्शन में कभी नहीं दिखने चाहिए (`SENTS` में सिर्फ़ साफ़ वाक्य, आवाज़ वाले पाठ में टैग); शक हो कि हिंदी में टैग ठीक पढ़े जाएँगे तो मत लगाओ।
 - नतीजे में `pending[0].generation_id` और `flow_id` मिलता है। ऑडियो की फ़ाइल widget से नहीं मिलती; इसलिए `creative_get_generations(flow_id, generation_ids=[id])` से `full_res_url` लो और `curl -o voice.mp3 "<url>"` से उतारो (elevenlabsusercontent.com शेल से खुलता है)। जनरेशन पूरी होने में कुछ सेकंड लगते हैं; "completed" न हो तो 5-10 सेकंड रुककर फिर पढ़ो (यह मुफ़्त है)।
 - आवाज़ न बने (किसी भी वजह से) तो उस रन में वीडियो मत बनाओ। `progress.json` की `in_progress` से यह कथा हटाकर कमिट+पुश करो और सार में वजह लिखो। आवाज़ दोबारा बनाने की कोशिश मत करो।
 
