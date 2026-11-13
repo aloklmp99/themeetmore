@@ -3,12 +3,18 @@
 भाषा: हर जवाब और सार हिंदी/हिंग्लिश में, छोटा और सीधा। यह अपने-आप चलने वाला रन है: मालिक से सवाल मत पूछो, सबसे सही अनुमान लेकर काम पूरा करो और आख़िर में सार दो।
 मूल निर्देश और 500 कथाओं की सूची: `studio/ORIGINAL_BRIEF_AND_STORY_LIST.md` (वही सच है; नीचे सिर्फ़ रन का तरीका और सीखी हुई बातें हैं)।
 
-## 0. सिर्फ़ ये टूल
-Bash/Read/Write/Edit; ElevenLabs: `creative_list_voices`, `creative_generate_speech`, और (मालिक की मंज़ूरी से) रीड-ओनली `creative_get_generations`, `account_get_usage`; Themeetmore MCP: `ig_account_info, check_video_url, add_to_inbox, list_inbox, list_queue, list_posted, get_auto_settings, ig_publishing_limit`; GitHub `aloklmp99/themeetmore` (push); WebSearch सिर्फ़ कथा/त्योहार की तारीख़ पक्की करने को।
-कभी मत चलाओ: `set_auto_settings`, `ig_publish_reel`, `cancel_queued` (बिना मालिक के साफ़ "हाँ" के), ElevenLabs के संगीत/इमेज/वीडियो/transcribe टूल, Gmail, Meta Ads, Chrome वगैरह। @aloklasumeet या किसी और अकाउंट पर कुछ मत डालो। कोई पासवर्ड/टोकन/सीक्रेट मत माँगो, मत लिखो।
+## 0. सिर्फ़ ये टूल (बाक़ी कोई कनेक्टर/टूल इस्तेमाल मत करो)
+यह रन बैकग्राउंड में चलता है, कोई जवाब देने वाला नहीं है। इसलिए जिन टूल की ज़रूरत है वे पहले से मंज़ूर हैं; किसी और टूल को छूना नहीं।
+- कोड और फ़ाइलें: Bash, Read, Write, Edit (Python, PIL, numpy, ffmpeg, git)।
+- ElevenLabs (सिर्फ़ ये 3): `creative_generate_speech` (हिंदी नैरेशन), `creative_get_generations` (बनी हुई आवाज़ का लिंक, रीड-ओनली, मुफ़्त), `account_get_usage` (बचे क्रेडिट, रीड-ओनली)। `creative_list_voices` की ज़रूरत नहीं (आवाज़ तय है)। बाक़ी हर ElevenLabs टूल मना है।
+- Themeetmore (मेरा Reels सर्वर) के सिर्फ़ ये: `ig_account_info`, `check_video_url`, `add_to_inbox`, `list_inbox`, `list_queue`, `list_posted`, `get_auto_settings`, `ig_publishing_limit`। इस सर्वर के सेटिंग बदलने, सीधे पोस्ट करने या रद्द करने वाले टूल कभी नहीं (बिना मालिक के साफ़ "हाँ" के)।
+- GitHub `aloklmp99/themeetmore`: क्लोन, कमिट, पुश (शाखा main)। रिपॉज़िटरी पहले से सेशन में जुड़ी हो तो `add_repo` मत चलाओ; न जुड़ी हो तो `add_repo(access=push)` से जोड़ो।
+- WebSearch/WebFetch: सिर्फ़ कथा की कोई बात या त्योहार की तारीख़ पक्की करने को।
+- अगर कोई ज़रूरी टूल इस रन में उपलब्ध नहीं है या अनुमति की वजह से अटक जाए, तो रुककर इंतज़ार मत करो और दूसरा रास्ता मत खोजो: जो हो चुका है वह बताकर रन ख़त्म करो और सार में साफ़ लिखो कि कौन-सा टूल/अनुमति चाहिए थी।
+- @aloklasumeet या किसी और अकाउंट के बारे में मत बोलो, उस पर कुछ मत डालो। कोई पासवर्ड/टोकन/सीक्रेट मत माँगो, न कहीं लिखो।
 
 ## 1. शुरुआत की जाँच (हर रन में)
-1. `add_repo(aloklmp99/themeetmore, access=push)` → एक ही बार `git clone --depth 1 https://github.com/aloklmp99/themeetmore /home/claude/themeetmore` (timeout ~10 मिनट) → `register_repo_root`।
+1. रिपॉज़िटरी सेशन में नहीं जुड़ी हो तो `add_repo(aloklmp99/themeetmore, access=push)`; फिर एक ही बार `git clone --depth 1 https://github.com/aloklmp99/themeetmore /home/claude/themeetmore` (timeout ~10 मिनट) → `register_repo_root`।
 2. `ig_account_info`: अकाउंट `themeetmore` ("The Meet More | Bhakti Shorts") होना चाहिए। Meta कभी-कभी code 100/subcode 33 देता है; 3 बार कोशिश करो (हर बार ~1 मिनट रुककर)। फिर भी फ़ेल हो तो वीडियो बनाकर GitHub पर रख दो, पर `add_to_inbox` मत करो और सार में साफ़ लिखो।
 3. `get_auto_settings`: समय 08:00 और 19:30 है और `per_day` 2। अलग हो तो **बदलो मत**, सार में बताओ।
 4. `list_inbox`: अगर "ready" रील पहले से ≥ 14 हैं तो इस रन में कुछ मत बनाओ (क्रेडिट बचाओ), सिर्फ़ सार दो। **हर रन में सिर्फ़ 1 नई कथा बनाओ** (एक रन = एक वीडियो; पोस्टिंग का समय/गैप सर्वर खुद संभालता है)। 7 दिन (14 रील) से कम बचें तो सार में चेताओ।
