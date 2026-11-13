@@ -8,7 +8,7 @@
 - कोड और फ़ाइलें: Bash, Read, Write, Edit (Python, PIL, numpy, ffmpeg, git)।
 - ElevenLabs (सिर्फ़ ये 5): `creative_generate_speech` (हिंदी नैरेशन), `creative_get_generations` (बनी आवाज़ का लिंक), `account_get_usage` (क्रेडिट जाँच), `creative_list_voices` (आवाज़ चुनने/जाँचने के लिए) और `creative_get_model_guide` (v4 में आवाज़ के निर्देश/टैग कैसे लिखें, पढ़ने भर का)। ये पाँचों मुफ़्त हैं सिवाय `creative_generate_speech` के। म्यूज़िक, इमेज, वीडियो, आवाज़ डिज़ाइन, transcribe, एजेंट वगैरह बाक़ी हर ElevenLabs टूल मना है (क्रेडिट बहुत लगते हैं); संगीत कोड से बनता है।
 - Themeetmore (मेरा Reels सर्वर) के सिर्फ़ ये: `ig_account_info`, `check_video_url`, `add_to_inbox`, `list_inbox`, `list_queue`, `list_posted`, `get_auto_settings`, `ig_publishing_limit`। इस सर्वर के सेटिंग बदलने, सीधे पोस्ट करने या रद्द करने वाले टूल कभी नहीं (बिना मालिक के साफ़ "हाँ" के)।
-- GitHub `aloklmp99/themeetmore`: क्लोन, कमिट, पुश (शाखा main)। रिपॉज़िटरी पहले से सेशन में जुड़ी हो तो `add_repo` मत चलाओ; न जुड़ी हो तो `add_repo(access=push)` से जोड़ो।
+- GitHub `aloklmp99/themeetmore`: क्लोन, कमिट, पुश। अगर `main` पर पुश न हो सके तो अपनी `claude/...` शाखा पर पुश करो (नीचे §5 देखो)। रिपॉज़िटरी पहले से सेशन में जुड़ी हो तो `add_repo` मत चलाओ; न जुड़ी हो तो `add_repo(access=push)` से जोड़ो।
 - WebSearch/WebFetch: सिर्फ़ कथा की कोई बात या त्योहार की तारीख़ पक्की करने को।
 - अगर कोई ज़रूरी टूल इस रन में उपलब्ध नहीं है या अनुमति की वजह से अटक जाए, तो रुककर इंतज़ार मत करो और दूसरा रास्ता मत खोजो: जो हो चुका है वह बताकर रन ख़त्म करो और सार में साफ़ लिखो कि कौन-सा टूल/अनुमति चाहिए थी।
 - @aloklasumeet या किसी और अकाउंट के बारे में मत बोलो, उस पर कुछ मत डालो। कोई पासवर्ड/टोकन/सीक्रेट मत माँगो, न कहीं लिखो।
@@ -54,8 +54,8 @@
 - हर वीडियो अलग बैकग्राउंड/मूवमेंट/मूड वाला लगे; एक जैसा टेम्पलेट-सा नहीं।
 
 ## 5. पोस्टिंग
-1. `cp out/bhakti-NNN.mp4 "/home/claude/themeetmore/videos/bhakti-NNN-<नाम>.mp4"`; git add/commit (संदेश के अंत में Co-Authored-By और Claude-Session लाइनें, सिस्टम रिमाइंडर के मुताबिक) और `git -c push.negotiate=true push origin HEAD` (शाखा main)।
-2. raw लिंक: `https://raw.githubusercontent.com/aloklmp99/themeetmore/main/videos/<फ़ाइल>` — हिंदी नाम **percent-encode** करके दो (python `urllib.parse.quote`)।
+1. `cp out/bhakti-NNN.mp4 "/home/claude/themeetmore/videos/bhakti-NNN-<नाम>.mp4"`; git add/commit (संदेश के अंत में Co-Authored-By और Claude-Session लाइनें, सिस्टम रिमाइंडर के मुताबिक) और `git -c push.negotiate=true push origin HEAD`। पहले `main` पर कोशिश करो; वह रोके तो सेशन की अपनी `claude/...` शाखा पर पुश करो। अपनी शाखा का नाम `git branch --show-current` से लो।
+2. raw लिंक: `https://raw.githubusercontent.com/aloklmp99/themeetmore/<शाखा>/videos/<फ़ाइल>` (`<शाखा>` = जिस शाखा पर पुश हुआ: `main` या अपनी `claude/...`) — हिंदी नाम **percent-encode** करके दो (python `urllib.parse.quote`)।
 3. `check_video_url` → `ok_for_instagram: true` देखो।
 4. `add_to_inbox(url, caption, filename="bhakti-NNN-<अंग्रेज़ी-नाम>.mp4", share_to_feed=true)`।
 5. `list_inbox` में "ready" देखो।
