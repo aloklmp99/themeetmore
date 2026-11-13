@@ -27,7 +27,7 @@ if __name__ == '__main__':
     subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', 'out/scenes/list.txt',
                     '-c', 'copy', 'out/video_noaudio.mp4'], check=True)
     make_music(T, bounds, 'out/music.wav')
-    af = (f"[0:a]atempo={TEMPO},adelay={int(OFFSET*1000)}|{int(OFFSET*1000)},volume=1.0[v];[1:a]volume=0.42[m];"
+    af = (f"[0:a]atempo={TEMPO},adelay={int(OFFSET*1000)}|{int(OFFSET*1000)},volume=1.0[v];[1:a]volume=0.20[m];"
           f"[v][m]amix=inputs=2:duration=longest:normalize=0,loudnorm=I=-16:TP=-1.5:LRA=11,"
           f"afade=t=out:st={T-1.5}:d=1.5,atrim=0:{T},asetpts=PTS-STARTPTS[a]")
     subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', 'voice.mp3', '-i', 'out/music.wav',
