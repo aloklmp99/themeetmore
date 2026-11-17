@@ -8,6 +8,7 @@ OUTNAME = os.environ.get('OUTNAME', 'out/final.mp4')
 _r = _sp.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', 'voice.mp3'], capture_output=True, text=True)
 _d = float(_r.stdout.strip())
 # छोटी रील (आवाज़ ≤60s): 55-59.6s में फ़िट; लंबी कथा (>60s): टेम्पो 1.0, कोई ऊपरी सीमा नहीं (अधिकतम 5 मिनट)
+MUSIC_VOL = float(os.environ.get('MUSIC_VOL', 0.10))  # बैकग्राउंड संगीत (आवाज़ = 1.0); बढ़ाना मत
 LONG = _d > 60.0
 TEMPO = float(os.environ.get('TEMPO', 1.0 if LONG else min(1.10, max(1.0, _d / 56.0))))
 OFFSET = float(os.environ.get('OFFSET', 0.4))
@@ -30,7 +31,10 @@ if __name__ == '__main__':
     subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', 'out/scenes/list.txt',
                     '-c', 'copy', 'out/video_noaudio.mp4'], check=True)
     make_music(T, bounds, 'out/music.wav')
-    af = (f"[0:a]atempo={TEMPO},adelay={int(OFFSET*1000)}|{int(OFFSET*1000)},volume=1.0[v];[1:a]volume=0.20[m];"
+    # संगीत हल्का: कम volume + ऊँची आवाज़ें कटी हुई + आवाज़ बोलते समय अपने-आप और दब जाता है (ducking)
+    af = (f"[0:a]atempo={TEMPO},adelay={int(OFFSET*1000)}|{int(OFFSET*1000)},volume=1.0,asplit=2[v][vs];"
+          f"[1:a]volume={MUSIC_VOL},lowpass=f=2800[m0];"
+          f"[m0][vs]sidechaincompress=threshold=0.015:ratio=10:attack=15:release=500[m];"
           f"[v][m]amix=inputs=2:duration=longest:normalize=0,loudnorm=I=-16:TP=-1.5:LRA=11,"
           f"afade=t=out:st={T-1.5}:d=1.5,atrim=0:{T},asetpts=PTS-STARTPTS[a]")
     subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', 'voice.mp3', '-i', 'out/music.wav',

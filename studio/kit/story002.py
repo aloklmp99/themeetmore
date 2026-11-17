@@ -503,7 +503,7 @@ def make_music(total, bounds, path, sr=44100):
     mix += .035 * (np.sin(2 * np.pi * sa * t) + .5 * np.sin(2 * np.pi * sa * 1.5 * t) + .3 * np.sin(2 * np.pi * sa * 2 * t))
     rnd = np.random.RandomState(3)
     # dholak: 90 bpm, simple pattern
-    beat = 60 / 90.0
+    beat = 60 / 64.0
     pat_d = ['d', 't', 't', 'd', 't', 'd', 't', 't']
     tdh = 0.0
     i = 0
@@ -520,7 +520,7 @@ def make_music(total, bounds, path, sr=44100):
             sig = nz * np.exp(-tl * 55) * .12 * np.sin(2 * np.pi * 900 * tl + 1)
         s0 = int(tdh * sr)
         e = min(n, s0 + L)
-        mix[s0:e] += .16 * sig[:e - s0]
+        mix[s0:e] += .10 * sig[:e - s0]
         tdh += beat / 2
         i += 1
     # bells at scene changes + end
