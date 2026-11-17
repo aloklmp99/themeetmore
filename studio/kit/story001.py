@@ -105,6 +105,20 @@ def scene_bounds(tm):
 
 
 # ------------------------------------------------------------ assets
+_PLATE = []
+
+
+def logo_plate():
+    # लोगो हमेशा ऊपर-बाएँ कोने में, छोटी मरून प्लेट पर (आसमान/चाँद/बादल से टकराए नहीं)
+    if not _PLATE:
+        lg = logo_img()
+        pl = Image.new('RGBA', (lg.width + 36, lg.height + 24), (0, 0, 0, 0))
+        ImageDraw.Draw(pl).rounded_rectangle([0, 0, pl.width - 1, pl.height - 1], 26, fill=(74, 12, 24, 175), outline=(224, 176, 72, 210), width=3)
+        pl.alpha_composite(lg, (18, 12))
+        _PLATE.append(pl)
+    return _PLATE[0]
+
+
 @lru_cache(None)
 def logo_img():
     im = Image.open('logo.png').convert('RGBA')
@@ -408,8 +422,8 @@ def decorate(fr, t, ctx):
     # logo (hidden during ending brand)
     end_on = gt >= T - 3.0
     if not end_on:
-        lg = logo_img()
-        fr.paste(lg, (48, 270), lg)
+        pl = logo_plate()
+        fr.paste(pl, (30, 262), pl)
     else:
         a = min(1.0, (gt - (T - 3.0)) / .4)
         es = end_strip()
