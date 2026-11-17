@@ -1,7 +1,7 @@
 import os, sys, json, subprocess
 from multiprocessing import Pool
 import importlib, subprocess as _sp, re as _re
-b = importlib.import_module(os.environ.get('STORY', 'story001'))
+b = importlib.import_module(os.environ.get('STORY', 'story_template'))
 globals().update({k: getattr(b, k) for k in dir(b) if not k.startswith('__')})
 OUTNAME = os.environ.get('OUTNAME', 'out/final.mp4')
 

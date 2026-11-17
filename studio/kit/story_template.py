@@ -1,4 +1,6 @@
-"""Story #1 : सुदामा मित्रता  -> 1080x1920 reel builder (art.py kit)."""
+# यह किट का साँचा (template) है: इसमें तुलसी विवाह का उदाहरण भरा है। नई कथा के लिए इसकी कॉपी storyNNN.py बनाओ और
+# TITLE, SUBTITLE, SENTS, SCENE_FIRST और compose() बदलो; बाक़ी हेल्पर (decorate, लोगो-प्लेट, कैप्शन, संगीत) जस के तस रखो।
+"""Story #3 : तुलसी विवाह  -> 1080x1920 reel builder (art.py kit)."""
 import sys, os, json, math, subprocess, random, re
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
@@ -7,24 +9,31 @@ from art import *
 
 FPS = 30
 OUT = 'out'
-TITLE = 'सुदामा मित्रता'
-SUBTITLE = 'कृष्ण और सुदामा की भक्ति कथा'
+TITLE = 'तुलसी विवाह'
+SUBTITLE = 'देवउठनी एकादशी की पावन कथा'
 END_TEXT = 'The Meet More | फ़ॉलो करें, कल की कथा'
 SENTS = [
-    'द्वारका के राजा श्रीकृष्ण, और गरीब ब्राह्मण सुदामा, बचपन के दो सच्चे मित्र।',
-    'संदीपनी आश्रम में साथ पढ़े थे, पर समय ने दोनों को अलग कर दिया।',
-    'सुदामा के घर में अन्न का दाना नहीं था।',
-    'पत्नी ने कहा, जाओ, अपने मित्र कृष्ण से मिल आओ।',
-    'सुदामा के पास भेंट देने को बस मुट्ठी भर चिवड़ा था, जिसे वे फटे वस्त्र में छुपाए थे।',
-    'द्वारका पहुँचे तो कृष्ण ने उन्हें देखते ही नंगे पाँव दौड़कर गले लगा लिया।',
-    'अपने आँसुओं से मित्र के पाँव धोए, और उन्हें अपने आसन पर बिठाया।',
-    'फिर कृष्ण ने प्रेम से वही चिवड़ा खाया।',
-    'सुदामा संकोच में कुछ माँग न सके।',
-    'घर लौटे तो झोंपड़ी की जगह सुंदर महल खड़ा था।',
-    'सच्ची मित्रता में अमीरी-गरीबी नहीं, सिर्फ़ प्रेम होता है।',
-    'जय श्रीकृष्ण!',
+    'क्या आप जानते हैं, भगवान विष्णु हर साल तुलसी से विवाह क्यों करते हैं?',
+    'बहुत पहले, जालंधर नाम का एक शक्तिशाली असुर राजा था।',
+    'उसकी पत्नी वृंदा, विष्णु जी की परम भक्त और महान पतिव्रता थीं।',
+    'वृंदा के सतीत्व की शक्ति से, जालंधर को कोई हरा नहीं पाता था।',
+    'अहंकार में जालंधर ने देवताओं को सताया, और स्वर्ग छीन लिया।',
+    'जब वह भगवान शिव से युद्ध करने गया, तो वृंदा पूजा में बैठ गईं।',
+    'देवताओं ने विष्णु जी से प्रार्थना की, प्रभु, संसार को बचाइए।',
+    'तब विष्णु जी, जालंधर का रूप धरकर वृंदा के पास पहुँचे।',
+    'वृंदा ने उन्हें पति समझा, और उनका संकल्प टूट गया।',
+    'उसी क्षण युद्ध में, भगवान शिव ने जालंधर का अंत कर दिया।',
+    'सच जानकर वृंदा दुखी हुईं, और विष्णु जी को पत्थर बनने का श्राप दिया।',
+    'विष्णु जी ने श्राप स्वीकार किया, और पत्थर बन गए।',
+    'माता लक्ष्मी की विनती पर, वृंदा ने श्राप वापस लिया, और सती हो गईं।',
+    'जहाँ उनकी राख थी, वहाँ एक पावन पौधा उगा, तुलसी।',
+    'विष्णु जी बोले, तुलसी के बिना मेरी पूजा अधूरी रहेगी।',
+    'मेरा शालिग्राम रूप, हर साल तुलसी से विवाह करेगा।',
+    'इसीलिए देवउठनी एकादशी पर, घर-घर तुलसी विवाह होता है।',
+    'सच्ची भक्ति के आगे, स्वयं भगवान भी झुक जाते हैं।',
+    'जय तुलसी माता! जय श्री हरि!',
 ]
-SCENE_FIRST = [0, 1, 2, 4, 5, 6, 7, 9, 10]  # first sentence index of each scene
+SCENE_FIRST = [0, 1, 2, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 16, 17]
 CAP_BOTTOM = 1535
 LOGO_W = 230
 
@@ -279,113 +288,244 @@ def draw_bg(fr, name, p, pan=(0, 0), zoom=0.07, zin=True):
 
 
 # ------------------------------------------------------------ scenes
+
+
+@lru_cache(None)
+def VI(H=640, step=0, **kw):
+    return vishnu(H, t=step / 6.0, **kw)
+
+
+def VS(gt, **kw):
+    return VI(640, int(gt * 6) % 12, **kw)
+
+
+@lru_cache(None)
+def JL(H=640, **kw):
+    return jalandhar(H, **kw)
+
+
+@lru_cache(None)
+def TP(g10=10):
+    return tulsi_plant(420, g10 / 10.0)
+
+
+@lru_cache(None)
+def SHL(r=70, g=1.0):
+    return shaligram(r, g)
+
+
+@lru_cache(None)
+def CHAURA():
+    return tulsi_chaura(300)
+
+
+def flames(fr, gt, xs, base, scale=1.0, seed=1):
+    d = ImageDraw.Draw(fr, 'RGBA')
+    rnd = random.Random(seed)
+    for k, x in enumerate(xs):
+        fl = math.sin(gt * 9 + k * 1.7) * .15
+        r = (46 + (k % 3) * 14) * scale
+        y = base - (k % 2) * 40
+        d.polygon([(x - r, y), (x - r * .5, y - r * 1.3), (x + fl * r, y - r * 2.4), (x + r * .55, y - r * 1.2), (x + r, y)], fill=(232, 70, 30, 235))
+        d.polygon([(x - r * .62, y), (x - r * .2, y - r * 1.0), (x + fl * r * .8, y - r * 1.75), (x + r * .4, y - r * .9), (x + r * .62, y)], fill=(247, 154, 30, 240))
+        d.polygon([(x - r * .3, y), (x, y - r * 1.05), (x + r * .3, y)], fill=(255, 228, 92, 245))
+
+
+def embers(fr, gt, n=26, seed=3, y0=300, y1=1300):
+    rnd = random.Random(seed)
+    d = ImageDraw.Draw(fr, 'RGBA')
+    for _ in range(n):
+        x0, ph, sp_, sz = rnd.random() * 1080, rnd.random(), .12 + rnd.random() * .2, 3 + rnd.random() * 5
+        q = (gt * sp_ + ph) % 1.0
+        y = y1 - q * (y1 - y0)
+        x = x0 + math.sin(gt * 2 + ph * 9) * 26
+        d.ellipse([x - sz, y - sz, x + sz, y + sz], fill=(255, 190, 80, int(230 * math.sin(q * math.pi))))
+
+
+def falling(fr, gt, n=30, seed=5, cols=((232, 70, 46), (60, 150, 70))):
+    rnd = random.Random(seed)
+    d = ImageDraw.Draw(fr, 'RGBA')
+    for k in range(n):
+        x0, ph, sp_, sz = rnd.random() * 1080, rnd.random(), .25 + rnd.random() * .3, 7 + rnd.random() * 9
+        q = (gt * sp_ + ph) % 1.0
+        y = 250 + q * 1100
+        x = x0 + math.sin(gt * 3 + ph * 8) * 40
+        c = cols[k % 2]
+        d.ellipse([x - sz, y - sz * .6, x + sz, y + sz * .6], fill=c + (225,))
+
+
+@lru_cache(None)
+def _glow_img(r, col, k100):
+    n = 2 * r
+    y, x = np.mgrid[0:n, 0:n]
+    d = np.sqrt((x - r) ** 2 + (y - r) ** 2) / r
+    a = np.clip(1 - d, 0, 1) ** 1.6 * 200 * k100 / 100.0
+    arr = np.zeros((n, n, 4), np.uint8)
+    arr[..., 0], arr[..., 1], arr[..., 2] = col
+    arr[..., 3] = np.clip(a, 0, 255).astype(np.uint8)
+    return Image.fromarray(arr, 'RGBA')
+
+
+def glow(fr, cx, cy, r, col=(255, 226, 140), k=1.0):
+    r = max(4, int(r // 8 * 8))
+    g = _glow_img(r, col, int(max(0, min(1.3, k)) * 20) * 5)
+    fr.alpha_composite(g, (int(cx - r), int(cy - r))) if cx - r >= 0 and cy - r >= 0 and cx + r <= W and cy + r <= H else fr.paste(g, (int(cx - r), int(cy - r)), g)
+
+
+def diya(fr, x, y, gt, flame=1.0):
+    d = ImageDraw.Draw(fr, 'RGBA')
+    if flame > 0.02:
+        glow(fr, x, y - 40, 120 * flame, k=flame)
+    d.polygon([(x - 60, y - 18), (x + 60, y - 18), (x + 40, y + 16), (x - 40, y + 16)], fill=hx(GOLD))
+    d.rectangle([x - 60, y - 24, x + 60, y - 14], fill=hx('#FFE08A'))
+    if flame > 0.02:
+        f = flame * (1 + .08 * math.sin(gt * 13))
+        d.polygon([(x - 16 * f, y - 22), (x, y - 22 - 70 * f), (x + 16 * f, y - 22)], fill=(255, 176, 46, 255))
+        d.polygon([(x - 8 * f, y - 22), (x, y - 22 - 40 * f), (x + 8 * f, y - 22)], fill=(255, 242, 168, 255))
+    else:
+        for k in range(3):  # smoke wisp
+            yy = y - 40 - k * 40 - (gt * 30) % 40
+            d.ellipse([x - 14 + k * 6, yy - 14, x + 14 + k * 6, yy + 14], fill=(200, 200, 210, 70))
+
+
+def lightning(fr, gt, seed=1):
+    ph = (gt * 0.9 + seed * .37) % 1.0
+    if ph > .12:
+        return
+    rnd = random.Random(int(gt * 0.9) * 7 + seed)
+    x = 150 + rnd.random() * 780
+    pts, y = [(x, 160)], 160
+    while y < 900:
+        y += 70 + rnd.random() * 60
+        x += (rnd.random() - .5) * 140
+        pts.append((x, y))
+    d = ImageDraw.Draw(fr, 'RGBA')
+    d.line(pts, fill=(235, 240, 255, 230), width=9)
+    d.line(pts, fill=(255, 255, 255, 255), width=3)
+    fr.alpha_composite(Image.new('RGBA', (W, H), (220, 225, 255, int(70 * (1 - ph / .12)))))
+
+
+def trishul(fr, cx, cy, sc, gt):
+    glow(fr, cx, cy - 120 * sc, 330 * sc, (190, 220, 255), 1.0 + .3 * math.sin(gt * 4))
+    d = ImageDraw.Draw(fr, 'RGBA')
+    g, g2 = hx('#F2F5FA'), hx('#AFC3DA')
+    d.rectangle([cx - 10 * sc, cy - 260 * sc, cx + 10 * sc, cy + 380 * sc], fill=g2)
+    d.rectangle([cx - 6 * sc, cy - 260 * sc, cx + 6 * sc, cy + 380 * sc], fill=g)
+    d.polygon([(cx - 22 * sc, cy - 250 * sc), (cx, cy - 470 * sc), (cx + 22 * sc, cy - 250 * sc)], fill=g)
+    for sg in (-1, 1):
+        d.line([(cx, cy - 190 * sc), (cx + sg * 120 * sc, cy - 230 * sc), (cx + sg * 135 * sc, cy - 400 * sc)], fill=g, width=int(20 * sc))
+        d.polygon([(cx + sg * 115 * sc, cy - 390 * sc), (cx + sg * 138 * sc, cy - 470 * sc), (cx + sg * 160 * sc, cy - 390 * sc)], fill=g)
+    d.rectangle([cx - 90 * sc, cy - 200 * sc, cx + 90 * sc, cy - 170 * sc], fill=g2)
+    d.ellipse([cx - 34 * sc, cy - 120 * sc, cx + 34 * sc, cy - 50 * sc], fill=hx('#C98A1B'))  # damru-knot
+
+
+def petals(fr, gt, n=34, seed=11):
+    falling(fr, gt, n, seed, cols=((245, 158, 11), (239, 68, 68)))
+
+
 def compose(si, fr, t, p, L, ctx):
-    """t: seconds in scene, p: progress 0..1, L: dict with global sentence times."""
     gt = ctx['t0'] + t
     s_t = ctx['sents']
     bob = math.sin(t * 2.6)
-    if si == 0:
-        draw_bg(fr, 'dwarka', p, pan=(0, -1))
-        K = SP('krishna', 640, arms=A((-1.9, 5.0), (1.9, 5.0)))
-        S_ = SUD_BUNDLE()
-        put(fr, K, 360, 1310 + bob * 4, .82)
-        put(fr, S_, 730, 1310 - bob * 4, .82)
-        float_sparkles(fr, gt, 3)
-    elif si == 1:
-        draw_bg(fr, 'ashram', p, pan=(1, 0))
-        kk = SP('krishna', 430, kid=True, arms=A((-1.7, 5.0), (1.7, 5.0)))
-        ss = SP('sudama', 430, kid=True, arms=A((-1.5, 5.0), (1.5, 5.0)))
-        gap = 150 + 600 * max(0, (p - .42) / .58) ** 1.4
-        jump = abs(math.sin(gt * 4.0)) * 26 * (1 - min(1, max(0, (p - .35) / .2)))
-        if p > .55:
-            kk = SP('krishna', 430, kid=True, mouth='flat', eyes='open', arms=A((-1.2, 5.2), (1.2, 5.2)))
-            ss = SP('sudama', 430, kid=True, mouth='flat', arms=A((-1.2, 5.2), (1.2, 5.2)))
-        put(fr, kk, 540 - gap / 2, 1300 - jump)
-        put(fr, ss, 540 + gap / 2, 1300 - jump * .9)
-    elif si == 2:
-        draw_bg(fr, 'hut', p, pan=(-1, 0))
-        su = SP('sudama', 640, mouth='flat', arms=A((-1.2, 5.6), (1.2, 5.6)))
-        pointing = gt >= s_t[3][0]
-        sus = SP('susheela', 640, arms=A((-1.5, 5.7), (3.0, 3.7)), mouth='open') if pointing else \
-            SP('susheela', 640, arms=A((-1.5, 5.7), (1.5, 5.7)), mouth='flat')
-        put(fr, su, 330, 1300 + bob * 3)
-        put(fr, sus, 740, 1300 - bob * 3)
-    elif si == 3:
-        draw_bg(fr, 'road', p, zoom=0.04)
-        ph = int((gt * 7) % 8)
-        wk = SP('sudama', 640, arms=A((-1.4, 5.6), (1.2, 4.6)), bundle=True, walk=ph * math.pi / 4)
-        sc = .55 + .45 * p
-        put(fr, wk, 540, 1215 + 150 * p, sc)
-        float_sparkles(fr, gt, 9, n=6, y0=300, y1=900)
-    elif si == 4:
-        draw_bg(fr, 'gate', p, zoom=0.05)
-        hug_t = 0.55
-        if p < hug_t:
-            q = p / hug_t
-            ph = int((gt * 9) % 8)
-            kr = SP('krishna', 640, arms=A((-2.1, 3.6), (2.1, 3.6)), walk=ph * math.pi / 4, mouth='open')
-            put(fr, SUD_BUNDLE(), 270, 1300)
-            put(fr, kr, 980 - 520 * q, 1300 + (abs(math.sin(gt * 9)) * -14))
-        else:
-            tt = (p - hug_t) * ctx['dur']
-            pop = 1 + .06 * max(0, 1 - tt / .3)
-            put(fr, PAIR(640), 440, 1300, pop)
-            sparkle_burst(fr, 440, 780, tt, 1.1, seed=4)
-            float_sparkles(fr, gt, 5, n=10)
-    elif si == 5:
-        draw_bg(fr, 'throne', p, zoom=0.05)
-        su = SP('sudama', 640, arms=A((-1.2, 5.2), (1.2, 5.2)), eyes='closed')
-        put(fr, su, 560, 1210, .9)
-        fr.paste(throne_front(), (0, 0), throne_front())
-        kr = crop_waist(SP('krishna', 640, arms=A((2.6, 5.0), (3.3, 5.4)), eyes='closed'), .6)
-        put(fr, kr, 380, 1312 + bob * 3, .9)
-        d = ImageDraw.Draw(fr, 'RGBA')
-        for fx in (505, 605):
-            d.ellipse([fx - 34, 1262, fx + 34, 1292], fill=hx(SKIN['sudama']))
-        for k in range(5):  # tear drops
-            q = ((gt * 0.9 + k * .21) % 1.0)
-            x = 470 + k * 38 + math.sin(k * 7) * 8
-            y = 1000 + q * 270
-            d.ellipse([x - 7, y - 11, x + 7, y + 11], fill=(150, 215, 245, int(230 * (1 - q * .4))))
-        float_sparkles(fr, gt, 6, n=8, y0=300, y1=900)
-    elif si == 6:
-        draw_bg(fr, 'throne', p, zoom=0.05, zin=False)
-        eat = .5 + .5 * math.sin(gt * 3.0)
-        kr = SP('krishna', 640, arms=A((-1.1, 4.6), (.35 + .2 * eat, 3.8 - .15 * eat)), eyes='closed')
-        put(fr, kr, 650, 1210, .9)
-        fr.paste(throne_front(), (0, 0), throne_front())
-        d = ImageDraw.Draw(fr, 'RGBA')
-        bx, by = 650 + (-1.1) * 64 * .9, 1210 - (640 + 102) * .9 + (4.6 * 64 + 102) * .9
-        d.ellipse([bx - 52, by - 14, bx + 52, by + 40], fill=hx('#F3E2B8'), outline=hx('#B58A4A'), width=3)
-        rnd = random.Random(2)
-        for _ in range(14):
-            px, py = bx - 40 + rnd.random() * 80, by - 6 + rnd.random() * 34
-            d.ellipse([px - 4, py - 3, px + 4, py + 3], fill=hx('#E3C47A'))
-        su = SP('sudama', 640, namaste=True, eyes='closed', mouth='flat')
-        put(fr, su, 220, 1330 + bob * 2, .85)
-        float_sparkles(fr, gt, 8, n=8, y0=300, y1=900)
-    elif si == 7:
-        cut = .4
-        if p < cut:
-            draw_bg(fr, 'hut', p / cut, pan=(0, 0), zoom=.04)
-            su = SP('sudama', 640, mouth='flat', arms=A((-1.2, 5.6), (1.2, 5.6)))
-            put(fr, su, 540, 1350, .95)
-        else:
-            q = (p - cut) * ctx['dur']
-            draw_bg(fr, 'palace', (p - cut) / (1 - cut), zoom=.05)
-            su = SP('sudama', 640, arms=A((-1.7, 2.7), (1.7, 2.7)), mouth='open')
-            put(fr, su, 540, 1350 + math.sin(gt * 3) * 5, .95)
-            sparkle_burst(fr, 540, 760, q, 1.4, n=30, seed=7, rad=460)
-            float_sparkles(fr, gt, 10, n=16, y0=300, y1=1300)
-            fl = max(0, 1 - q / .35)
-            if fl > 0:
-                ov = Image.new('RGBA', (W, H), (255, 236, 170, int(200 * fl)))
-                fr.alpha_composite(ov)
-    elif si == 8:
-        draw_bg(fr, 'dwarka', p, zoom=.06)
-        put(fr, PAIR(640), 540, 1290 + bob * 2, .88)
-        float_sparkles(fr, gt, 11, n=16)
-
+    if si == 0:   # cover
+        draw_bg(fr, 'angan', p, pan=(0, -1), zoom=.05)
+        glow(fr, 700, 1080, 330)
+        put(fr, CHAURA(), 720, 1335, 1.0)
+        put(fr, TP(10), 720, 1060, 1.0)
+        put(fr, VS(gt, mouth='smile', bless=True), 330, 1340 + bob * 4, .88)
+        float_sparkles(fr, gt, 3, n=14, y0=700, y1=1300)
+    elif si == 1:  # Jalandhar
+        draw_bg(fr, 'court', p, zoom=.05)
+        put(fr, JL(640), 540, 1300 + bob * 3, .92)
+        embers(fr, gt, 12, 4, 500, 1250)
+    elif si == 2:  # Vrinda + protective aura
+        draw_bg(fr, 'palace', p, pan=(1, 0))
+        glow(fr, 330, 1000, 300, k=1.0 + .25 * math.sin(gt * 3))
+        put(fr, SP('vrinda', 640, namaste=True, eyes='closed' if gt >= s_t[3][0] else 'open'), 330, 1330 + bob * 2, .9)
+        if gt >= s_t[3][0]:
+            glow(fr, 770, 980, 330, (255, 215, 120), .9)
+            sparkle_burst(fr, 770, 980, (gt - s_t[3][0]) % 1.6, 1.6, n=16, seed=4, rad=300)
+        put(fr, JL(640), 770, 1300, .78)
+    elif si == 3:  # arrogance, heaven taken
+        draw_bg(fr, 'svarga', p, zoom=.06)
+        lightning(fr, gt, 1)
+        put(fr, JL(640, angry=True, point=True), 480 + math.sin(gt * 18) * 3, 1330, .95)
+        embers(fr, gt, 20, 6, 300, 1300)
+    elif si == 4:  # Vrinda in puja
+        draw_bg(fr, 'pooja', p, zoom=.05)
+        put(fr, SP('vrinda', 640, namaste=True, eyes='closed'), 540, 1300 + bob * 2, .9)
+        diya(fr, 300, 1250, gt, 1.0)
+        diya(fr, 780, 1250, gt, 1.0)
+        float_sparkles(fr, gt, 5, n=12, y0=500, y1=1200)
+    elif si == 5:  # devas pray to Vishnu
+        draw_bg(fr, 'kshira', p, pan=(0, -1), zoom=.06)
+        put(fr, VS(gt, mouth='smile', bless=True), 540, 1360 + bob * 5, 1.0)
+        float_sparkles(fr, gt, 7, n=16, y0=400, y1=1250)
+    elif si == 6:  # disguise; resolve breaks
+        draw_bg(fr, 'pooja', p, zoom=.04)
+        broke = gt >= s_t[8][0]
+        q = min(1.0, t / 2.0)
+        glow(fr, 330 - 120 * (1 - q), 1000, 260, (150, 190, 255), .8 + .3 * math.sin(gt * 5))
+        put(fr, JL(640), 330 - 120 * (1 - q), 1320, .8)
+        put(fr, SP('vrinda', 640, namaste=not broke, eyes='open', mouth='smile' if not broke else 'flat',
+                   arms=A((-1.4, 5.6), (1.6, 4.3)) if broke else None), 780, 1320 + bob * 2, .86)
+        fl = 1.0 if not broke else max(0.0, 1 - (gt - s_t[8][0]) / 1.2)
+        diya(fr, 560, 1250, gt, fl)
+    elif si == 7:  # Shiva ends Jalandhar
+        draw_bg(fr, 'svarga', p, zoom=.07)
+        lightning(fr, gt, 3)
+        a = max(0.0, 1 - p * 1.4)
+        if a > 0:
+            put(fr, JL(640, angry=True), 760, 1330, .75, alpha=a)
+        trishul(fr, 400, 900 + (1 - min(1, p * 2)) * -200, 1.1, gt)
+        sparkle_burst(fr, 760, 1050, t - .6, 1.4, n=26, seed=7, rad=420)
+    elif si == 8:  # Vrinda's curse
+        draw_bg(fr, 'pooja', p, zoom=.04, zin=False)
+        put(fr, VS(gt, mouth='flat', eyes='closed'), 320, 1330, .84)
+        put(fr, SP('vrinda', 640, mouth='flat', arms=A((-2.6, 3.4), (1.5, 5.7))), 790, 1320, .86)
+        diya(fr, 560, 1250, gt, 0.0)
+    elif si == 9:  # becomes stone
+        draw_bg(fr, 'pooja', p, zoom=.05)
+        a = max(0.0, 1 - p * 1.3)
+        glow(fr, 540, 1150, 260 * (0.6 + p), k=1.0)
+        if a > 0:
+            put(fr, VS(gt, eyes='closed', mouth='smile', namaste=True), 540, 1330, .9, alpha=a)
+        put(fr, SHL(70, 1.0), 540, 1270, min(1.0, .25 + p * 1.2))
+        sparkle_burst(fr, 540, 1250, (p * 3) % 1.0, 1.0, n=18, seed=9, rad=260)
+    elif si == 10:  # Lakshmi pleads, Vrinda becomes light
+        draw_bg(fr, 'glow', p, zoom=.05)
+        put(fr, SP('lakshmi', 640, namaste=True), 300, 1330 + bob * 2, .86)
+        late = s_t[12][0] + (s_t[12][1] - s_t[12][0]) * .62
+        a = 1.0 if gt < late else max(0.0, 1 - (gt - late) / 1.4)
+        glow(fr, 780, 1000, 300 * (1.4 - a * .4), (255, 236, 170), 1.3 - a * .3)
+        if a > 0:
+            put(fr, SP('vrinda', 640, namaste=True, eyes='closed'), 780, 1330, .86, alpha=a)
+        float_sparkles(fr, gt, 10, n=18, y0=400, y1=1250)
+    elif si == 11:  # tulsi grows
+        draw_bg(fr, 'angan', p, zoom=.05)
+        g = min(1.0, .1 + p * 1.3)
+        glow(fr, 540, 1150, 340 * g + 80)
+        put(fr, TP(max(1, int(g * 10))), 540, 1340, 1.25)
+        float_sparkles(fr, gt, 12, n=18, y0=500, y1=1300)
+    elif si == 12:  # Vishnu's blessing
+        draw_bg(fr, 'kshira', p, zoom=.05, pan=(1, 0))
+        put(fr, VS(gt, mouth='smile', bless=True), 330, 1350 + bob * 4, .92)
+        put(fr, TP(10), 780, 1250, 1.0)
+        put(fr, SHL(70, 1.0), 780, 1285, 1.0)
+        float_sparkles(fr, gt, 14, n=14, y0=500, y1=1250)
+    elif si == 13:  # Tulsi Vivah at home
+        draw_bg(fr, 'angan', p, zoom=.06, pan=(0, 1))
+        glow(fr, 540, 1080, 340)
+        put(fr, CHAURA(), 540, 1340, 1.05)
+        put(fr, TP(10), 540, 1050, 1.0)
+        put(fr, SHL(55, 1.0), 300, 1270, 1.0)
+        diya(fr, 790, 1250, gt, 1.0)
+        petals(fr, gt)
+    elif si == 14:  # closing
+        draw_bg(fr, 'glow', p, zoom=.06)
+        put(fr, VS(gt, mouth='smile', bless=True), 380, 1340 + bob * 4, .9)
+        put(fr, TP(10), 790, 1330, .95)
+        float_sparkles(fr, gt, 16, n=20, y0=300, y1=1250)
 
 def decorate(fr, t, ctx):
     gt = ctx['t0'] + t
@@ -556,6 +696,8 @@ def preview(tm, frames):
 if __name__ == '__main__':
     mode = sys.argv[1]
     if mode == 'preview':
-        tm = estimate_timing()
-        b = preview(tm, [(0, 0.0), (1, 1.0), (1, 4.0), (2, 4.0), (3, 2.0), (4, 1.0), (4, 5.0), (5, 3.0), (6, 3.0), (7, 1.0), (7, 4.0), (8, 5.0), (8, 8.0)])
+        tm = timing_from_audio('voice.mp3', tempo=1.0, total=95.0, offset=0.4)
+        b = scene_bounds(tm)
+        fr = [(0, 0.0)] + [(i, (b[i + 1] - b[i]) * .6) for i in range(1, len(b) - 1)] + [(len(b) - 2, b[-1] - b[-2] - 1.0)]
+        preview(tm, fr)
         print([round(x, 1) for x in b])

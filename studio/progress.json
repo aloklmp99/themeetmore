@@ -1,5 +1,5 @@
 {
-  "note": "हर रन (एक रन = एक कथा) के बाद अपडेट करो। विषय हर रन में ट्रेंड से तय होता है; कोई तय सूची नहीं। done में बनी कथाएँ दर्ज रहती हैं ताकि दोहराई न जाएँ।",
+  "note": "हर रन (एक रन = एक कथा) के बाद अपडेट करो। विषय हर रन में ट्रेंड से तय होता है; कोई तय सूची नहीं। done में सिर्फ़ बनी कथाओं के नाम दर्ज रहते हैं ताकि दोहराई न जाएँ। वीडियो फ़ाइलें GitHub से हटा दी गई हैं (server inbox/posted में हैं)।",
   "voice": {
     "voice_id": "ovcrTRBELQPup0RNagdO",
     "name": "Pranit – Soothing & Devotional Narrator",
@@ -10,31 +10,21 @@
   "done": [
     {
       "video_no": 1,
-      "category": "कृष्ण लीला",
-      "idx": 1,
       "title": "सुदामा मित्रता",
-      "file": "videos/bhakti-001-सुदामा-मित्रता.mp4",
       "date": "2026-11-14",
       "elevenlabs_credits": 635
     },
     {
       "video_no": 2,
-      "category": "हनुमान जी",
-      "idx": 2,
       "title": "लंका दहन",
-      "file": "videos/bhakti-002-लंका-दहन.mp4",
       "date": "2026-11-14",
       "elevenlabs_credits": 565
     },
     {
       "video_no": 3,
-      "category": "विष्णु / तुलसी माता",
-      "idx": 3,
       "title": "तुलसी विवाह",
-      "file": "videos/bhakti-003-तुलसी-विवाह.mp4",
       "date": "2026-11-17",
-      "elevenlabs_credits": 1084,
-      "duration_sec": 94.9
+      "elevenlabs_credits": 1084
     }
   ]
 }
