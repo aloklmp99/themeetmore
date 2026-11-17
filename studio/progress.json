@@ -5,15 +5,8 @@
     "name": "Pranit – Soothing & Devotional Narrator",
     "note": "हर वीडियो में यही आवाज़। सिर्फ़ तब बदलो जब यह उपलब्ध न हो, और बदलने पर यहीं लिख दो।"
   },
-  "in_progress": [
-    {
-      "video_no": 3,
-      "category": "विष्णु / तुलसी माता",
-      "title": "तुलसी विवाह",
-      "date": "2026-11-17"
-    }
-  ],
-  "next_video_no": 3,
+  "in_progress": [],
+  "next_video_no": 4,
   "done": [
     {
       "video_no": 1,
@@ -32,6 +25,16 @@
       "file": "videos/bhakti-002-लंका-दहन.mp4",
       "date": "2026-11-14",
       "elevenlabs_credits": 565
+    },
+    {
+      "video_no": 3,
+      "category": "विष्णु / तुलसी माता",
+      "idx": 3,
+      "title": "तुलसी विवाह",
+      "file": "videos/bhakti-003-तुलसी-विवाह.mp4",
+      "date": "2026-11-17",
+      "elevenlabs_credits": 1084,
+      "duration_sec": 94.9
     }
   ]
 }
