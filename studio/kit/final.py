@@ -7,9 +7,12 @@ OUTNAME = os.environ.get('OUTNAME', 'out/final.mp4')
 
 _r = _sp.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', 'voice.mp3'], capture_output=True, text=True)
 _d = float(_r.stdout.strip())
-TEMPO = float(os.environ.get('TEMPO', min(1.10, max(1.0, _d / 56.0))))
+# छोटी रील (आवाज़ ≤60s): 55-59.6s में फ़िट; लंबी कथा (>60s): टेम्पो 1.0, कोई ऊपरी सीमा नहीं (अधिकतम 5 मिनट)
+LONG = _d > 60.0
+TEMPO = float(os.environ.get('TEMPO', 1.0 if LONG else min(1.10, max(1.0, _d / 56.0))))
 OFFSET = float(os.environ.get('OFFSET', 0.4))
-T = float(os.environ.get('TOTAL', min(59.6, max(55.0, _d / TEMPO + OFFSET + 3.0))))
+T = float(os.environ.get('TOTAL', (_d / TEMPO + OFFSET + 3.4) if LONG else min(59.6, max(55.0, _d / TEMPO + OFFSET + 3.0))))
+assert T <= 305, 'वीडियो 5 मिनट से लंबा: स्क्रिप्ट छोटी करो'
 print('voice', _d, 'tempo', TEMPO, 'total', T, flush=True)
 tm = timing_from_audio('voice.mp3', tempo=TEMPO, total=T, offset=OFFSET)
 bounds = scene_bounds(tm)
