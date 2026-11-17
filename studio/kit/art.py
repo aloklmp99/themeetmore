@@ -66,9 +66,13 @@ class Cv:
 
 
 # ---------------------------------------------------------------- people
-SKIN = {'krishna': '#4A86D6', 'sudama': '#B87B4F', 'susheela': '#C48A5C', 'sita': '#E2A574'}
+SKIN = {'krishna': '#4A86D6', 'sudama': '#B87B4F', 'susheela': '#C48A5C', 'sita': '#E2A574',
+        'vishnu': '#3F7FD0', 'vrinda': '#E0A270', 'lakshmi': '#EDB283'}
 SAREE = {'susheela': ('#D9772B', '#9B3B1E', '#B8601F', '#7C2D12', '#F2A33C'),
-         'sita': ('#C8202E', '#F2B632', '#9E1622', '#E8A21C', '#F7C948')}
+         'sita': ('#C8202E', '#F2B632', '#9E1622', '#E8A21C', '#F7C948'),
+         'vrinda': ('#2E8B57', '#E8B84A', '#1F6B42', '#C98A1B', '#F2C94C'),
+         'lakshmi': ('#D6336C', '#F2B632', '#A61E4D', '#E8A21C', '#F7C948')}
+JEWEL = ('sita', 'vrinda', 'lakshmi')
 
 
 def _arm(c, sh, hand, col, wid, sign):
@@ -116,7 +120,7 @@ def person(kind, Hh=760, arms=None, bundle=False, walk=0.0, eyes='open', mouth='
             c.poly([(bx - .2 * u, by + .05 * u), (bx + .2 * u, by + .05 * u), (bx, by - .35 * u)], hx('#F3E2B8'))
             c.ell(bx, by - .3 * u, .12 * u, .12 * u, hx('#B58A4A'))
             c.line([(bx - .3 * u, by + .5 * u), (bx + .3 * u, by + .6 * u)], hx('#B58A4A'), 2)
-        if kind == 'krishna' and not namaste:
+        if kind in ('krishna', 'vishnu') and not namaste:
             pass
 
     if layer == 'arms':
@@ -132,7 +136,7 @@ def person(kind, Hh=760, arms=None, bundle=False, walk=0.0, eyes='open', mouth='
         c.ell(fx + sgn * .02 * u, 9.78 * u, .45 * u, .2 * u, skin)
 
     # lower garment
-    if kind == 'krishna':
+    if kind in ('krishna', 'vishnu'):
         gc, gd = hx(PITAM), hx('#D9A41A')
         c.poly([(cx - 1.25 * u, 5.1 * u), (cx + 1.25 * u, 5.1 * u), (cx + 1.7 * u, 9.1 * u), (cx - 1.7 * u, 9.1 * u)], gc)
         for k in (-.8, -.3, .3, .8):
@@ -162,13 +166,13 @@ def person(kind, Hh=760, arms=None, bundle=False, walk=0.0, eyes='open', mouth='
         sc = SAREE.get(kind, SAREE['susheela'])
         c.poly([(cx - 1.05 * u, 3.0 * u), (cx + 1.05 * u, 3.0 * u), (cx + .95 * u, 4.8 * u), (cx - .95 * u, 4.8 * u)], hx(sc[3]))
         c.poly([(cx - 1.05 * u, 3.0 * u), (cx + 1.05 * u, 3.0 * u), (cx + 1.9 * u, 6.4 * u), (cx + .9 * u, 6.4 * u)], hx(sc[4]))
-        if kind == 'sita':
+        if kind in JEWEL:
             c.line([(cx - .7 * u, 3.15 * u), (cx, 3.9 * u), (cx + .7 * u, 3.15 * u)], hx(GOLD), 5)
             c.ell(cx, 3.9 * u, .12 * u, .12 * u, hx('#E63946'))
     else:
         c.poly([(cx - tw / 2, 2.95 * u), (cx + tw / 2, 2.95 * u), (cx + tw * .42, 5.3 * u), (cx - tw * .42, 5.3 * u)], skin)
         c.ell(cx, 2.95 * u, tw / 2, .28 * u, skin)
-    if kind == 'krishna':
+    if kind in ('krishna', 'vishnu'):
         # garland (vaijayanti) + pitambar shawl
         c.line([(cx - .95 * u, 3.1 * u), (cx - .5 * u, 4.4 * u), (cx + .5 * u, 4.4 * u), (cx + .95 * u, 3.1 * u)], hx('#F8F3E8'), 5)
         for t in np.linspace(0, 1, 9):
@@ -189,7 +193,7 @@ def person(kind, Hh=760, arms=None, bundle=False, walk=0.0, eyes='open', mouth='
     c.ell(hcx + head_r - .02 * u, head_cy, .17 * u, .26 * u, skin)
     c.ell(hcx, head_cy, head_r, head_r * 1.06, skin)
 
-    if kind == 'krishna':
+    if kind in ('krishna', 'vishnu'):
         c.poly([(hcx - head_r * 1.02, head_cy - .05 * u), (hcx - head_r * 1.12, head_cy + .85 * u), (hcx - head_r * .75, head_cy + .5 * u),
                 (hcx - head_r * .55, head_cy - .75 * u)], dark)
         c.poly([(hcx + head_r * 1.02, head_cy - .05 * u), (hcx + head_r * 1.12, head_cy + .85 * u), (hcx + head_r * .75, head_cy + .5 * u),
@@ -204,11 +208,17 @@ def person(kind, Hh=760, arms=None, bundle=False, walk=0.0, eyes='open', mouth='
         c.rect(hcx - .85 * u, by + .02 * u, hcx + .85 * u, by + .22 * u, hx(GOLD2))
         for k in (-.5, 0, .5):
             c.ell(hcx + k * u, by + .12 * u, .07 * u, .07 * u, hx('#E63946'))
-        # mor-pankh
-        c.line([(hcx + .1 * u, by - .5 * u), (hcx + .35 * u, by - 1.15 * u)], hx('#2E7D32'), 3)
-        c.ell(hcx + .38 * u, by - 1.3 * u, .27 * u, .4 * u, hx('#1E8E6E'))
-        c.ell(hcx + .38 * u, by - 1.3 * u, .16 * u, .26 * u, hx('#1B4F9C'))
-        c.ell(hcx + .38 * u, by - 1.25 * u, .08 * u, .12 * u, hx('#F2C94C'))
+        # mor-pankh (Krishna only; Vishnu gets a tall kirit)
+        if kind == 'vishnu':
+            c.poly([(hcx - .55 * u, by - .1 * u), (hcx - .35 * u, by - 1.15 * u), (hcx, by - 1.55 * u), (hcx + .35 * u, by - 1.15 * u),
+                    (hcx + .55 * u, by - .1 * u)], hx(GOLD))
+            c.ell(hcx, by - .7 * u, .14 * u, .14 * u, hx('#E63946'))
+            c.ell(hcx, by - 1.2 * u, .08 * u, .08 * u, hx('#2E8B57'))
+        else:
+            c.line([(hcx + .1 * u, by - .5 * u), (hcx + .35 * u, by - 1.15 * u)], hx('#2E7D32'), 3)
+            c.ell(hcx + .38 * u, by - 1.3 * u, .27 * u, .4 * u, hx('#1E8E6E'))
+            c.ell(hcx + .38 * u, by - 1.3 * u, .16 * u, .26 * u, hx('#1B4F9C'))
+            c.ell(hcx + .38 * u, by - 1.25 * u, .08 * u, .12 * u, hx('#F2C94C'))
     elif kind == 'sudama':
         c.arc(hcx, head_cy - .1 * u, head_r * .98, head_r * 1.0, 195, 345, hx('#5B4B3A'), int(.28 * u))
         c.ell(hcx, head_cy - head_r * 1.12, .22 * u, .26 * u, hx('#4A3A2A'))  # shikha
@@ -220,7 +230,12 @@ def person(kind, Hh=760, arms=None, bundle=False, walk=0.0, eyes='open', mouth='
         c.ell(hcx, head_cy - .1 * u, head_r * 1.08, head_r * 1.05, hx('#2A1810'))
         c.ell(hcx, head_cy + .12 * u, head_r * .86, head_r * .9, skin)
         c.ell(hcx, head_cy - head_r * 1.2, .5 * u, .5 * u, hx('#2A1810'))  # bun
-        if kind == 'sita':
+        if kind == 'lakshmi':
+            by = head_cy - head_r * 1.0
+            c.poly([(hcx - .7 * u, by + .15 * u), (hcx - .6 * u, by - .35 * u), (hcx - .3 * u, by - .1 * u), (hcx, by - .6 * u),
+                    (hcx + .3 * u, by - .1 * u), (hcx + .6 * u, by - .35 * u), (hcx + .7 * u, by + .15 * u)], hx(GOLD))
+            c.ell(hcx, by - .15 * u, .08 * u, .08 * u, hx('#E63946'))
+        if kind in JEWEL:
             c.rect(hcx - head_r * .5, head_cy - head_r * .96, hcx + head_r * .5, head_cy - head_r * .86, hx(GOLD))
             c.line([(hcx, head_cy - head_r * .98), (hcx, head_cy - head_r * .7)], hx('#C0392B'), 3)
             for sg in (-1, 1):
@@ -244,7 +259,7 @@ def person(kind, Hh=760, arms=None, bundle=False, walk=0.0, eyes='open', mouth='
     else:
         c.line([(hcx - .12 * u, head_cy + .5 * u), (hcx + .12 * u, head_cy + .5 * u)], hx('#7A2A2A'), 3)
     # tilak / bindi
-    if kind == 'krishna':
+    if kind in ('krishna', 'vishnu'):
         c.line([(hcx, head_cy - .62 * u), (hcx, head_cy - .3 * u)], hx('#E63946'), 4)
     elif kind == 'sudama':
         for k in (0, 1, 2):
@@ -640,7 +655,7 @@ def hanuman(Hh=760, arms=None, gada=True, tail_fire=False, bound=False, jump=0.0
     return im.transpose(Image.FLIP_LEFT_RIGHT) if flip else im
 
 
-def ravana(Hh=760, angry=False, point=False, seated=False):
+def ravana(Hh=760, angry=False, point=False, seated=False, heads=5, skin_col='#9C5B3B', dhoti='#2B1B4F', cape='#7A1A2C'):
     """Crowned Lanka king with five visible heads (centre + 2 each side)."""
     w = int(Hh * 1.5)
     pad = int(Hh * .2)
@@ -648,7 +663,7 @@ def ravana(Hh=760, angry=False, point=False, seated=False):
     c.oy = pad
     u = Hh / 10.0
     cx = w / 2
-    skin = hx('#9C5B3B')
+    skin = hx(skin_col)
     dark = hx('#1E0E08')
     tw = 2.7 * u
     # legs + dhoti
@@ -656,7 +671,7 @@ def ravana(Hh=760, angry=False, point=False, seated=False):
         fx = cx + sg * .8 * u
         c.rrect(fx - .34 * u, 8.0 * u, fx + .34 * u, 9.7 * u, .2 * u, skin)
         c.ell(fx, 9.75 * u, .5 * u, .22 * u, hx('#3A1A0A'))
-    c.poly([(cx - 1.45 * u, 5.0 * u), (cx + 1.45 * u, 5.0 * u), (cx + 1.9 * u, 8.9 * u), (cx - 1.9 * u, 8.9 * u)], hx('#2B1B4F'))
+    c.poly([(cx - 1.45 * u, 5.0 * u), (cx + 1.45 * u, 5.0 * u), (cx + 1.9 * u, 8.9 * u), (cx - 1.9 * u, 8.9 * u)], hx(dhoti))
     c.rect(cx - 1.9 * u, 8.6 * u, cx + 1.9 * u, 8.9 * u, hx(GOLD))
     # torso with gold armour
     c.poly([(cx - tw / 2, 2.95 * u), (cx + tw / 2, 2.95 * u), (cx + tw * .42, 5.3 * u), (cx - tw * .42, 5.3 * u)], skin)
@@ -665,8 +680,8 @@ def ravana(Hh=760, angry=False, point=False, seated=False):
     c.ell(cx, 4.2 * u, .3 * u, .3 * u, hx('#B5262F'))
     c.rrect(cx - 1.5 * u, 4.95 * u, cx + 1.5 * u, 5.3 * u, .1 * u, hx('#B5262F'))
     # cape
-    c.poly([(cx - tw / 2 - .2 * u, 3.0 * u), (cx - tw / 2 - 1.0 * u, 8.6 * u), (cx - tw / 2 + .3 * u, 8.4 * u)], hx('#7A1A2C'))
-    c.poly([(cx + tw / 2 + .2 * u, 3.0 * u), (cx + tw / 2 + 1.0 * u, 8.6 * u), (cx + tw / 2 - .3 * u, 8.4 * u)], hx('#7A1A2C'))
+    c.poly([(cx - tw / 2 - .2 * u, 3.0 * u), (cx - tw / 2 - 1.0 * u, 8.6 * u), (cx - tw / 2 + .3 * u, 8.4 * u)], hx(cape))
+    c.poly([(cx + tw / 2 + .2 * u, 3.0 * u), (cx + tw / 2 + 1.0 * u, 8.6 * u), (cx + tw / 2 - .3 * u, 8.4 * u)], hx(cape))
     shL = (cx - tw / 2 + .2 * u, 3.3 * u)
     shR = (cx + tw / 2 - .2 * u, 3.3 * u)
     _arm(c, shL, (cx - 1.8 * u, 5.6 * u), skin, .62 * u, -1)
@@ -699,7 +714,8 @@ def ravana(Hh=760, angry=False, point=False, seated=False):
         c.ell(hcx, by - .45 * r, .13 * r, .13 * r, hx('#E63946'))
 
     hcy = 1.95 * u
-    for k, (dx, sc) in enumerate(((-2.6, .72), (2.6, .72), (-1.45, .84), (1.45, .84))):
+    side = ((-2.6, .72), (2.6, .72), (-1.45, .84), (1.45, .84)) if heads == 5 else ()
+    for k, (dx, sc) in enumerate(side):
         head(cx + dx * u, hcy + .15 * u, .95 * u * sc, False)
     head(cx, hcy, .98 * u, True)
     return c.out()
@@ -838,6 +854,212 @@ def bg_ramdarbar():
 
 BACKGROUNDS.update({'lanka': bg_lanka, 'vatika': bg_vatika, 'court': bg_court, 'fire': bg_fire, 'sea': bg_sea,
                     'glow': bg_ramdarbar})
+
+# ---------------------------------------------------------------- Tulsi Vivah (added for story 003)
+def jalandhar(Hh=760, angry=False, point=False):
+    """Asura king Jalandhar: single crowned head, dark-teal armour look."""
+    return ravana(Hh, angry=angry, point=point, heads=1, skin_col='#7E5A44', dhoti='#123E3A', cape='#3B1650')
+
+
+def chakra_img(r=60, t=0.0):
+    cv = Cv(int(r * 2.6), int(r * 2.6))
+    c = r * 1.3
+    cv.ell(c, c, r * 1.15, r * 1.15, hx('#FFE9A0', 90))
+    cv.ell(c, c, r, r, hx(GOLD))
+    cv.ell(c, c, r * .72, r * .72, hx('#FFF2B3'))
+    for k in range(12):
+        a = t * 4 + k * math.pi / 6
+        cv.line([(c + math.cos(a) * r * .25, c + math.sin(a) * r * .25), (c + math.cos(a) * r * .72, c + math.sin(a) * r * .72)], hx(GOLD2), max(2, r * .07))
+        tx, ty = c + math.cos(a) * r, c + math.sin(a) * r
+        cv.poly([(tx + math.cos(a) * r * .22, ty + math.sin(a) * r * .22), (tx + math.cos(a + 1.6) * r * .12, ty + math.sin(a + 1.6) * r * .12),
+                 (tx + math.cos(a - 1.6) * r * .12, ty + math.sin(a - 1.6) * r * .12)], hx(GOLD))
+    cv.ell(c, c, r * .2, r * .2, hx('#E63946'))
+    return cv.out()
+
+
+def vishnu(Hh=760, eyes='open', mouth='smile', namaste=False, bless=False, t=0.0, halo=True):
+    """Four-armed Vishnu: front arms from person('vishnu'), rear arms hold chakra (R) and shankh (L)."""
+    base = person('vishnu', Hh, eyes=eyes, mouth=mouth, namaste=namaste,
+                  arms=((-1.4, 5.6), (1.0, 3.6)) if bless else None)
+    w, h = base.size
+    c = Cv(w, h)
+    pad = int(Hh * .16)
+    u = Hh / 10.0
+    cx = w / 2
+    skin = hx(SKIN['vishnu'])
+    if halo:
+        hy = pad + 2.0 * u
+        for r, a in ((2.2, 60), (1.85, 90), (1.55, 120)):
+            c.ell(cx, hy, r * u, r * u, hx('#FFE9A0', a))
+    shy = pad + 3.25 * u
+    for sg in (-1, 1):
+        sh = (cx + sg * .9 * u, shy)
+        hand = (cx + sg * 2.25 * u, pad + 1.9 * u)
+        _arm(c, sh, hand, skin, .5 * u, sg)
+    im = c.out()
+    im.alpha_composite(base)
+    # attributes in rear hands
+    ch = chakra_img(int(.55 * u), t)
+    im.alpha_composite(ch, (int(cx + 2.25 * u - ch.width / 2), int(pad + 1.9 * u - .55 * u - ch.height / 2)))
+    sc = Cv(int(1.4 * u), int(1.4 * u))
+    sc.poly([(.2 * u, .9 * u), (.7 * u, .15 * u), (1.2 * u, .55 * u), (1.0 * u, 1.2 * u), (.45 * u, 1.25 * u)], hx('#FBF7EE'))
+    sc.arc(.75 * u, .75 * u, .32 * u, .32 * u, 0, 300, hx('#D9C9A8'), 3)
+    sc.ell(.75 * u, .75 * u, .08 * u, .08 * u, hx(GOLD))
+    s2 = sc.out()
+    im.alpha_composite(s2, (int(cx - 2.25 * u - s2.width / 2), int(pad + 1.9 * u - .55 * u - s2.height / 2)))
+    return im
+
+
+def shaligram(r=70, glow=0.0):
+    cv = Cv(int(r * 3.2), int(r * 2.6))
+    cx, cy = r * 1.6, r * 1.4
+    if glow > 0:
+        for k, a in ((1.55, 50), (1.3, 80)):
+            cv.ell(cx, cy, r * k, r * k * .85, hx('#FFE9A0', int(a * glow)))
+    cv.ell(cx, cy, r, r * .78, hx('#1E1E24'))
+    cv.ell(cx - r * .25, cy - r * .3, r * .45, r * .22, hx('#4A4A58'))
+    cv.arc(cx + r * .15, cy + r * .1, r * .3, r * .24, 0, 330, hx('#E8E2D0'), max(2, r * .05))
+    cv.arc(cx + r * .15, cy + r * .1, r * .15, r * .12, 40, 360, hx('#E8E2D0'), max(2, r * .04))
+    cv.line([(cx - r * .15, cy - r * .55), (cx - r * .15, cy - r * .3)], hx('#E63946'), max(2, r * .06))
+    return cv.out()
+
+
+def tulsi_plant(Hh=420, grow=1.0, seed=7):
+    """Holy basil bush with purple manjari; grow 0..1 scales from a sprout."""
+    g = max(.05, min(1.0, grow))
+    w = int(Hh * 1.1)
+    cv = Cv(w, Hh + 40)
+    cx, base = w / 2, Hh + 30
+    rnd = random.Random(seed)
+    stems = [(-0.42, .78), (-0.2, .95), (0, 1.0), (.22, .92), (.42, .76), (-.3, .6), (.32, .62)]
+    for k, (dx, hh) in enumerate(stems):
+        top = (cx + dx * w * .55 * g, base - Hh * hh * g)
+        cv.line([(cx + dx * 20, base), (cx + dx * w * .3 * g, base - Hh * hh * .5 * g), top], hx('#4B6B2A'), max(2, 6 * g))
+        n = int(5 + 4 * g)
+        for j in range(n):
+            q = (j + 1) / (n + 1)
+            px = cx + dx * 20 + (top[0] - cx - dx * 20) * q
+            py = base + (top[1] - base) * q
+            for sg in (-1, 1):
+                lx = px + sg * (18 + rnd.random() * 10) * g
+                cv.ell(lx, py, 17 * g + 3, 10 * g + 2, hx('#2F8A3A' if (j + k) % 2 else '#3FA34A'))
+        if g > .6:
+            for j in range(4):
+                cv.ell(top[0], top[1] - j * 12, 7, 9, hx('#8E3B8E'))
+    return cv.out()
+
+
+def bg_angan():
+    """Evening courtyard: tulsi chaura, rangoli, diyas, marigold torans."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1150, hx('#3A1E5A'), hx('#F29A4A'))
+    _sun(cv, 540, 1000, 150, '#FFE2A0')
+    # house walls
+    cv.rect(0, 700, 230, 1250, hx('#E9C99A'))
+    cv.rect(850, 700, W, 1250, hx('#E9C99A'))
+    cv.rect(0, 690, 230, 720, hx(MAROON2))
+    cv.rect(850, 690, W, 720, hx(MAROON2))
+    cv.rect(60, 900, 170, 1250, hx('#7A4A22'))
+    cv.rect(910, 900, 1020, 1250, hx('#7A4A22'))
+    # marigold toran
+    for k in range(26):
+        x = 20 + k * 42
+        y = 330 + math.sin(k / 25 * math.pi) * 90
+        cv.ell(x, y, 17, 17, hx('#F59E0B' if k % 2 else '#F97316'))
+        if k % 3 == 0:
+            cv.ell(x, y + 34, 14, 22, hx('#2F8A3A'))
+    cv.rect(0, 1240, W, H, hx('#B9773E'))
+    cv.vgrad(1240, H, hx('#C98A50'), hx('#6B3A1A'))
+    # rangoli
+    for r, col in ((230, '#F2C94C'), (180, '#E63946'), (130, '#2F8A3A'), (80, '#FFFFFF')):
+        cv.ell(540, 1560, r * 1.4, r * .45, hx(col, 220))
+    # diyas along the floor edge
+    for x in (120, 260, 820, 960):
+        cv.ell(x, 1290, 34, 12, hx('#C96A1F'))
+        cv.poly([(x - 9, 1284), (x, 1240), (x + 9, 1284)], hx('#FFD34E'))
+    _sparkles(cv, 24, 13, 120, 800, '#FFF6C0')
+    _vignette(cv)
+    return cv
+
+
+def tulsi_chaura(Hh=300):
+    w = int(Hh * 1.0)
+    cv = Cv(w, Hh)
+    cv.rect(w * .12, Hh * .25, w * .88, Hh, hx('#F4E2C0'))
+    cv.rect(w * .05, Hh * .15, w * .95, Hh * .28, hx('#D9772B'))
+    cv.rect(w * .05, Hh * .9, w * .95, Hh, hx('#D9772B'))
+    for k in range(3):
+        cv.ell(w * (.3 + k * .2), Hh * .6, w * .06, w * .06, hx('#E63946'))
+    cv.line([(w * .2, Hh * .45), (w * .8, Hh * .45)], hx(GOLD2), 4)
+    cv.line([(w * .2, Hh * .75), (w * .8, Hh * .75)], hx(GOLD2), 4)
+    return cv.out()
+
+
+def bg_pooja():
+    """Vrinda's inner prayer room: arched niche, lamps, warm glow."""
+    cv = Cv(W, H)
+    cv.vgrad(0, H, hx('#5A1A2C'), hx('#2A0A14'))
+    cv.rrect(240, 420, 840, 1260, 300, hx('#7A2A3C'))
+    cv.rrect(280, 460, 800, 1250, 260, hx('#3A0E1C'))
+    _sun(cv, 540, 820, 200, '#FFD98A')
+    cv.rect(0, 1250, W, H, hx('#4A1A10'))
+    cv.vgrad(1250, H, hx('#7A3A1A'), hx('#2A0E06'))
+    for x in (130, 950):
+        cv.rect(x - 10, 900, x + 10, 1250, hx(GOLD2))
+        cv.ell(x, 1250, 60, 18, hx(GOLD2))
+        cv.ell(x, 900, 46, 14, hx(GOLD))
+        cv.poly([(x - 12, 896), (x, 830), (x + 12, 896)], hx('#FFD34E'))
+    for k in range(18):
+        x = 30 + k * 60
+        cv.ell(x, 300 + math.sin(k / 17 * math.pi) * 60, 20, 20, hx('#F59E0B' if k % 2 else '#F97316'))
+    _sparkles(cv, 16, 17, 200, 900, '#FFD08A')
+    _vignette(cv)
+    return cv
+
+
+def bg_svarga():
+    """Storm-dark sky over the battlefield mountains (Kailash in distance)."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1200, hx('#0F1A33'), hx('#5A4A7A'))
+    _hills(cv, 1050, hx('#2A2A4A'), 260, 101)
+    cv.poly([(380, 1050), (540, 640), (700, 1050)], hx('#DDE6F2'))
+    cv.poly([(470, 820), (540, 640), (610, 820), (570, 790), (540, 830), (505, 790)], hx('#FFFFFF'))
+    _hills(cv, 1180, hx('#1E1E36'), 120, 102)
+    cv.rect(0, 1250, W, H, hx('#2A1E2A'))
+    cv.vgrad(1250, H, hx('#3A2A3A'), hx('#120A12'))
+    for x, y, r in ((200, 300, 130), (800, 380, 160), (520, 220, 110)):
+        cv.ell(x, y, r * 1.6, r * .55, hx('#3A3A5A', 220))
+    _vignette(cv)
+    return cv
+
+
+def bg_kshira():
+    """Kshir Sagar: pale milky ocean at dawn, lotuses."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1150, hx('#BFE3F2'), hx('#FFF1D0'))
+    _sun(cv, 540, 760, 280, '#FFF8E6')
+    for k in range(24):
+        a = k / 24 * 2 * math.pi
+        cv.line([(540 + math.cos(a) * 320, 760 + math.sin(a) * 320), (540 + math.cos(a) * 560, 760 + math.sin(a) * 560)], hx('#FFFFFF', 110), 9)
+    cv.rect(0, 1150, W, H, hx('#EAF4F4'))
+    cv.vgrad(1150, H, hx('#F4FAF8'), hx('#9FC7D0'))
+    for i in range(16):
+        y = 1180 + i * 46
+        for x in range(-40 + (i % 2) * 90, W, 180):
+            cv.arc(x + 70, y, 70, 14, 200, 340, hx('#8FB8C4', 140), 4)
+    for x, y in ((140, 1500), (930, 1440), (300, 1700), (820, 1720)):
+        for ang in (-50, -25, 0, 25, 50):
+            a = math.radians(ang)
+            cv.poly([(x, y), (x + math.sin(a) * 40 - 12, y - math.cos(a) * 44), (x + math.sin(a) * 50, y - math.cos(a) * 60),
+                     (x + math.sin(a) * 40 + 12, y - math.cos(a) * 44)], hx('#F7A8C4'))
+        cv.ell(x, y + 6, 46, 12, hx('#3F8A4A'))
+    _sparkles(cv, 26, 111, 150, 1100, '#FFFFFF')
+    _vignette(cv)
+    return cv
+
+
+BACKGROUNDS.update({'angan': bg_angan, 'pooja': bg_pooja, 'svarga': bg_svarga, 'kshira': bg_kshira})
+
 
 # ---------------------------------------------------------------- logo
 def make_logo(path='logo.png', width=640):
