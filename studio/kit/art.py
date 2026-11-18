@@ -1905,3 +1905,237 @@ def bg_gahra():
 
 
 BACKGROUNDS.update({'nadi': bg_nadi, 'sarovar': bg_sarovar, 'pralaya': bg_pralaya, 'gahra': bg_gahra})
+
+
+# ---------------------------------------------------------------- Bal Hanuman aur Surya (added for story 007)
+SKIN['anjana'] = '#C98E5E'
+SAREE['anjana'] = ('#E07A1F', '#2E8B57', '#B85F12', '#1F6B42', '#F2C94C')
+JEWEL = JEWEL + ('anjana',)
+
+
+def tinted(fn, kind, skin, *a, **kw):
+    """Call a person-like sprite function with SKIN[kind] temporarily replaced."""
+    old = SKIN[kind]
+    SKIN[kind] = skin
+    try:
+        return fn(*a, **kw)
+    finally:
+        SKIN[kind] = old
+
+
+def _recolor(im, src, dst, tol=10):
+    a = np.array(im).astype(int)
+    s = np.array(hx(src)[:3])
+    m = (np.abs(a[..., :3] - s).sum(-1) < tol * 3) & (a[..., 3] > 0)
+    a[m, :3] = hx(dst)[:3]
+    return Image.fromarray(a.astype(np.uint8), 'RGBA')
+
+
+def brahma(Hh=760, bless=True):
+    """Brahma ji: golden-rose skin, white beard, gold kirit, saffron dhoti (raja figure recoloured)."""
+    im = tinted(person, 'raja', '#E3A27A', 'raja', Hh, arms=((-1.4, 5.6), (1.6, 3.4)) if bless else None)
+    return _recolor(im, '#3A2618', '#F4F1EA', 14)
+
+
+def surya_dev(Hh=760, bless=True):
+    """Surya dev as a devata: warm golden skin (rays drawn behind in the scene)."""
+    return tinted(person, 'deva', '#F0A957', 'deva', Hh, arms=((-1.4, 5.6), (1.6, 3.4)) if bless else None)
+
+
+def vayu_dev(Hh=760, angry=False, namaste=False):
+    return tinted(person, 'deva', '#9EC3DE', 'deva', Hh, namaste=namaste, mouth='flat' if angry else 'smile',
+                  arms=((-1.5, 5.7), (1.5, 5.7)))
+
+
+def indra(Hh=760, throw=False):
+    """Indra with the vajra raised in the right hand."""
+    arms = ((-1.5, 5.6), (2.2, 1.2)) if throw else ((-1.5, 5.6), (1.9, 4.0))
+    im = person('deva', Hh, arms=arms, mouth='flat')
+    u = Hh / 10.0
+    pad = int(Hh * .16)
+    hxp = im.width / 2 + arms[1][0] * u
+    hyp = pad + arms[1][1] * u
+    v = vajra_img(int(2.2 * u))
+    im.alpha_composite(v, (int(hxp - v.width / 2), int(max(0, hyp - v.height * .6))))
+    return im
+
+
+def vajra_img(Hh=160, glow_=True):
+    w = int(Hh * .55)
+    c = Cv(w, Hh)
+    cx = w / 2
+    g, g2 = hx('#FFE27A'), hx('#C98A1B')
+    c.rrect(cx - .07 * Hh, .38 * Hh, cx + .07 * Hh, .62 * Hh, .03 * Hh, g2)
+    c.ell(cx, .5 * Hh, .1 * Hh, .07 * Hh, g)
+    for sgn in (-1, 1):
+        y0 = .5 * Hh + sgn * .12 * Hh
+        tip = .5 * Hh + sgn * .5 * Hh
+        c.poly([(cx - .05 * Hh, y0), (cx, tip - sgn * .02 * Hh), (cx + .05 * Hh, y0)], g)
+        for sx in (-1, 1):
+            c.line([(cx, y0), (cx + sx * .22 * Hh, y0 + sgn * .16 * Hh), (cx + sx * .06 * Hh, tip - sgn * .06 * Hh)], g, .035 * Hh)
+    return c.out()
+
+
+def bal_hanuman(Hh=420, pose='stand', eyes='open', mouth='smile', arm_up=False):
+    """Little Maruti: chubby, big head, red langot, tail, no crown (a small tuft).
+    pose: 'stand' | 'fly' (rotated, arms reaching ahead to the right) | 'lie' (lying on back)."""
+    w = int(Hh * 1.2)
+    pad = int(Hh * .2)
+    c = Cv(w, Hh + pad)
+    c.oy = pad
+    u = Hh / 10.0
+    cx = w / 2 - .4 * u
+    skin, face, dark = hx(HSKIN), hx(HFACE), hx('#2A1208')
+    # tail
+    tp = [(cx + .7 * u, 6.6 * u), (cx + 2.2 * u, 7.2 * u), (cx + 3.1 * u, 6.0 * u), (cx + 3.0 * u, 4.5 * u), (cx + 3.6 * u, 3.7 * u)]
+    c.line(tp, skin, .5 * u)
+    c.ell(tp[-1][0], tp[-1][1], .34 * u, .34 * u, skin)
+    # legs (short, chubby)
+    for sgn in (-1, 1):
+        fx = cx + sgn * .75 * u
+        c.rrect(fx - .45 * u, 7.0 * u, fx + .45 * u, 9.6 * u, .4 * u, skin)
+        c.ell(fx + sgn * .1 * u, 9.65 * u, .6 * u, .3 * u, skin)
+        c.rect(fx - .47 * u, 8.9 * u, fx + .47 * u, 9.08 * u, hx(GOLD))
+    # belly + langot
+    c.ell(cx, 6.0 * u, 1.7 * u, 1.6 * u, skin)
+    c.ell(cx, 6.1 * u, 1.1 * u, 1.0 * u, face)
+    c.poly([(cx - 1.5 * u, 6.9 * u), (cx + 1.5 * u, 6.9 * u), (cx + 1.2 * u, 7.9 * u), (cx - 1.2 * u, 7.9 * u)], hx('#C8202E'))
+    c.rect(cx - 1.5 * u, 6.8 * u, cx + 1.5 * u, 7.05 * u, hx(GOLD))
+    c.line([(cx - .9 * u, 4.6 * u), (cx, 5.2 * u), (cx + .9 * u, 4.6 * u)], hx(GOLD), 5)
+    c.ell(cx, 5.25 * u, .15 * u, .15 * u, hx('#E63946'))
+    # arms
+    if pose == 'fly' or arm_up:
+        aL, aR = (cx + 1.0 * u, 2.2 * u), (cx + 2.3 * u, 2.8 * u)
+    else:
+        aL, aR = (cx - 2.2 * u, 6.2 * u), (cx + 2.2 * u, 6.2 * u)
+    for sh, hd in (((cx - 1.2 * u, 4.9 * u), aL), ((cx + 1.2 * u, 4.9 * u), aR)):
+        c.line([sh, hd], skin, .6 * u)
+        c.ell(hd[0], hd[1], .4 * u, .4 * u, skin)
+        c.rect(sh[0] + (hd[0] - sh[0]) * .75 - .28 * u, sh[1] + (hd[1] - sh[1]) * .75 - .1 * u,
+               sh[0] + (hd[0] - sh[0]) * .75 + .28 * u, sh[1] + (hd[1] - sh[1]) * .75 + .1 * u, hx(GOLD))
+    # head (big)
+    hcx, hcy, hr = cx, 2.7 * u, 1.75 * u
+    for sg in (-1, 1):
+        c.ell(hcx + sg * hr, hcy + .1 * u, .42 * u, .5 * u, skin)
+        c.ell(hcx + sg * hr, hcy + .1 * u, .24 * u, .3 * u, face)
+    c.ell(hcx, hcy, hr, hr, skin)
+    c.ell(hcx, hcy + .2 * u, hr * .8, hr * .7, face)
+    c.ell(hcx, hcy + .85 * u, hr * .58, hr * .38, face)
+    c.ell(hcx, hcy + .5 * u, .2 * u, .12 * u, hx('#7A3A1A'))
+    for sg in (-1, 1):  # cheeks
+        c.ell(hcx + sg * .95 * u, hcy + .65 * u, .28 * u, .18 * u, hx('#F2A08A', 150))
+    ey = hcy - .05 * u
+    for sg in (-1, 1):
+        ex = hcx + sg * .58 * u
+        if eyes == 'open':
+            c.ell(ex, ey, .24 * u, .26 * u, hx('#FFFFFF'))
+            c.ell(ex + .03 * u, ey + .02 * u, .14 * u, .17 * u, dark)
+            c.ell(ex + .07 * u, ey - .06 * u, .05 * u, .05 * u, hx('#FFFFFF'))
+        else:
+            c.arc(ex, ey, .22 * u, .14 * u, 200, 340, dark, 3)
+    if mouth == 'smile':
+        c.arc(hcx, hcy + .85 * u, .45 * u, .28 * u, 15, 165, hx('#7A2A2A'), 4)
+    elif mouth == 'open':
+        c.ell(hcx, hcy + 1.0 * u, .25 * u, .2 * u, hx('#7A2A2A'))
+    else:
+        c.line([(hcx - .2 * u, hcy + 1.0 * u), (hcx + .2 * u, hcy + 1.0 * u)], hx('#7A2A2A'), 3)
+    c.line([(hcx, hcy - .9 * u), (hcx, hcy - .5 * u)], hx('#E63946'), 5)
+    # tuft
+    c.poly([(hcx - .3 * u, hcy - hr + .2 * u), (hcx - .05 * u, hcy - hr - .55 * u), (hcx + .1 * u, hcy - hr + .1 * u),
+            (hcx + .45 * u, hcy - hr - .35 * u), (hcx + .35 * u, hcy - hr + .3 * u)], hx('#C85E1C'))
+    im = c.out()
+    if pose == 'fly':
+        im = im.rotate(-62, expand=True, resample=Image.BICUBIC)
+    elif pose == 'lie':
+        im = im.rotate(90, expand=True, resample=Image.BICUBIC)
+    bb = im.getbbox()
+    return im.crop(bb) if bb else im
+
+
+def surya_disc(r=200, col='#FF7A2E', face=True, t=0.0):
+    """Rising sun with rays and a gentle calm face."""
+    n = int(r * 3.4)
+    c = Cv(n, n)
+    cx = cy = n / 2
+    for k in range(16):
+        a = k * math.pi / 8 + t * .25
+        r0, r1 = r * 1.08, r * (1.5 if k % 2 == 0 else 1.32)
+        c.poly([(cx + math.cos(a - .09) * r0, cy + math.sin(a - .09) * r0), (cx + math.cos(a) * r1, cy + math.sin(a) * r1),
+                (cx + math.cos(a + .09) * r0, cy + math.sin(a + .09) * r0)], hx('#FFC24A', 220))
+    c.ell(cx, cy, r * 1.06, r * 1.06, hx('#FFB03A'))
+    c.ell(cx, cy, r, r, hx(col))
+    c.ell(cx - r * .15, cy - r * .15, r * .72, r * .72, hx('#FF9548'))
+    if face:
+        dk = hx('#8A3A10')
+        for sg in (-1, 1):
+            c.arc(cx + sg * r * .32, cy - r * .05, r * .14, r * .09, 200, 340, dk, max(2, r * .03))
+        c.arc(cx, cy + r * .25, r * .22, r * .12, 20, 160, dk, max(2, r * .03))
+        c.line([(cx, cy - r * .42), (cx, cy - r * .22)], hx('#E63946'), max(2, r * .04))
+    return c.out()
+
+
+def airavat(w=640, flip=False):
+    """White elephant (side view facing left) with gold-red caparison."""
+    Hh = int(w * .75)
+    c = Cv(w, Hh)
+    wh, sh = hx('#F3F1EE'), hx('#D9D6D2')
+    # legs
+    for x in (.3, .42, .68, .8):
+        c.rrect(w * x - w * .05, Hh * .55, w * x + w * .05, Hh * .98, w * .03, sh if x in (.42, .8) else wh)
+    c.ell(w * .58, Hh * .5, w * .32, Hh * .26, wh)  # body
+    c.ell(w * .9, Hh * .45, w * .03, Hh * .12, wh)  # tail stub
+    # caparison
+    c.poly([(w * .38, Hh * .3), (w * .74, Hh * .3), (w * .78, Hh * .62), (w * .34, Hh * .62)], hx('#B5262F'))
+    c.rect(w * .34, Hh * .58, w * .78, Hh * .63, hx(GOLD))
+    for k in range(5):
+        c.ell(w * (.4 + k * .085), Hh * .64, w * .014, w * .014, hx(GOLD))
+    # head, ear, trunk, tusk
+    c.ell(w * .25, Hh * .36, w * .16, Hh * .2, wh)
+    c.ell(w * .33, Hh * .38, w * .1, Hh * .17, sh)
+    c.line([(w * .14, Hh * .42), (w * .09, Hh * .62), (w * .08, Hh * .82), (w * .12, Hh * .9)], wh, w * .06)
+    c.line([(w * .18, Hh * .5), (w * .1, Hh * .57)], hx('#FFF8E0'), w * .022)
+    c.ell(w * .2, Hh * .3, w * .015, w * .015, hx('#2A1208'))
+    c.poly([(w * .18, Hh * .18), (w * .3, Hh * .16), (w * .27, Hh * .24), (w * .2, Hh * .25)], hx(GOLD))  # forehead gold
+    im = c.out()
+    return im.transpose(Image.FLIP_LEFT_RIGHT) if flip else im
+
+
+def rahu_head(Hh=420):
+    """Rahu: just a crowned dark head (from the asura sprite), floating."""
+    im = asura(int(Hh * 3.2), col='#4B3F5E', dhoti='#22182E', cape='#22182E', angry=True)
+    bb = im.getbbox()
+    im = im.crop(bb)
+    return im.crop((int(im.width * .22), 0, int(im.width * .78), int(im.height * .3)))
+
+
+def bg_bhor():
+    """Pre-dawn horizon: violet-to-coral sky, forest silhouette, Anjana's hill (sun drawn per frame)."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1100, hx('#3B2A6B'), hx('#FF9A5A'))
+    cv.vgrad(1100, H, hx('#FFB36B'), hx('#3E6B3A'))
+    _hills(cv, 1180, hx('#6B4A7A'), 90, 3)
+    _hills(cv, 1300, hx('#3E5A3A'), 70, 8)
+    for x in range(-20, 1100, 110):
+        _tree(cv, x, 1360 + (x % 3) * 20, 300 + (x % 5) * 30, trunk='#3A2618', leaf='#2E4A2A', leaf2='#3F5F35')
+    cv.vgrad(1380, H, hx('#3E6B3A'), hx('#22401F'))
+    _sparkles(cv, 26, 5, 80, 600)
+    _vignette(cv)
+    return cv
+
+
+def bg_antariksh():
+    """High sky at sunrise: golden clouds, earth curving far below."""
+    cv = Cv(W, H)
+    cv.vgrad(0, H, hx('#FF8A3D'), hx('#FFE3A8'))
+    rnd = random.Random(4)
+    for k in range(9):
+        x, y, s = rnd.random() * 1080, 300 + rnd.random() * 1300, 80 + rnd.random() * 120
+        for dx in (-1, 0, 1):
+            cv.ell(x + dx * s * .8, y + (0 if dx == 0 else s * .25), s * (1.0 if dx == 0 else .7), s * .55 * (1.0 if dx == 0 else .7), hx('#FFF4DC', 200))
+    cv.ell(540, 2500, 1400, 820, hx('#4E8B5A'))
+    cv.ell(540, 2500, 1400, 820, None, hx('#9ED0FF', 160), 18)
+    _vignette(cv)
+    return cv
+
+
+BACKGROUNDS.update({'bhor': bg_bhor, 'antariksh': bg_antariksh})
