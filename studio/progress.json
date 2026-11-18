@@ -5,7 +5,13 @@
     "name": "Pranit – Soothing & Devotional Narrator",
     "note": "हर वीडियो में यही आवाज़। सिर्फ़ तब बदलो जब यह उपलब्ध न हो, और बदलने पर यहीं लिख दो।"
   },
-  "in_progress": [],
+  "in_progress": [
+    {
+      "video_no": 6,
+      "deity": "विष्णु",
+      "title": "मत्स्य अवतार (कार्तिक पूर्णिमा)"
+    }
+  ],
   "next_video_no": 6,
   "done": [
     {
