@@ -5,15 +5,8 @@
     "name": "Pranit – Soothing & Devotional Narrator",
     "note": "हर वीडियो में यही आवाज़। सिर्फ़ तब बदलो जब यह उपलब्ध न हो, और बदलने पर यहीं लिख दो।"
   },
-  "in_progress": [
-    {
-      "video_no": 7,
-      "deity": "हनुमान",
-      "title": "बाल हनुमान और सूर्य (हनुमान नाम की कथा)",
-      "date": "2026-11-18"
-    }
-  ],
-  "next_video_no": 7,
+  "in_progress": [],
+  "next_video_no": 8,
   "done": [
     {
       "video_no": 1,
@@ -56,6 +49,14 @@
       "date": "2026-11-18",
       "elevenlabs_credits": 1309,
       "duration_s": 119.4
+    },
+    {
+      "video_no": 7,
+      "deity": "हनुमान",
+      "title": "बाल हनुमान और सूर्य (हनुमान नाम की कथा)",
+      "date": "2026-11-18",
+      "elevenlabs_credits": 1319,
+      "duration_s": 112.0
     }
   ]
 }
