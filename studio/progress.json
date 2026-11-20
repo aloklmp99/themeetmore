@@ -5,14 +5,8 @@
     "name": "Pranit – Soothing & Devotional Narrator",
     "note": "हर वीडियो में यही आवाज़। सिर्फ़ तब बदलो जब यह उपलब्ध न हो, और बदलने पर यहीं लिख दो।"
   },
-  "in_progress": [
-    {
-      "video_no": 9,
-      "deity": "कार्तिकेय",
-      "title": "कार्तिकेय जन्म (छह कृत्तिकाएँ, षण्मुख, तारकासुर)"
-    }
-  ],
-  "next_video_no": 9,
+  "in_progress": [],
+  "next_video_no": 10,
   "done": [
     {
       "video_no": 1,
@@ -71,6 +65,14 @@
       "date": "2026-11-20",
       "elevenlabs_credits": 1320,
       "duration_s": 116.9
+    },
+    {
+      "video_no": 9,
+      "deity": "कार्तिकेय",
+      "title": "कार्तिकेय जन्म (छह कृत्तिकाएँ, षण्मुख, तारकासुर वध)",
+      "date": "2026-11-20",
+      "elevenlabs_credits": 1165,
+      "duration_s": 115.3
     }
   ]
 }
