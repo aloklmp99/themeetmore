@@ -936,7 +936,7 @@ def chakra_img(r=60, t=0.0):
     return cv.out()
 
 
-def vishnu(Hh=760, eyes='open', mouth='smile', namaste=False, bless=False, t=0.0, halo=True):
+def vishnu(Hh=760, eyes='open', mouth='smile', namaste=False, bless=False, t=0.0, halo=True, chakra=True):
     """Four-armed Vishnu: front arms from person('vishnu'), rear arms hold chakra (R) and shankh (L)."""
     base = person('vishnu', Hh, eyes=eyes, mouth=mouth, namaste=namaste,
                   arms=((-1.4, 5.6), (1.0, 3.6)) if bless else None)
@@ -958,8 +958,12 @@ def vishnu(Hh=760, eyes='open', mouth='smile', namaste=False, bless=False, t=0.0
     im = c.out()
     im.alpha_composite(base)
     # attributes in rear hands
-    ch = chakra_img(int(.55 * u), t)
-    im.alpha_composite(ch, (int(cx + 2.25 * u - ch.width / 2), int(pad + 1.9 * u - .55 * u - ch.height / 2)))
+    if chakra:
+        ch = chakra_img(int(.55 * u), t)
+        im.alpha_composite(ch, (int(cx + 2.25 * u - ch.width / 2), int(pad + 1.9 * u - .55 * u - ch.height / 2)))
+    else:  # lotus in the rear right hand (before receiving Sudarshan)
+        lt = lotus_img(int(.42 * u))
+        im.alpha_composite(lt, (int(cx + 2.25 * u - lt.width / 2), int(pad + 1.9 * u - lt.height * .7)))
     sc = Cv(int(1.4 * u), int(1.4 * u))
     sc.poly([(.2 * u, .9 * u), (.7 * u, .15 * u), (1.2 * u, .55 * u), (1.0 * u, 1.2 * u), (.45 * u, 1.25 * u)], hx('#FBF7EE'))
     sc.arc(.75 * u, .75 * u, .32 * u, .32 * u, 0, 300, hx('#D9C9A8'), 3)
@@ -2139,3 +2143,148 @@ def bg_antariksh():
 
 
 BACKGROUNDS.update({'bhor': bg_bhor, 'antariksh': bg_antariksh})
+
+
+# ------------------------------------------------------------ 008 वैकुंठ चतुर्दशी: kamal, shivling, bilva, Kashi mandir/bhor
+def lotus_img(r=60, open_=1.0, col='#F48FB1', col2='#E8608C'):
+    """Pink lotus seen from the side: two rows of petals + gold centre. Bottom-centre = stem top."""
+    cv = Cv(int(r * 2.8), int(r * 2.2))
+    cx, by = r * 1.4, r * 1.9
+    for ang, sc, c in ((-70, .8, col2), (70, .8, col2), (-42, .95, col), (42, .95, col), (-18, 1.0, col2), (18, 1.0, col2), (0, 1.05, col)):
+        a = math.radians(ang * (.55 + .45 * open_))
+        L = r * 1.5 * sc
+        tx, ty = cx + math.sin(a) * L, by - math.cos(a) * L
+        nx, ny = math.cos(a) * r * .38, math.sin(a) * r * .38
+        mx, my = cx + math.sin(a) * L * .5, by - math.cos(a) * L * .5
+        cv.poly([(cx, by), (mx - nx, my - ny), (tx, ty), (mx + nx, my + ny)], hx(c))
+        cv.line([(cx, by), (cx + math.sin(a) * L * .8, by - math.cos(a) * L * .8)], hx('#FFFFFF', 70), max(1, r * .04))
+    cv.ell(cx, by - r * .12, r * .32, r * .14, hx(GOLD))
+    cv.ell(cx, by + r * .05, r * .75, r * .16, hx('#3F8A4A'))
+    return cv.out()
+
+
+def thali_img(w=420, n=12, seed=3):
+    """Golden plate heaped with n lotuses (n=0 -> empty plate)."""
+    h = int(w * .75)
+    cv = Cv(w, h)
+    im = None
+    cv.ell(w / 2, h * .82, w * .48, w * .12, hx(GOLD2))
+    cv.ell(w / 2, h * .79, w * .44, w * .1, hx(GOLD))
+    cv.ell(w / 2, h * .79, w * .32, w * .065, hx('#FFE08A'))
+    im = cv.out()
+    rnd = random.Random(seed)
+    pos = []
+    rows = [(0.78, 5), (0.66, 4), (0.55, 3), (0.45, 2), (0.36, 1)]
+    for yy, k in rows:
+        for j in range(k):
+            pos.append((w / 2 + (j - (k - 1) / 2) * w * .16 + rnd.uniform(-6, 6), h * yy))
+    for i, (x, y) in enumerate(pos[:n]):
+        lt = lotus_img(int(w * .085), 1.0, '#F48FB1' if i % 2 else '#F7A8C4')
+        im.alpha_composite(lt, (int(x - lt.width / 2), int(y - lt.height * .85)))
+    return im
+
+
+def shivling_img(Hh=360, glow_=0.0, bel=True):
+    """Shivling on yoni-peetha, tripundra, a few bilva leaves and a flower."""
+    w = int(Hh * 1.5)
+    cv = Cv(w, Hh)
+    cx = w / 2
+    stone, stone2 = hx('#3E4656'), hx('#2A303C')
+    # peetha (base) + spout
+    cv.rrect(cx - Hh * .55, Hh * .78, cx + Hh * .55, Hh * .98, 18, stone2)
+    cv.ell(cx, Hh * .68, Hh * .62, Hh * .13, stone)
+    cv.poly([(cx + Hh * .5, Hh * .64), (cx + Hh * .72, Hh * .66), (cx + Hh * .74, Hh * .72), (cx + Hh * .5, Hh * .76)], stone)
+    cv.rect(cx - Hh * .5, Hh * .68, cx + Hh * .5, Hh * .8, stone)
+    cv.ell(cx, Hh * .8, Hh * .5, Hh * .08, stone2)
+    # linga
+    cv.rect(cx - Hh * .22, Hh * .25, cx + Hh * .22, Hh * .68, hx('#4A5468'))
+    cv.ell(cx, Hh * .25, Hh * .22, Hh * .2, hx('#4A5468'))
+    cv.rect(cx + Hh * .1, Hh * .2, cx + Hh * .16, Hh * .66, hx('#6A748A'))
+    for k in range(3):  # tripundra
+        y = Hh * (.33 + k * .045)
+        cv.line([(cx - Hh * .16, y), (cx + Hh * .16, y)], hx('#F2EDE2'), max(2, Hh * .018))
+    cv.ell(cx, Hh * .38, Hh * .03, Hh * .03, hx('#D62828'))
+    if bel:
+        for dx in (-.32, .3):
+            bx, by = cx + Hh * dx, Hh * .68
+            for a in (-40, 0, 40):
+                ar = math.radians(a)
+                cv.ell(bx + math.sin(ar) * Hh * .06, by - math.cos(ar) * Hh * .06, Hh * .04, Hh * .065, hx('#3F8A3A'))
+    cv.ell(cx, Hh * .14, Hh * .06, Hh * .04, hx('#F59E0B'))
+    return cv.out()
+
+
+def bilva_img(Hh=160):
+    """Bilva (bel) patra: three leaves on a stalk."""
+    cv = Cv(int(Hh * 1.1), Hh)
+    cx = Hh * .55
+    cv.line([(cx, Hh), (cx, Hh * .55)], hx('#4A6B2A'), Hh * .04)
+    for a, L in ((-55, .42), (0, .5), (55, .42)):
+        ar = math.radians(a)
+        ex, ey = cx + math.sin(ar) * Hh * L, Hh * .55 - math.cos(ar) * Hh * L
+        mx, my = (cx + ex) / 2, (Hh * .55 + ey) / 2
+        nx, ny = math.cos(ar) * Hh * .11, math.sin(ar) * Hh * .11
+        cv.poly([(cx, Hh * .55), (mx - nx, my - ny), (ex, ey), (mx + nx, my + ny)], hx('#3F8A3A'))
+        cv.line([(cx, Hh * .55), (ex, ey)], hx('#7FC06A'), max(1, Hh * .012))
+    return cv.out()
+
+
+def bg_kashi_mandir():
+    """Kashi Vishwanath garbhagriha: carved arch, hanging bells, lamps, warm saffron glow."""
+    cv = Cv(W, H)
+    cv.vgrad(0, H, hx('#6A2412'), hx('#2A0A06'))
+    for x in (60, 1020):
+        cv.rect(x - 50, 300, x + 50, 1300, hx('#8A4A1E'))
+        for y in range(340, 1300, 90):
+            cv.rect(x - 50, y, x + 50, y + 12, hx(GOLD2))
+    cv.rrect(170, 380, 910, 1320, 370, hx('#A0581E'))
+    cv.rrect(210, 420, 870, 1310, 330, hx('#4A1A0C'))
+    _sun(cv, 540, 900, 260, '#FFC56A')
+    for k in range(13):  # carved arch beads
+        a = math.pi + k / 12 * math.pi
+        cv.ell(540 + math.cos(a) * 350, 750 + math.sin(a) * 350, 16, 16, hx(GOLD))
+    for x in (300, 780):  # bells
+        cv.line([(x, 250), (x, 470)], hx(GOLD2), 5)
+        cv.poly([(x - 34, 540), (x - 22, 470), (x + 22, 470), (x + 34, 540)], hx(GOLD))
+        cv.ell(x, 545, 10, 10, hx(GOLD2))
+    for k in range(16):
+        x = 40 + k * 66
+        cv.ell(x, 300 + math.sin(k / 15 * math.pi) * 50, 20, 20, hx('#F59E0B' if k % 2 else '#F97316'))
+    cv.rect(0, 1300, W, H, hx('#5A2A12'))
+    cv.vgrad(1300, H, hx('#8A4A22'), hx('#2A1006'))
+    for x in range(0, W, 120):
+        cv.line([(x, 1300), (x - 140, H)], hx('#6A341A'), 4)
+    _sparkles(cv, 18, 181, 300, 1100, '#FFD08A')
+    _vignette(cv)
+    return cv
+
+
+def bg_kashi_bhor():
+    """Kashi ghats at golden dawn: sunrise over Ganga, temple spires, boats."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1050, hx('#F7B267'), hx('#FFE8B8'))
+    _sun(cv, 300, 640, 120, '#FFF3C4')
+    for x, h_, w_ in ((640, 520, 170), (820, 420, 160), (990, 360, 140), (470, 340, 150)):
+        base = 1050
+        cv.rect(x - w_ / 2, base - h_, x + w_ / 2, base, hx('#C47A3E'))
+        cv.poly([(x - w_ * .35, base - h_), (x, base - h_ - w_ * .9), (x + w_ * .35, base - h_)], hx('#E09A55'))
+        cv.line([(x, base - h_ - w_ * .9), (x, base - h_ - w_ * 1.12)], hx(GOLD2), 4)
+        cv.poly([(x, base - h_ - w_ * 1.12), (x + 32, base - h_ - w_ * 1.05), (x, base - h_ - w_ * .99)], hx('#E8461E'))
+        for yy in range(base - h_ + 40, base - 20, 80):
+            cv.rect(x - 16, yy, x + 16, yy + 40, hx('#7A3A1A'))
+    for k in range(6):
+        y = 1050 + k * 36
+        cv.rect(0, y, W, y + 36, hx('#B07A4A' if k % 2 else '#9A6238'))
+    cv.vgrad(1266, H, hx('#F2C58A'), hx('#8A5A3A'))
+    cv.rect(0, 1266, W, 1272, hx('#FFE8B8'))
+    for i in range(14):
+        y = 1300 + i * 44
+        for x in range(-40 + (i % 2) * 90, W, 180):
+            cv.arc(x + 70, y, 70, 12, 200, 340, hx('#FFF1D0', 120), 3)
+    cv.poly([(80, 1420), (300, 1420), (270, 1460), (110, 1460)], hx('#5A3420'))
+    cv.line([(190, 1420), (190, 1330)], hx('#5A3420'), 5)
+    _vignette(cv)
+    return cv
+
+
+BACKGROUNDS.update({'kashi_mandir': bg_kashi_mandir, 'kashi_bhor': bg_kashi_bhor})
