@@ -2288,3 +2288,98 @@ def bg_kashi_bhor():
 
 
 BACKGROUNDS.update({'kashi_mandir': bg_kashi_mandir, 'kashi_bhor': bg_kashi_bhor})
+
+
+# ---------------------------------------------------------------- Kartikeya janma (added for story 009)
+SKIN['krittika'] = '#D9A070'
+SAREE['krittika'] = ('#F2C94C', '#C8163E', '#D9A41A', '#8E1030', '#FFF1D0')
+SKIN['ganga'] = '#F0C8A0'
+SAREE['ganga'] = ('#EAF4FA', '#3A86C8', '#BCD6EA', '#2A6AA8', '#9FD0EE')
+JEWEL = JEWEL + ('krittika', 'ganga')
+
+
+def shanmukha(Hh=760, kid=False, **kw):
+    """Kartikeya with six faces: base figure + two pairs of side heads (5 visible, 6th behind)."""
+    base = person('kartikeya', Hh, kid=kid, **kw)
+    u = Hh / 10.0
+    pad = int(Hh * .16)
+    head_r = (1.25 if kid else 0.95) * u
+    head_cy = (2.3 if kid else 2.0) * u + pad
+    cx = base.width / 2
+    top = int(head_cy - head_r * 1.02 - .95 * u)
+    bot = int(head_cy + head_r * .98)
+    x0, x1 = int(cx - head_r * 1.25), int(cx + head_r * 1.25)
+    head = base.crop((x0, max(0, top), x1, bot))
+    out = Image.new('RGBA', base.size, (0, 0, 0, 0))
+    for off, sc in ((2.05, .70), (1.15, .84)):
+        hs = head.resize((int(head.width * sc), int(head.height * sc)), Image.LANCZOS)
+        a = np.array(hs).astype(float)
+        a[..., :3] *= .9  # slightly darker = behind
+        hs = Image.fromarray(a.astype(np.uint8), 'RGBA')
+        for sg in (-1, 1):
+            hxp = cx + sg * off * head_r - hs.width / 2
+            hyp = bot - hs.height - (1 - sc) * head_r * .4
+            out.alpha_composite(hs, (int(hxp), int(hyp)))
+    out.alpha_composite(base)
+    return out
+
+
+def agni_dev(Hh=760, hold=True):
+    """Agni dev: flame-red skin, arms forward holding the glowing tejas (drawn in scene)."""
+    return tinted(person, 'deva', '#E2643A', 'deva', Hh, arms=((-1.1, 4.4), (1.1, 4.4)) if hold else None, mouth='flat')
+
+
+def vel_img(Hh=520, glow_=True):
+    """Kartikeya's divine spear (shakti / vel): golden leaf-shaped blade on a long shaft."""
+    w = int(Hh * .4)
+    c = Cv(w, Hh)
+    cx = w / 2
+    if glow_:
+        for r, a in ((w * .48, 40), (w * .34, 70)):
+            c.ell(cx, Hh * .17, r, r * 1.1, (255, 230, 150, a))
+    c.rect(cx - Hh * .012, Hh * .28, cx + Hh * .012, Hh * .99, hx('#8A5A2A'))
+    c.poly([(cx, Hh * .02), (cx + w * .28, Hh * .17), (cx + w * .06, Hh * .3), (cx - w * .06, Hh * .3), (cx - w * .28, Hh * .17)], hx(GOLD))
+    c.poly([(cx, Hh * .06), (cx + w * .14, Hh * .17), (cx, Hh * .27), (cx - w * .14, Hh * .17)], hx('#FFE08A'))
+    c.rect(cx - w * .12, Hh * .29, cx + w * .12, Hh * .32, hx(GOLD2))
+    return c.out()
+
+
+def bg_sharavan():
+    """Sharavana: a reed forest around a shining lotus pond at dawn."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1000, hx('#F6B98A'), hx('#FFF1D0'))
+    _sun(cv, 540, 820, 110, '#FFF6D8')
+    _hills(cv, 980, hx('#7FA86A'), 90, 231)
+    cv.rect(0, 1000, W, H, hx('#3E8EA8'))
+    cv.vgrad(1000, H, hx('#7CC4D6'), hx('#22607A'))
+    rnd = random.Random(232)
+    for k in range(70):  # reeds on both sides
+        side = k % 2
+        x = rnd.random() * 300 + (0 if side == 0 else 780)
+        h_ = 420 + rnd.random() * 380
+        base = 1060 + rnd.random() * 120
+        lean = (rnd.random() - .5) * 60
+        cv.line([(x, base), (x + lean, base - h_)], hx('#5E8A3A' if k % 3 else '#7FAE4A'), 7)
+        cv.ell(x + lean, base - h_ - 20, 9, 34, hx('#D9C38A'))
+    for i in range(14):
+        y = 1040 + i * 56
+        for x in range(-40 + (i % 2) * 90, W, 180):
+            cv.arc(x + 70, y, 70, 12, 200, 340, hx('#E9F6F8', 110), 4)
+    _vignette(cv)
+    return cv
+
+
+def bg_yuddh():
+    """Battlefield: red-black stormy sky, dust, broken ground."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1250, hx('#1E0A14'), hx('#B8442A'))
+    _sun(cv, 300, 760, 120, '#FFB060')
+    _hills(cv, 1150, hx('#4A1E1A'), 200, 241)
+    _hills(cv, 1250, hx('#2E1210'), 110, 242)
+    cv.rect(0, 1280, W, H, hx('#3A1A12'))
+    cv.vgrad(1280, H, hx('#5A2A1A'), hx('#1A0A06'))
+    _vignette(cv)
+    return cv
+
+
+BACKGROUNDS.update({'sharavan': bg_sharavan, 'yuddh': bg_yuddh})
