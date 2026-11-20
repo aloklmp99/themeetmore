@@ -5,7 +5,14 @@
     "name": "Pranit – Soothing & Devotional Narrator",
     "note": "हर वीडियो में यही आवाज़। सिर्फ़ तब बदलो जब यह उपलब्ध न हो, और बदलने पर यहीं लिख दो।"
   },
-  "in_progress": [],
+  "in_progress": [
+    {
+      "video_no": 8,
+      "deity": "विष्णु-शिव (हरि-हर)",
+      "title": "वैकुंठ चतुर्दशी (हरि-हर मिलन, सुदर्शन चक्र)",
+      "date": "2026-11-20"
+    }
+  ],
   "next_video_no": 8,
   "done": [
     {
