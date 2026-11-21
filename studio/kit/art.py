@@ -2500,3 +2500,213 @@ def bg_ganga_plain():
 
 
 BACKGROUNDS.update({'patal': bg_patal, 'devlok': bg_devlok, 'himalaya': bg_himalaya, 'ganga_plain': bg_ganga_plain})
+
+
+# ---------------------------------------------------------------- दामोदर लीला (added for story 011)
+SKIN['yashoda'] = '#E6A777'
+SAREE['yashoda'] = ('#F2B632', '#C8202E', '#D9961A', '#C8202E', '#E8503A')
+JEWEL = JEWEL + ('yashoda',)
+
+
+def okhli_img(Hh=240):
+    """Wooden mortar (ukhal) with a little lip and bands."""
+    w = int(Hh * .9)
+    cv = Cv(w, Hh)
+    cv.poly([(w * .12, Hh * .12), (w * .88, Hh * .12), (w * .72, Hh * .55), (w * .28, Hh * .55)], hx('#8B5A2B'))
+    cv.poly([(w * .28, Hh * .5), (w * .72, Hh * .5), (w * .9, Hh * .98), (w * .1, Hh * .98)], hx('#7A4A22'))
+    cv.ell(w * .5, Hh * .12, w * .38, Hh * .07, hx('#A86E36'))
+    cv.ell(w * .5, Hh * .12, w * .28, Hh * .045, hx('#4A2A12'))
+    for y in (.3, .78):
+        cv.rect(w * .2, Hh * y, w * .8, Hh * (y + .05), hx('#5A3416'))
+    return cv.out()
+
+
+def matka_img(Hh=220, butter=True, broken=False, col='#B5562E'):
+    """Clay pot; butter heaped at the mouth or broken in shards."""
+    w = int(Hh * 1.3)
+    cv = Cv(w, Hh)
+    if broken:
+        rnd = random.Random(5)
+        for k in range(7):
+            x = w * (.1 + k * .13)
+            y = Hh * (.75 + rnd.random() * .15)
+            r = Hh * (.08 + rnd.random() * .06)
+            cv.poly([(x - r, y + r * .4), (x - r * .2, y - r), (x + r, y - r * .2), (x + r * .5, y + r * .5)], hx(col))
+        cv.ell(w * .5, Hh * .93, w * .45, Hh * .07, hx('#FFF8EA', 235))  # spilt curd
+        for x in (.2, .45, .7, .85):
+            cv.ell(w * x, Hh * .86, w * .07, Hh * .04, hx('#FFFDF5', 240))
+        return cv.out()
+    cv.ell(w * .5, Hh * .62, w * .42, Hh * .36, hx(col))
+    cv.ell(w * .42, Hh * .55, w * .12, Hh * .16, hx('#D9824F', 150))
+    cv.rect(w * .3, Hh * .14, w * .7, Hh * .3, hx(col))
+    cv.ell(w * .5, Hh * .14, w * .24, Hh * .06, hx('#8B3A1A'))
+    cv.line([(w * .14, Hh * .55), (w * .86, Hh * .55)], hx('#F2E2C0', 200), 4)
+    cv.line([(w * .16, Hh * .66), (w * .84, Hh * .66)], hx('#F2E2C0', 160), 3)
+    if butter:
+        cv.ell(w * .5, Hh * .1, w * .2, Hh * .1, hx('#FFF6D6'))
+        cv.ell(w * .46, Hh * .04, w * .1, Hh * .07, hx('#FFFBEA'))
+    return cv.out()
+
+
+def madhani_img(Hh=520):
+    """Churning rod (mathani) with star-shaped head."""
+    w = int(Hh * .3)
+    cv = Cv(w, Hh)
+    cx = w / 2
+    cv.rect(cx - 7, 0, cx + 7, Hh * .82, hx('#8B5A2B'))
+    for k in range(4):
+        a = k * math.pi / 4
+        cv.line([(cx - math.cos(a) * w * .42, Hh * .88 - math.sin(a) * w * .2),
+                 (cx + math.cos(a) * w * .42, Hh * .88 + math.sin(a) * w * .2)], hx('#6B4226'), 10)
+    cv.ell(cx, Hh * .88, 16, 16, hx('#5A3416'))
+    return cv.out()
+
+
+def chheenka_img(Hh=360, butter=True):
+    """Hanging rope net (chheenka) with a butter pot."""
+    w = int(Hh * .7)
+    cv = Cv(w, Hh)
+    cx = w / 2
+    pot = matka_img(int(Hh * .45), butter=butter, col='#C0653A')
+    cv.paste(pot, cx - pot.width / 2, Hh - pot.height - 4)
+    for sx in (-.38, -.12, .12, .38):
+        cv.line([(cx, 0), (cx + sx * w, Hh * .78)], hx('#D9B27A'), 4)
+    cv.line([(cx - .4 * w, Hh * .8), (cx + .4 * w, Hh * .8)], hx('#D9B27A'), 4)
+    cv.ell(cx, 6, 8, 8, hx('#8B5A2B'))
+    return cv.out()
+
+
+def chulha_img(w=360, boil=0.0, t=0.0):
+    """Clay stove with fire and a milk pot; boil 0..1 makes froth spill over."""
+    Hh = int(w * 1.0)
+    cv = Cv(w, Hh)
+    cv.rrect(w * .08, Hh * .6, w * .92, Hh * .98, 24, hx('#B5794A'))
+    cv.rrect(w * .3, Hh * .72, w * .7, Hh * .98, 18, hx('#3A1D0F'))
+    fl = math.sin(t * 9) * .04
+    cv.poly([(w * .34, Hh * .97), (w * (.42 + fl), Hh * .76), (w * .5, Hh * .9), (w * (.58 - fl), Hh * .74), (w * .66, Hh * .97)], hx('#F58A1F'))
+    cv.poly([(w * .42, Hh * .97), (w * .5, Hh * .82), (w * .58, Hh * .97)], hx('#FFD34E'))
+    cv.ell(w * .5, Hh * .45, w * .3, Hh * .17, hx('#9AA3AD'))
+    cv.rect(w * .26, Hh * .28, w * .74, Hh * .45, hx('#AEB7C1'))
+    cv.ell(w * .5, Hh * .28, w * .24, Hh * .05, hx('#FFFDF5'))
+    if boil > 0:
+        b = min(1.0, boil)
+        cv.ell(w * .5, Hh * (.27 - .1 * b), w * (.24 + .04 * b), Hh * (.05 + .08 * b), hx('#FFFDF5'))
+        for k, x in enumerate((.27, .4, .6, .73)):
+            L = Hh * (.08 + .22 * b) * (1 + .3 * math.sin(t * 3 + k))
+            cv.line([(w * x, Hh * .3), (w * x, Hh * .3 + L)], hx('#FFFDF5', 240), 14)
+        for k in range(6):  # steam
+            yy = Hh * .1 - ((t * 60 + k * 30) % 90)
+            cv.ell(w * (.35 + k * .06), yy, 14, 14, hx('#FFFFFF', 90))
+    return cv.out()
+
+
+def chhadi_img(L=300):
+    cv = Cv(30, L)
+    cv.line([(15, 6), (15, L - 6)], hx('#6B4226'), 10)
+    return cv.out()
+
+
+def monkey_img(Hh=200, flip=False, eat=False):
+    """Small sitting monkey (vanar) holding out a hand."""
+    w = int(Hh * 1.1)
+    cv = Cv(w, Hh)
+    u = Hh / 10.0
+    cx = w * .45
+    b, f = hx('#8A5A34'), hx('#E6B98A')
+    cv.line([(cx + 2 * u, 8.6 * u), (cx + 4 * u, 8.0 * u), (cx + 4.3 * u, 5.5 * u), (cx + 3.6 * u, 4.6 * u)], b, .6 * u)
+    cv.ell(cx, 7.0 * u, 2.2 * u, 2.6 * u, b)
+    cv.ell(cx, 7.4 * u, 1.3 * u, 1.8 * u, f)
+    cv.ell(cx - 1.4 * u, 9.3 * u, 1.0 * u, .6 * u, b)
+    cv.ell(cx + 1.4 * u, 9.3 * u, 1.0 * u, .6 * u, b)
+    cv.ell(cx - 1.9 * u, 3.1 * u, .55 * u, .55 * u, f)
+    cv.ell(cx + 1.9 * u, 3.1 * u, .55 * u, .55 * u, f)
+    cv.ell(cx, 3.0 * u, 1.75 * u, 1.65 * u, b)
+    cv.ell(cx, 3.35 * u, 1.25 * u, 1.15 * u, f)
+    for sg in (-1, 1):
+        cv.ell(cx + sg * .45 * u, 2.9 * u, .2 * u, .24 * u, hx('#2A1208'))
+    cv.arc(cx, 3.9 * u, .45 * u, .3 * u, 20, 160, hx('#5A2A1A'), 3)
+    hand = (cx - 2.8 * u, 5.4 * u) if not eat else (cx - .6 * u, 4.3 * u)
+    cv.line([(cx - 1.4 * u, 5.8 * u), hand], b, .6 * u)
+    cv.ell(hand[0], hand[1], .45 * u, .45 * u, f)
+    if eat:
+        cv.ell(hand[0], hand[1] - .3 * u, .4 * u, .3 * u, hx('#FFF6D6'))
+    im = cv.out()
+    return im.transpose(Image.FLIP_LEFT_RIGHT) if flip else im
+
+
+def arjun_tree_img(Hh=1100, seed=3):
+    """Tall twin arjuna tree with pale bark and a dense crown (sprite, base at bottom)."""
+    w = int(Hh * .7)
+    cv = Cv(w, Hh)
+    cx = w / 2
+    cv.poly([(cx - 46, Hh), (cx + 46, Hh), (cx + 30, Hh * .45), (cx - 30, Hh * .45)], hx('#CDBFA8'))
+    cv.poly([(cx - 30, Hh * .48), (cx - 12, Hh * .5), (cx - 120, Hh * .26), (cx - 140, Hh * .28)], hx('#C2B39A'))
+    cv.poly([(cx + 30, Hh * .5), (cx + 12, Hh * .52), (cx + 130, Hh * .3), (cx + 150, Hh * .32)], hx('#C2B39A'))
+    for k in range(7):
+        y = Hh * (.55 + k * .06)
+        cv.line([(cx - 30, y), (cx + 10, y + 14)], hx('#9E907A', 180), 4)
+    rnd = random.Random(seed)
+    for _ in range(26):
+        x = cx + (rnd.random() - .5) * w * .85
+        y = Hh * (.08 + rnd.random() * .3)
+        r = w * (.1 + rnd.random() * .09)
+        cv.ell(x, y, r, r * .85, hx(rnd.choice(['#2F6B34', '#3F7D3A', '#4E9447', '#5BA352'])))
+    return cv.out()
+
+
+def bg_gokul():
+    """Nand-bhavan courtyard at morning: mud walls, thatch eaves, cow, rangoli floor."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1000, hx('#FFD9A8'), hx('#FFF2D6'))
+    _sun(cv, 820, 560, 140, '#FFF3C4')
+    _hills(cv, 950, hx('#9DBF7A'), 60, 51)
+    for x, h in ((120, 420), (980, 480)):
+        _tree(cv, x, 1000, h)
+    # back wall with doorway
+    cv.rect(0, 760, W, 1240, hx('#E2B680'))
+    cv.vgrad(760, 800, hx('#B5794A'), hx('#E2B680'))
+    cv.poly([(-40, 790), (W + 40, 790), (W + 40, 700), (-40, 700)], hx('#A8742E'))
+    for i in range(30):
+        cv.line([(i * 38 - 20, 790), (i * 38, 700)], hx('#7E5420', 150), 3)
+    cv.rrect(440, 900, 640, 1240, 90, hx('#6B3E1E'))
+    cv.rrect(460, 920, 620, 1240, 80, hx('#3A1F0E'))
+    for x in (90, 900):  # small windows / jharokha
+        cv.rrect(x, 900, x + 110, 1020, 50, hx('#7A4A22'))
+        cv.rrect(x + 14, 914, x + 96, 1020, 40, hx('#3A1F0E'))
+    # wall paintings: cow and lotus motifs
+    for x in (300, 780):
+        for r, c in ((40, '#C8202E'), (26, '#F2B632'), (12, '#FFFFFF')):
+            cv.ell(x, 1000, r, r, hx(c, 220))
+    # toran
+    for k in range(9):
+        cv.ell(450 + k * 22, 905 + math.sin(k / 8 * math.pi) * 22, 11, 11, hx('#F59E0B' if k % 2 else '#2F8A3A'))
+    cv.rect(0, 1240, W, H, hx('#C99A62'))
+    cv.vgrad(1240, H, hx('#D9AE72'), hx('#8A5A2B'))
+    for r, col in ((200, '#FFFFFF'), (150, '#E63946'), (100, '#F2C94C')):
+        cv.ell(540, 1600, r * 1.5, r * .4, hx(col, 140))
+    _sparkles(cv, 10, 17, 150, 650, '#FFFFFF')
+    _vignette(cv)
+    return cv
+
+
+def bg_gokul_open():
+    """Open courtyard / lane of Gokul with sky (for the arjuna-tree scene)."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1150, hx('#9FD3F0'), hx('#FFF0CF'))
+    _sun(cv, 260, 480, 120, '#FFF6D8')
+    for x, y in ((700, 420), (300, 640), (880, 760)):
+        cv.ell(x, y, 110, 40, hx('#FFFFFF', 200))
+        cv.ell(x + 60, y - 20, 80, 36, hx('#FFFFFF', 200))
+    _hills(cv, 1100, hx('#8DB36B'), 90, 61)
+    _hills(cv, 1180, hx('#6EA85A'), 60, 62)
+    for x, w_ in ((60, 220), (880, 240)):
+        cv.rect(x - w_ / 2, 1000, x + w_ / 2, 1250, hx('#E2B680'))
+        cv.poly([(x - w_ / 2 - 30, 1010), (x, 900), (x + w_ / 2 + 30, 1010)], hx('#A8742E'))
+    cv.rect(0, 1240, W, H, hx('#C99A62'))
+    cv.vgrad(1240, H, hx('#D9AE72'), hx('#8A5A2B'))
+    _sparkles(cv, 8, 19, 150, 700, '#FFFFFF')
+    _vignette(cv)
+    return cv
+
+
+BACKGROUNDS.update({'gokul': bg_gokul, 'gokul_open': bg_gokul_open})
