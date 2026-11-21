@@ -2383,3 +2383,120 @@ def bg_yuddh():
 
 
 BACKGROUNDS.update({'sharavan': bg_sharavan, 'yuddh': bg_yuddh})
+
+
+# ---------------------------------------------------------------- Ganga avataran (added for story 010)
+def horse_img(L=420, flip=False, glow_=True):
+    """White yajna horse (side view, facing right) with saffron saddle-cloth."""
+    w, h = int(L * 1.25), int(L * 1.05)
+    cv = Cv(w, h)
+    u = L / 10.0
+    bx, by = w * .44, h * .48
+    body, sh = hx('#F7F3EA'), hx('#D9D2C2')
+    for k, (lx, ph) in enumerate(((-2.9, 0), (-2.1, 1), (2.3, 0), (3.0, 1))):  # legs
+        c = sh if ph else body
+        cv.line([(bx + lx * u, by + 1.0 * u), (bx + lx * u + (.2 if ph else 0) * u, by + 4.2 * u)], c, 1.0 * u)
+        cv.ell(bx + lx * u + (.2 if ph else 0) * u, by + 4.4 * u, .55 * u, .3 * u, hx('#5A4632'))
+    cv.ell(bx, by, 4.2 * u, 1.9 * u, body)  # torso
+    cv.poly([(bx + 2.6 * u, by - 1.0 * u), (bx + 3.9 * u, by - 4.2 * u), (bx + 5.0 * u, by - 3.6 * u), (bx + 3.9 * u, by + .4 * u)], body)  # neck
+    cv.ell(bx + 5.0 * u, by - 3.7 * u, 1.5 * u, .8 * u, body)  # head
+    cv.ell(bx + 6.2 * u, by - 3.4 * u, .55 * u, .45 * u, hx('#EAD9C8'))  # muzzle
+    cv.poly([(bx + 4.3 * u, by - 4.3 * u), (bx + 4.5 * u, by - 5.3 * u), (bx + 4.8 * u, by - 4.3 * u)], body)  # ear
+    cv.ell(bx + 5.2 * u, by - 3.9 * u, .16 * u, .16 * u, hx('#2A1A10'))  # eye
+    for k in range(6):  # golden mane
+        cv.ell(bx + 3.6 * u + k * .2 * u, by - 3.9 * u + k * .6 * u, .5 * u, .38 * u, hx(GOLD))
+    cv.line([(bx - 4.0 * u, by - .6 * u), (bx - 5.2 * u, by + 1.4 * u), (bx - 5.0 * u, by + 2.6 * u)], hx(GOLD), .9 * u)  # tail
+    cv.rrect(bx - 1.8 * u, by - 1.9 * u, bx + 1.6 * u, by + .7 * u, .5 * u, hx(SAFF))  # saddle cloth
+    cv.rrect(bx - 1.8 * u, by + .3 * u, bx + 1.6 * u, by + .7 * u, .2 * u, hx(GOLD))
+    cv.ell(bx - .1 * u, by - .7 * u, .45 * u, .45 * u, hx(MAROON))
+    im = cv.out()
+    return im.transpose(Image.FLIP_LEFT_RIGHT) if flip else im
+
+
+def ash_pile(w=160, seed=1):
+    cv = Cv(w, int(w * .5))
+    rnd = random.Random(seed)
+    cv.ell(w / 2, w * .4, w * .48, w * .16, hx('#6E6A66'))
+    for k in range(7):
+        x = w * (.2 + rnd.random() * .6)
+        cv.ell(x, w * .36 - rnd.random() * w * .08, w * .14, w * .07, hx('#8E8A86' if k % 2 else '#A8A4A0'))
+    return cv.out()
+
+
+def bg_patal():
+    """Rasatala: deep cave-world, glowing crystals, Kapil muni's hermitage."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1250, hx('#120A22'), hx('#3A2A5A'))
+    rnd = random.Random(301)
+    for k in range(9):  # stalactites
+        x = rnd.random() * W
+        cv.poly([(x - 60, 0), (x, 220 + rnd.random() * 260), (x + 60, 0)], hx('#2A1E40'))
+    for x, y in ((150, 700), (930, 640), (300, 980), (820, 1000)):  # crystals
+        cv.poly([(x - 26, y), (x, y - 90), (x + 26, y), (x, y + 30)], hx('#7FD3E8', 200))
+        cv.ell(x, y - 20, 70, 70, hx('#7FD3E8', 40))
+    _hills(cv, 1180, hx('#2A2046'), 140, 302)
+    cv.rect(0, 1250, W, H, hx('#3A2E4A'))
+    cv.vgrad(1250, H, hx('#4A3A5A'), hx('#140C1E'))
+    for x in (160, 920):  # hermitage trees in a glow
+        _tree(cv, x, 1260, 360, leaf='#2F6A4A', leaf2='#3F8A5A')
+    _vignette(cv)
+    return cv
+
+
+def bg_devlok():
+    """Heaven: soft gold-pink sky, clouds, a shining celestial river."""
+    cv = Cv(W, H)
+    cv.vgrad(0, H, hx('#FFE3A8'), hx('#F7B8C8'))
+    _sun(cv, 540, 520, 150, '#FFF8E0')
+    for x, y, r in ((160, 760, 120), (900, 700, 140), (520, 1000, 180), (240, 1150, 150), (880, 1200, 160)):
+        for dx in (-1, 0, 1):
+            cv.ell(x + dx * r * .7, y, r * .8, r * .45, hx('#FFFFFF', 230))
+    cv.poly([(470, 560), (610, 560), (760, 1920), (320, 1920)], hx('#BFE6F7', 220))
+    cv.poly([(510, 560), (570, 560), (640, 1920), (440, 1920)], hx('#E9F8FF', 230))
+    cv.rect(0, 1500, W, H, hx('#FFFFFF', 120))
+    _vignette(cv)
+    return cv
+
+
+def bg_himalaya():
+    """Himalaya by day: snowy peaks, blue sky, pine slopes, a rock for tapasya."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1150, hx('#5FA8E0'), hx('#CFE8F7'))
+    for cx_, top, hw in ((260, 560, 330), (760, 480, 380), (540, 700, 300)):
+        cv.poly([(cx_ - hw, 1150), (cx_, top), (cx_ + hw, 1150)], hx('#8FA6C4'))
+        cv.poly([(cx_ - hw * .4, top + (1150 - top) * .4), (cx_, top), (cx_ + hw * .4, top + (1150 - top) * .4),
+                 (cx_ + hw * .15, top + (1150 - top) * .33), (cx_, top + (1150 - top) * .42), (cx_ - hw * .15, top + (1150 - top) * .33)], hx('#FFFFFF'))
+    cv.rect(0, 1100, W, 1260, hx('#3F6A4A'))
+    _hills(cv, 1180, hx('#3F6A4A'), 120, 311)
+    for x in (80, 190, 900, 1010):
+        cv.poly([(x - 50, 1260), (x, 1050), (x + 50, 1260)], hx('#2F5A3A'))
+    cv.rect(0, 1250, W, H, hx('#7A8A6A'))
+    cv.vgrad(1250, H, hx('#8A9A7A'), hx('#3A4A32'))
+    cv.ell(540, 1330, 300, 60, hx('#6A6A72'))
+    _vignette(cv)
+    return cv
+
+
+def bg_ganga_plain():
+    """Ganga flowing across the plains at dawn (winding river)."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1000, hx('#FFB27A'), hx('#FFE6C0'))
+    _sun(cv, 300, 820, 120, '#FFF3C8')
+    _hills(cv, 980, hx('#B0A07A'), 90, 321)
+    cv.rect(0, 1000, W, H, hx('#9AB86A'))
+    cv.vgrad(1000, H, hx('#A8C47A'), hx('#4A7A3A'))
+    pts_l, pts_r = [], []
+    for k in range(25):
+        y = 1000 + k * 40
+        cx_ = 540 + math.sin(k * .35) * 160
+        hw = 40 + k * 12
+        pts_l.append((cx_ - hw, y)); pts_r.append((cx_ + hw, y))
+    cv.poly(pts_l + pts_r[::-1], hx('#6FC0D8'))
+    cv.poly([(x + 25, y) for x, y in pts_l] + [(x - 25, y) for x, y in pts_r[::-1]], hx('#9FDCEB'))
+    for x in (90, 980, 150, 930):
+        _tree(cv, x, 1150 + (x % 7) * 20, 300)
+    _vignette(cv)
+    return cv
+
+
+BACKGROUNDS.update({'patal': bg_patal, 'devlok': bg_devlok, 'himalaya': bg_himalaya, 'ganga_plain': bg_ganga_plain})
