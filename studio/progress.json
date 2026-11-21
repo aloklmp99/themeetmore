@@ -5,14 +5,8 @@
     "name": "Pranit – Soothing & Devotional Narrator",
     "note": "हर वीडियो में यही आवाज़। सिर्फ़ तब बदलो जब यह उपलब्ध न हो, और बदलने पर यहीं लिख दो।"
   },
-  "in_progress": [
-    {
-      "video_no": 11,
-      "deity": "कृष्ण",
-      "title": "दामोदर लीला (यशोदा की रस्सी, यमलार्जुन उद्धार)"
-    }
-  ],
-  "next_video_no": 11,
+  "in_progress": [],
+  "next_video_no": 12,
   "done": [
     {
       "video_no": 1,
@@ -87,6 +81,14 @@
       "date": "2026-11-21",
       "elevenlabs_credits": 1078,
       "duration_s": 104.7
+    },
+    {
+      "video_no": 11,
+      "deity": "कृष्ण",
+      "title": "दामोदर लीला (यशोदा की रस्सी, ओखल बंधन, यमलार्जुन उद्धार)",
+      "date": "2026-11-21",
+      "elevenlabs_credits": 1216,
+      "duration_s": 109.8
     }
   ]
 }
