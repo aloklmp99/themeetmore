@@ -5,7 +5,14 @@
     "name": "Pranit – Soothing & Devotional Narrator",
     "note": "हर वीडियो में यही आवाज़। सिर्फ़ तब बदलो जब यह उपलब्ध न हो, और बदलने पर यहीं लिख दो।"
   },
-  "in_progress": [],
+  "in_progress": [
+    {
+      "video_no": 13,
+      "deity": "राम (शबरी)",
+      "title": "शबरी के बेर (मतंग ऋषि का वचन, राम का आगमन, नवधा भक्ति)",
+      "date": "2026-11-22"
+    }
+  ],
   "next_video_no": 13,
   "done": [
     {
