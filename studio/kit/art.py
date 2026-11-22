@@ -2710,3 +2710,200 @@ def bg_gokul_open():
 
 
 BACKGROUNDS.update({'gokul': bg_gokul, 'gokul_open': bg_gokul_open})
+
+
+# ---------------------------------------------------------------- Ganesh aur Chandrama (added for story 012)
+def crescent_img(r=80, col='#F4F7FF', up=True):
+    """Silver crescent moon (horns up by default)."""
+    n = int(r * 2.4)
+    cv = Cv(n, n)
+    cx = cy = n / 2
+    cv.ell(cx, cy, r, r, hx(col))
+    cv.ell(cx, cy - r * .42 if up else cy + r * .42, r * .9, r * .9, (0, 0, 0, 0))
+    im = cv.im
+    # punch the inner circle (alpha 0) properly
+    m = Image.new('L', im.size, 0)
+    ImageDraw.Draw(m).ellipse([(cx - r * .9) * S, (cy - r * .42 - r * .9) * S if up else (cy + r * .42 - r * .9) * S,
+                               (cx + r * .9) * S, (cy - r * .42 + r * .9) * S if up else (cy + r * .42 + r * .9) * S], fill=255)
+    a = np.array(im)
+    a[np.array(m) > 0, 3] = 0
+    cv.im = Image.fromarray(a, 'RGBA')
+    return cv.out()
+
+
+def chandra_dev(Hh=760, namaste=False, bless=False, mouth='smile', eyes='open', arms=None):
+    """Chandra dev: moon-pale skin, silver-blue dhoti, crescent behind the head."""
+    if bless:
+        arms = ((-1.4, 5.6), (1.6, 3.4))
+    im = tinted(person, 'deva', '#E6ECF7', 'deva', Hh, namaste=namaste, mouth=mouth, eyes=eyes, arms=arms)
+    im = _recolor(im, PITAM, '#C9D4F0', 12)
+    im = _recolor(im, '#D9A41A', '#9AAAD6', 12)
+    u = Hh / 10.0
+    pad = int(Hh * .16)
+    base = Image.new('RGBA', im.size, (0, 0, 0, 0))
+    hc = Cv(im.width, im.height)
+    hcx, hcy = im.width / 2, pad + 1.75 * u
+    for k in range(5, 0, -1):
+        hc.ell(hcx, hcy, 1.45 * u + k * .12 * u, 1.45 * u + k * .12 * u, hx('#FFF6D0', 26))
+    hc.ell(hcx, hcy, 1.45 * u, 1.45 * u, hx('#FFF3C4', 235))
+    hc.ell(hcx - .55 * u, hcy - .6 * u, .2 * u, .2 * u, hx('#EADFB8'))
+    hc.ell(hcx + .7 * u, hcy + .1 * u, .16 * u, .16 * u, hx('#EADFB8'))
+    base.alpha_composite(hc.out())
+    base.alpha_composite(im)
+    return base
+
+
+def moon_disc(r=160, mood='smile', dim=0.0, glow_=True):
+    """Full moon with soft craters and a gentle face. mood: smile/laugh/sad/none. dim 0..1 greys it out."""
+    n = int(r * 3.6)
+    cv = Cv(n, n)
+    cx = cy = n / 2
+    if glow_:
+        for k in range(8, 0, -1):
+            cv.ell(cx, cy, r * (1 + k * .08), r * (1 + k * .08), hx('#FFF6D0', int(14 * (1 - dim))))
+    body = '#FFF6D8' if dim < .5 else '#B9BCC8'
+    cv.ell(cx, cy, r, r, hx(body))
+    for (dx, dy, rr) in ((-.45, -.4, .16), (.5, -.25, .11), (.35, .5, .14), (-.55, .35, .09), (.05, -.62, .08)):
+        cv.ell(cx + dx * r, cy + dy * r, rr * r, rr * r, hx('#EADFB8' if dim < .5 else '#9EA2B0'))
+    dk = hx('#6A5A3A')
+    lw = max(2, r * .035)
+    if mood != 'none':
+        for sg in (-1, 1):
+            if mood == 'laugh':
+                cv.arc(cx + sg * r * .3, cy - r * .08, r * .13, r * .09, 200, 340, dk, lw)
+            elif mood == 'sad':
+                cv.arc(cx + sg * r * .3, cy - r * .02, r * .13, r * .08, 20, 160, dk, lw)
+            else:
+                cv.ell(cx + sg * r * .3, cy - r * .08, r * .05, r * .06, dk)
+        if mood == 'laugh':
+            cv.d.chord([(cx - r * .3) * S, (cy + r * .05) * S, (cx + r * .3) * S, (cy + r * .5) * S], 0, 180, fill=hx('#8A3A3A'))
+        elif mood == 'sad':
+            cv.arc(cx, cy + r * .42, r * .2, r * .1, 200, 340, dk, lw)
+        else:
+            cv.arc(cx, cy + r * .2, r * .2, r * .12, 20, 160, dk, lw)
+    im = cv.out()
+    if dim > 0:
+        a = np.array(im).astype(float)
+        a[..., :3] = a[..., :3] * (1 - .45 * dim) + np.array([70, 75, 95]) * .45 * dim
+        im = Image.fromarray(a.astype(np.uint8), 'RGBA')
+    return im
+
+
+def snake_img(L=360, raise_=1.0, flip=False):
+    """Small green snake, head raised (side view facing right)."""
+    h = int(L * .7)
+    cv = Cv(L, h)
+    u = L / 10.0
+    pts = []
+    for k in range(24):
+        x = .3 * u + k * .3 * u
+        y = h - .9 * u - math.sin(k * .7) * .45 * u
+        pts.append((x, y))
+    hx_, hy_ = 7.6 * u, h - .9 * u - 3.2 * u * raise_
+    pts += [(7.4 * u, h - 1.6 * u), (7.3 * u, h - 1.0 * u - 2.0 * u * raise_), (hx_, hy_)]
+    cv.line(pts, hx('#3E8E41'), .75 * u)
+    cv.line(pts[:-3], hx('#6CC070'), .25 * u)
+    cv.ell(hx_ + .3 * u, hy_, .75 * u, .5 * u, hx('#3E8E41'))
+    cv.ell(hx_ + .5 * u, hy_ - .1 * u, .14 * u, .14 * u, hx('#FFE066'))
+    cv.ell(hx_ + .52 * u, hy_ - .1 * u, .06 * u, .1 * u, hx('#111111'))
+    cv.line([(hx_ + 1.0 * u, hy_ + .1 * u), (hx_ + 1.5 * u, hy_ + .15 * u)], hx('#D32F2F'), 3)
+    im = cv.out()
+    return im.transpose(Image.FLIP_LEFT_RIGHT) if flip else im
+
+
+def modak_img(r=40):
+    """One modak: cream dumpling with pleats and a pointed top."""
+    cv = Cv(int(r * 2.4), int(r * 2.6))
+    cx, by = r * 1.2, r * 2.4
+    cv.ell(cx, by - r * .7, r, r * .72, hx('#FFF1D0'))
+    cv.poly([(cx - r * .9, by - r * .9), (cx, by - r * 2.3), (cx + r * .9, by - r * .9)], hx('#FFF1D0'))
+    for k in (-.5, 0, .5):
+        cv.line([(cx + k * r * 1.1, by - r * .2), (cx + k * r * .15, by - r * 2.0)], hx('#E8C98A'), max(1, r * .06))
+    cv.ell(cx, by - r * .08, r * .7, r * .12, hx('#E2B868', 120))
+    return cv.out()
+
+
+def modak_plate(w=360, n=9):
+    """Golden plate heaped with modaks."""
+    h = int(w * .7)
+    cv = Cv(w, h)
+    cv.ell(w / 2, h * .86, w * .48, w * .11, hx(GOLD2))
+    cv.ell(w / 2, h * .83, w * .44, w * .09, hx(GOLD))
+    im = cv.out()
+    rows = [(0.84, 4), (0.66, 3), (0.48, 2)]
+    pos = []
+    for yy, k in rows:
+        for j in range(k):
+            pos.append((w / 2 + (j - (k - 1) / 2) * w * .2, h * yy))
+    for x, y in pos[:n]:
+        m = modak_img(int(w * .085))
+        im.alpha_composite(m, (int(x - m.width / 2), int(y - m.height)))
+    return im
+
+
+def lota_img(Hh=120):
+    """Small copper lota (water pot)."""
+    w = int(Hh * .9)
+    cv = Cv(w, Hh)
+    cx = w / 2
+    cv.ell(cx, Hh * .62, w * .42, Hh * .34, hx('#C8742E'))
+    cv.ell(cx - w * .12, Hh * .55, w * .12, Hh * .12, hx('#E59A55'))
+    cv.rect(cx - w * .16, Hh * .18, cx + w * .16, Hh * .34, hx('#B5652A'))
+    cv.ell(cx, Hh * .18, w * .28, Hh * .07, hx('#D9853A'))
+    return cv.out()
+
+
+def bg_raat_path():
+    """Moonlit forest path at night: deep blue sky, stars, dark hills, winding path."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1200, hx('#0E1240'), hx('#3B3F86'))
+    _sparkles(cv, 60, 81, 80, 900, '#FFFFFF')
+    _hills(cv, 1050, hx('#23285E'), 200, 82, n=6)
+    _hills(cv, 1180, hx('#1A1E4C'), 120, 83, n=8)
+    cv.rect(0, 1240, W, H, hx('#22305A'))
+    cv.vgrad(1200, H, hx('#2B3A6A'), hx('#121A36'))
+    cv.poly([(470, 1210), (610, 1210), (900, H), (150, H)], hx('#6B6A8E'))
+    cv.poly([(500, 1210), (580, 1210), (760, H), (300, H)], hx('#807FA2'))
+    for x, h in ((70, 620), (210, 480), (880, 500), (1010, 640)):
+        _tree(cv, x, 1330, h, trunk='#2A2238', leaf='#1D3A3A', leaf2='#24504A')
+    _vignette(cv)
+    return cv
+
+
+def bg_raat_sarovar():
+    """Lake at night with lotus leaves; dark sky without the moon."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1000, hx('#080A26'), hx('#262A5E'))
+    _sparkles(cv, 40, 91, 80, 800, '#C9CCE8')
+    _hills(cv, 1000, hx('#151838'), 140, 92, n=7)
+    cv.rect(0, 1000, W, H, hx('#1B2E5A'))
+    cv.vgrad(1000, H, hx('#22386A'), hx('#0E1A3A'))
+    for k in range(18):
+        y = 1050 + k * 48
+        cv.line([(60 + (k * 97) % 300, y), (360 + (k * 131) % 500, y)], hx('#3E5C96', 120), 3)
+    for x, y, r in ((180, 1520, 90), (860, 1460, 110), (320, 1250, 60), (760, 1180, 55)):
+        cv.ell(x, y, r * 1.3, r * .4, hx('#2E6B4A'))
+        cv.poly([(x, y), (x + r * 1.1, y - r * .1), (x + r * 1.1, y + r * .1)], hx('#1B2E5A'))
+    _vignette(cv)
+    return cv
+
+
+def bg_raat_chhat():
+    """Village rooftop at night for the Sankashti arghya: parapet, diyas ledge, starry sky."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1250, hx('#141A52'), hx('#5B4A8A'))
+    _sparkles(cv, 50, 101, 80, 1000, '#FFFFFF')
+    for x, w_, h_ in ((40, 220, 260), (300, 180, 200), (760, 260, 300)):
+        cv.rect(x, 1250 - h_, x + w_, 1250, hx('#2C2650'))
+        cv.rect(x + w_ * .4, 1250 - h_ * .6, x + w_ * .55, 1250 - h_ * .35, hx('#F2B84A', 200))
+    cv.rect(0, 1250, W, H, hx('#B98A5E'))
+    cv.vgrad(1250, H, hx('#C99A6A'), hx('#6A4A32'))
+    cv.rect(0, 1240, W, 1290, hx('#8E6440'))
+    cv.ell(540, 1600, 300, 70, hx('#F2F2F2'))
+    cv.ell(540, 1600, 220, 48, hx('#E53935'))
+    cv.ell(540, 1600, 130, 28, hx('#F4C430'))
+    _vignette(cv)
+    return cv
+
+
+BACKGROUNDS.update({'raat_path': bg_raat_path, 'raat_sarovar': bg_raat_sarovar, 'raat_chhat': bg_raat_chhat})
