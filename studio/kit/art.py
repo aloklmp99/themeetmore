@@ -144,6 +144,12 @@ def person(kind, Hh=760, arms=None, bundle=False, walk=0.0, eyes='open', mouth='
         for k in (-.8, -.3, .3, .8):
             c.line([(cx + k * u * .8, 5.4 * u), (cx + k * u * 1.15, 9.0 * u)], gd, 2)
         c.rrect(cx - 1.3 * u, 5.0 * u, cx + 1.3 * u, 5.4 * u, .1 * u, hx('#C0392B'))
+    elif kind in ('ram', 'lakshman'):  # vanvasi valkal dhoti
+        gc, gd = (hx('#E39A2E'), hx('#B8741A')) if kind == 'ram' else (hx('#D9682A'), hx('#A84A18'))
+        c.poly([(cx - 1.25 * u, 5.1 * u), (cx + 1.25 * u, 5.1 * u), (cx + 1.6 * u, 8.9 * u), (cx - 1.6 * u, 8.9 * u)], gc)
+        for k in (-.8, -.3, .3, .8):
+            c.line([(cx + k * u * .8, 5.4 * u), (cx + k * u * 1.1, 8.8 * u)], gd, 2)
+        c.rrect(cx - 1.3 * u, 5.0 * u, cx + 1.3 * u, 5.4 * u, .1 * u, hx('#7A4A1E'))
     elif kind == 'shiva':  # tiger-skin
         c.poly([(cx - 1.25 * u, 5.1 * u), (cx + 1.25 * u, 5.1 * u), (cx + 1.6 * u, 8.5 * u), (cx - 1.6 * u, 8.5 * u)], hx('#E89A3C'))
         for k in range(6):
@@ -195,6 +201,13 @@ def person(kind, Hh=760, arms=None, bundle=False, walk=0.0, eyes='open', mouth='
             py = 3.1 * u + math.sin(t * math.pi) * 1.3 * u
             c.ell(px, py, .13 * u, .13 * u, hx('#E8507A' if int(t * 8) % 2 else '#F7D44C'))
         c.ell(cx, 4.05 * u, .1 * u, .1 * u, hx('#C0392B'))
+    if kind in ('ram', 'lakshman'):
+        c.line([(cx - .9 * u, 3.0 * u), (cx + .8 * u, 5.0 * u)], hx('#F4EFE0'), 3)  # janeu
+        for t in np.linspace(0, 1, 9):
+            c.ell(cx - .85 * u + t * 1.7 * u, 3.1 * u + math.sin(t * math.pi) * 1.2 * u, .12 * u, .12 * u,
+                  hx('#F7D44C' if int(t * 8) % 2 else '#F08A24'))
+        # quiver strap
+        c.line([(cx + .95 * u, 3.0 * u), (cx - .85 * u, 5.0 * u)], hx('#6B3A1E'), 5)
     if kind == 'shiva':
         for t in np.linspace(0, 1, 11):  # rudraksha mala
             c.ell(cx - .9 * u + t * 1.8 * u, 3.1 * u + math.sin(t * math.pi) * 1.4 * u, .1 * u, .1 * u, hx('#6B3A1E'))
@@ -245,6 +258,17 @@ def person(kind, Hh=760, arms=None, bundle=False, walk=0.0, eyes='open', mouth='
             c.ell(hcx + .38 * u, by - 1.3 * u, .27 * u, .4 * u, hx('#1E8E6E'))
             c.ell(hcx + .38 * u, by - 1.3 * u, .16 * u, .26 * u, hx('#1B4F9C'))
             c.ell(hcx + .38 * u, by - 1.25 * u, .08 * u, .12 * u, hx('#F2C94C'))
+    elif kind in ('ram', 'lakshman'):
+        jc = hx('#2A1208')
+        c.arc(hcx, head_cy - .1 * u, head_r * 1.04, head_r * 1.1, 180, 360, jc, int(.5 * u))
+        for sg in (-1, 1):
+            c.poly([(hcx + sg * head_r * 1.02, head_cy - .05 * u), (hcx + sg * head_r * 1.2, head_cy + 1.1 * u),
+                    (hcx + sg * head_r * .8, head_cy + .7 * u), (hcx + sg * head_r * .55, head_cy - .75 * u)], jc)
+        c.ell(hcx, head_cy - head_r * 1.3, .55 * u, .62 * u, jc)  # jata bun
+        c.ell(hcx, head_cy - head_r * .98, .8 * u, .3 * u, jc)
+        c.arc(hcx, head_cy - head_r * 1.0, .82 * u, .22 * u, 0, 180, hx('#D9A41A'), 4)  # rudraksh/flower band
+        for k in (-1, 0, 1):
+            c.arc(hcx + k * .22 * u, head_cy - head_r * 1.35, .26 * u, .45 * u, 200, 340, hx('#4A2E1A'), 3)
     elif kind == 'shiva':
         jc = hx('#3A2618')
         c.arc(hcx, head_cy - .1 * u, head_r * 1.04, head_r * 1.1, 180, 360, jc, int(.5 * u))
@@ -314,6 +338,10 @@ def person(kind, Hh=760, arms=None, bundle=False, walk=0.0, eyes='open', mouth='
     # tilak / bindi
     if kind in ('krishna', 'vishnu', 'deva', 'raja'):
         c.line([(hcx, head_cy - .62 * u), (hcx, head_cy - .3 * u)], hx('#E63946'), 4)
+    elif kind in ('ram', 'lakshman'):
+        c.line([(hcx - .1 * u, head_cy - .66 * u), (hcx - .06 * u, head_cy - .3 * u)], hx('#FFF6E0'), 3)
+        c.line([(hcx + .1 * u, head_cy - .66 * u), (hcx + .06 * u, head_cy - .3 * u)], hx('#FFF6E0'), 3)
+        c.line([(hcx, head_cy - .62 * u), (hcx, head_cy - .32 * u)], hx('#E63946'), 4)
     elif kind == 'shiva':
         for k in (0, 1, 2):
             c.line([(hcx - .3 * u, head_cy - .66 * u + k * .1 * u), (hcx + .3 * u, head_cy - .66 * u + k * .1 * u)], hx('#FFFFFF'), 3)
@@ -2907,3 +2935,210 @@ def bg_raat_chhat():
 
 
 BACKGROUNDS.update({'raat_path': bg_raat_path, 'raat_sarovar': bg_raat_sarovar, 'raat_chhat': bg_raat_chhat})
+
+
+# ---------------------------------------------------------------- Shabari ke ber (added for story 013)
+SKIN['ram'] = '#5E8FCB'       # shyam (blue-dark) vanvasi Ram
+SKIN['lakshman'] = '#E2A26E'
+SKIN['shabari'] = '#A9744A'
+SAREE['shabari'] = ('#C9A57A', '#8A5A2E', '#A88452', '#7A4E2A', '#D9BC8E')   # simple, faded vanvasi saree
+
+
+def _wood_bow(Hh):
+    w = int(Hh * .32)
+    cv = Cv(w, Hh)
+    pts = [(w * .2 + math.sin(t * math.pi) * w * .55, t * Hh) for t in np.linspace(0.02, .98, 30)]
+    cv.line(pts, hx('#5A3212'), Hh * .03)
+    cv.line(pts, hx('#B8742E'), Hh * .016)
+    cv.line([pts[0], pts[-1]], hx('#F4EFE0'), max(2, Hh * .006))
+    return cv.out()
+
+
+def vanvasi(kind='ram', Hh=760, bow=True, quiver=True, **kw):
+    """Ram / Lakshman in forest exile: jata, valkal, flower mala, bow on the back + quiver."""
+    im = person(kind, Hh, **kw)
+    u = Hh / 10.0
+    pad = int(Hh * .16)
+    out = Image.new('RGBA', im.size, (0, 0, 0, 0))
+    cx = im.width / 2
+    if quiver:  # behind right shoulder
+        q = Cv(int(u * 1.2), int(u * 3.6))
+        q.rrect(u * .25, u * .9, u * .95, u * 3.5, u * .2, hx('#7A3E1A'))
+        q.rect(u * .25, u * 1.3, u * .95, u * 1.45, hx(GOLD))
+        for k in range(4):
+            x = u * (.35 + k * .17)
+            q.line([(x, u * .95), (x + u * .05, u * .1)], hx('#C9A36A'), 3)
+            q.poly([(x - u * .07, u * .25), (x + u * .05, 0), (x + u * .17, u * .25)], hx('#E8E4DA'))
+        qi = q.out().rotate(-18, expand=True, resample=Image.BICUBIC)
+        out.alpha_composite(qi, (int(cx + u * .4), int(pad + u * 1.6)))
+    if bow:  # behind left shoulder, tilted
+        b = _wood_bow(int(u * 7.0)).rotate(16, expand=True, resample=Image.BICUBIC)
+        out.alpha_composite(b, (int(cx - u * 2.6), int(pad + u * .6)))
+    out.alpha_composite(im)
+    return out
+
+
+def shabari(Hh=760, **kw):
+    """Old Bhil devotee Shabari: faded saree, white hair, smaller & slightly bent look via scaling."""
+    im = person('shabari', Hh, **kw)
+    u = Hh / 10.0
+    pad = int(Hh * .16)
+    wh = _recolor(im, '#2A1810', '#ECE8DE', 12)   # white hair, but keep eyes/brows dark
+    a, b = np.array(im), np.array(wh)
+    yy, xx = np.mgrid[0:a.shape[0], 0:a.shape[1]]
+    hc = im.width / 2 + kw.get('head_dx', 0.0) * u * (-1 if kw.get('flip') else 1)
+    keep = (np.abs(xx - hc) < .62 * u) & (yy > pad + 1.68 * u) & (yy < pad + 2.8 * u)
+    b[keep] = a[keep]
+    im = Image.fromarray(b, 'RGBA')
+    d = ImageDraw.Draw(im, 'RGBA')
+    hcx = im.width / 2 + kw.get('head_dx', 0.0) * u * (-1 if kw.get('flip') else 1)
+    hy = pad + 2.0 * u
+    for k in (-1, 1):
+        d.arc([hcx + k * .42 * u - .2 * u, hy + .1 * u, hcx + k * .42 * u + .2 * u, hy + .3 * u], 20, 160, fill=(110, 66, 40, 170), width=2)
+    d.line([(hcx - .3 * u, hy - .5 * u), (hcx + .3 * u, hy - .5 * u)], fill=(110, 66, 40, 140), width=2)
+    return im
+
+
+def matang(Hh=760, **kw):
+    """Matang rishi: white beard, saffron dhoti and shawl (sudama figure recoloured)."""
+    im = person('sudama', Hh, **kw)
+    im = _recolor(im, '#EADFC4', '#E0862A', 8)
+    im = _recolor(im, '#D9A066', '#F2A33C', 8)
+    im = _recolor(im, '#B7956A', '#E0862A', 8)
+    im = _recolor(im, '#9C8A6A', '#E0862A', 8)
+    return im
+
+
+def ber_img(r=16, ripe=True):
+    cv = Cv(int(r * 2.6), int(r * 2.6))
+    c = r * 1.3
+    cv.ell(c, c, r, r * .92, hx('#C8352A' if ripe else '#E8A63A'))
+    cv.ell(c - r * .35, c - r * .35, r * .28, r * .22, hx('#FFD6B8', 200))
+    cv.line([(c, c - r * .9), (c + r * .2, c - r * 1.25)], hx('#5A3A1A'), 2)
+    return cv.out()
+
+
+def ber_basket(w=300, n=16, seed=5):
+    """Leaf-lined bamboo basket (dona/tokri) heaped with ber."""
+    h = int(w * .62)
+    cv = Cv(w, h)
+    rnd = random.Random(seed)
+    for k in range(n):
+        x = w * .2 + rnd.random() * w * .6
+        y = h * .28 + rnd.random() * h * .14 - abs(x - w / 2) / w * h * .25
+        r = w * .055
+        cv.ell(x, y, r, r * .92, hx(['#C8352A', '#B22A22', '#E06A2A', '#D9482A'][k % 4]))
+        cv.ell(x - r * .35, y - r * .35, r * .25, r * .2, hx('#FFD6B8', 190))
+    for sg in (-1, 1):
+        cv.poly([(w / 2, h * .42), (w / 2 + sg * w * .55, h * .2), (w / 2 + sg * w * .3, h * .5)], hx('#3F8A3A'))
+    cv.poly([(w * .06, h * .42), (w * .94, h * .42), (w * .78, h * .98), (w * .22, h * .98)], hx('#C9934A'))
+    for k in range(5):
+        y = h * (.5 + k * .1)
+        cv.line([(w * (.08 + k * .03), y), (w * (.92 - k * .03), y)], hx('#8E5E22'), 3)
+    for k in range(7):
+        x = w * (.12 + k * .126)
+        cv.line([(x, h * .44), (w / 2 + (x - w / 2) * .7, h * .97)], hx('#A8742E'), 2)
+    cv.rrect(w * .04, h * .38, w * .96, h * .47, 8, hx('#B07A33'))
+    return cv.out()
+
+
+def ber_tree(Hh=900, seed=13, fruits=26):
+    w = int(Hh * .9)
+    cv = Cv(w, Hh)
+    cx = w / 2
+    cv.poly([(cx - Hh * .05, Hh), (cx + Hh * .05, Hh), (cx + Hh * .03, Hh * .45), (cx - Hh * .03, Hh * .45)], hx('#6B4226'))
+    cv.line([(cx, Hh * .55), (cx - Hh * .2, Hh * .35)], hx('#6B4226'), Hh * .025)
+    cv.line([(cx, Hh * .6), (cx + Hh * .22, Hh * .38)], hx('#6B4226'), Hh * .025)
+    rnd = random.Random(seed)
+    for k in range(9):
+        x = cx + (rnd.random() - .5) * Hh * .6
+        y = Hh * (.2 + rnd.random() * .25)
+        cv.ell(x, y, Hh * (.14 + rnd.random() * .06), Hh * (.11 + rnd.random() * .04), hx(['#3F7D3A', '#4E9A44', '#356E32'][k % 3]))
+    for k in range(fruits):
+        x = cx + (rnd.random() - .5) * Hh * .62
+        y = Hh * (.14 + rnd.random() * .32)
+        cv.ell(x, y, Hh * .014, Hh * .013, hx(['#C8352A', '#E06A2A', '#E8A63A'][k % 3]))
+    return cv.out()
+
+
+def jhadu_img(Hh=360):
+    """Simple grass broom."""
+    w = int(Hh * .4)
+    cv = Cv(w, Hh)
+    cv.line([(w / 2, 0), (w / 2, Hh * .5)], hx('#8E5E22'), Hh * .04)
+    cv.rect(w / 2 - Hh * .04, Hh * .45, w / 2 + Hh * .04, Hh * .52, hx('#5A3A1A'))
+    for k in range(13):
+        x = w * (.05 + k * .9 / 12)
+        cv.line([(w / 2 + (x - w / 2) * .15, Hh * .5), (x, Hh * .99)], hx(['#D9B45A', '#C99A3A'][k % 2]), 4)
+    return cv.out()
+
+
+def _kutia(cv, x0, base, w, h):
+    cv.rect(x0, base - h * .55, x0 + w, base, hx('#C9A06C'))
+    cv.poly([(x0 - w * .14, base - h * .52), (x0 + w / 2, base - h), (x0 + w * 1.14, base - h * .52)], hx('#B07A33'))
+    for i in range(8):
+        cv.line([(x0 - w * .1 + i * w * .17, base - h * .53), (x0 + w / 2, base - h * .98)], hx('#8E5E22', 160), 3)
+    cv.rect(x0 + w * .38, base - h * .38, x0 + w * .62, base, hx('#5A3A1A'))
+
+
+def bg_matang_van():
+    """Matang van ashram at dawn: kutia, ber trees, a clean mud path."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1150, hx('#FFC98A'), hx('#FFF0CC'))
+    _sun(cv, 760, 700, 150, '#FFF3C4')
+    _hills(cv, 1050, hx('#A9B86E'), 130, 131)
+    _hills(cv, 1160, hx('#6E9A50'), 90, 132)
+    cv.rect(0, 1160, W, H, hx('#6EA85A'))
+    cv.vgrad(1160, H, hx('#78AE5C'), hx('#3E7A3A'))
+    cv.poly([(470, 1160), (600, 1160), (1100, H), (-60, H)], hx('#D8B27A'))
+    cv.poly([(505, 1160), (565, 1160), (820, H), (240, H)], hx('#E8CB98'))
+    _kutia(cv, 90, 1250, 330, 430)
+    for x, h in ((980, 560), (760, 380), (30, 360)):
+        _tree(cv, x, 1260, h)
+        rnd = random.Random(x)
+        for k in range(10):
+            cv.ell(x + (rnd.random() - .5) * h * .5, 1260 - h * (.6 + rnd.random() * .2), h * .016, h * .015, hx('#C8352A'))
+    _sparkles(cv, 10, 133, 200, 700)
+    _vignette(cv)
+    return cv
+
+
+def bg_kutia_andar():
+    """Inside the leaf hut: mud walls, a grass mat, a small diya niche, doorway light."""
+    cv = Cv(W, H)
+    cv.vgrad(0, H, hx('#B98A58'), hx('#6B4426'))
+    cv.poly([(0, 0), (W, 0), (W, 520), (540, 300), (0, 520)], hx('#8A5A22'))
+    for i in range(16):
+        cv.line([(i * 72, 0), (540, 300)], hx('#6B4216', 150), 4)
+    cv.rrect(640, 620, 960, 1240, 160, hx('#FFE3A8'))     # doorway with sunlight
+    cv.rrect(670, 650, 930, 1240, 140, hx('#FFF3D0'))
+    _hills(cv, 1120, hx('#8DB36B'), 60, 141)
+    cv.rect(0, 1240, W, H, hx('#8E6238'))
+    cv.vgrad(1240, H, hx('#9A6C40'), hx('#4A2E18'))
+    cv.rrect(120, 1300, 600, 1420, 20, hx('#D9BC6A'))   # grass mat
+    for k in range(10):
+        cv.line([(140 + k * 46, 1305), (140 + k * 46, 1415)], hx('#B8963E'), 3)
+    cv.rrect(180, 760, 320, 880, 40, hx('#4A2E18'))        # niche
+    cv.ell(250, 860, 30, 10, hx('#C96A1F'))
+    cv.poly([(240, 855), (250, 815), (260, 855)], hx('#FFD34E'))
+    _vignette(cv)
+    return cv
+
+
+def bg_raat_van():
+    """Moonlit forest: years passing while Shabari waits."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1150, hx('#1E2350'), hx('#5A4A82'))
+    cv.ell(780, 560, 110, 110, hx('#FFF6D8'))
+    _sparkles(cv, 40, 151, 100, 900, '#FFFFFF')
+    _hills(cv, 1080, hx('#2E3A5A'), 120, 152)
+    cv.rect(0, 1160, W, H, hx('#2A3E3A'))
+    cv.vgrad(1160, H, hx('#33504A'), hx('#14241E'))
+    _kutia(cv, 620, 1260, 330, 430)
+    for x, h in ((80, 600), (330, 420)):
+        _tree(cv, x, 1270, h, leaf='#24493A', leaf2='#2F5E46')
+    _vignette(cv)
+    return cv
+
+
+BACKGROUNDS.update({'matang_van': bg_matang_van, 'kutia_andar': bg_kutia_andar, 'raat_van': bg_raat_van})
