@@ -5,15 +5,8 @@
     "name": "Pranit – Soothing & Devotional Narrator",
     "note": "हर वीडियो में यही आवाज़। सिर्फ़ तब बदलो जब यह उपलब्ध न हो, और बदलने पर यहीं लिख दो।"
   },
-  "in_progress": [
-    {
-      "video_no": 12,
-      "deity": "गणेश-चंद्र",
-      "title": "गणेश और चंद्रमा (चंद्र को श्राप, संकष्टी पर चंद्र अर्घ्य)",
-      "date": "2026-11-22"
-    }
-  ],
-  "next_video_no": 12,
+  "in_progress": [],
+  "next_video_no": 13,
   "done": [
     {
       "video_no": 1,
@@ -96,6 +89,14 @@
       "date": "2026-11-21",
       "elevenlabs_credits": 1216,
       "duration_s": 109.8
+    },
+    {
+      "video_no": 12,
+      "deity": "गणेश-चंद्र",
+      "title": "गणेश और चंद्रमा (चंद्र को श्राप, भालचंद्र, संकष्टी पर चंद्र अर्घ्य)",
+      "date": "2026-11-22",
+      "elevenlabs_credits": 1256,
+      "duration_s": 105.9
     }
   ]
 }
