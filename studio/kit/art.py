@@ -3320,3 +3320,187 @@ def bg_arunachala():
 
 
 BACKGROUNDS.update({'brahmand': bg_brahmand, 'dharti_neeche': bg_dharti_neeche, 'gagan': bg_gagan, 'arunachala': bg_arunachala})
+
+
+# ---------------------------------------------------------------- Bhishma ka pran (added for story 015)
+SKIN['bhishma'] = '#E2A878'
+
+
+def _white_hair(im, Hh, src='#2A1208', dst='#EEECE6', head_dx=0.0, flip=False):
+    """Recolour dark hair to white but keep the eyes/brows in the face box dark."""
+    u = Hh / 10.0
+    pad = int(Hh * .16)
+    wh = _recolor(im, src, dst, 12)
+    a, b = np.array(im), np.array(wh)
+    yy, xx = np.mgrid[0:a.shape[0], 0:a.shape[1]]
+    hc = im.width / 2 + head_dx * u * (-1 if flip else 1)
+    keep = (np.abs(xx - hc) < .62 * u) & (yy > pad + 1.68 * u) & (yy < pad + 2.8 * u)
+    b[keep] = a[keep]
+    return Image.fromarray(b, 'RGBA')
+
+
+def _gold_bow(Hh, col='#E8B84A', col2='#8A5A12'):
+    w = int(Hh * .32)
+    cv = Cv(w, Hh)
+    pts = [(w * .2 + math.sin(t * math.pi) * w * .55, t * Hh) for t in np.linspace(0.02, .98, 30)]
+    cv.line(pts, hx(col2), Hh * .034)
+    cv.line(pts, hx(col), Hh * .018)
+    cv.line([pts[0], pts[-1]], hx('#F4EFE0'), max(2, Hh * .006))
+    return cv.out()
+
+
+def _with_bow(im, Hh, hand, gold=True, flip=False):
+    """Composite a vertical bow so its grip sits at the given hand (arms coords)."""
+    u = Hh / 10.0
+    pad = int(Hh * .16)
+    b = (_gold_bow if gold else _wood_bow)(int(u * 6.2))
+    if flip:
+        b = b.transpose(Image.FLIP_LEFT_RIGHT)
+    hx_ = im.width / 2 + hand[0] * u * (-1 if flip else 1)
+    hy_ = pad + hand[1] * u
+    W2 = max(im.width, int(hx_ + b.width) + 4)
+    out = Image.new('RGBA', (im.width, im.height), (0, 0, 0, 0))
+    bx = int(hx_ - b.width * (.75 if not flip else .25))
+    out.alpha_composite(im)
+    tmp = Image.new('RGBA', im.size, (0, 0, 0, 0))
+    tmp.paste(b, (bx, int(hy_ - b.height / 2)), b)
+    out.alpha_composite(tmp)
+    return out
+
+
+def bhishma(Hh=760, bow=False, arms=None, namaste=False, eyes='open', mouth='smile', flip=False):
+    """Pitamah Bhishma: white hair and long white beard, gold kirit, white dhoti; optional bow in left hand."""
+    if bow and arms is None:
+        arms = ((-2.0, 4.6), (1.5, 5.7))
+    im = tinted(person, 'raja', SKIN['bhishma'], 'raja', Hh, arms=arms, namaste=namaste, eyes=eyes, mouth=mouth)
+    im = _recolor(im, '#3A2618', '#F4F1EA', 14)           # beard white
+    im = _recolor(im, '#E0662A', '#F3EFE4', 10)           # dhoti white
+    im = _recolor(im, '#B04A18', '#CFC6B4', 10)
+    im = _white_hair(im, Hh)
+    # longer beard
+    u = Hh / 10.0
+    pad = int(Hh * .16)
+    d = ImageDraw.Draw(im, 'RGBA')
+    cx = im.width / 2
+    hy = pad + 2.0 * u
+    d.polygon([(cx - .5 * u, hy + 1.2 * u), (cx + .5 * u, hy + 1.2 * u), (cx + .25 * u, hy + 2.2 * u), (cx, hy + 2.4 * u),
+               (cx - .25 * u, hy + 2.2 * u)], fill=hx('#F4F1EA'))
+    if bow:
+        im = _with_bow(im, Hh, arms[0], gold=False)
+    return im.transpose(Image.FLIP_LEFT_RIGHT) if flip else im
+
+
+SKIN['arjun'] = '#C98E5E'
+
+
+def arjun(Hh=760, bow=True, arms=None, namaste=False, eyes='open', mouth='smile', flip=False, dhoti=('#B3262E', '#7E1820'), walk=0.0):
+    """Arjun: kirit (Kiriti), red dhoti, gold Gandiva bow in left hand."""
+    if bow and arms is None and not namaste:
+        arms = ((-2.0, 4.6), (1.5, 5.7))
+    im = tinted(person, 'raja', SKIN['arjun'], 'raja', Hh, arms=arms, namaste=namaste, eyes=eyes, mouth=mouth, walk=walk)
+    im = _recolor(im, '#3A2618', SKIN['arjun'], 14)        # no beard
+    im = _recolor(im, '#E0662A', dhoti[0], 10)
+    im = _recolor(im, '#B04A18', dhoti[1], 10)
+    u = Hh / 10.0
+    pad = int(Hh * .16)
+    d = ImageDraw.Draw(im, 'RGBA')
+    cx = im.width / 2
+    hy = pad + 2.0 * u
+    d.arc([cx - .3 * u, hy + .22 * u, cx + .3 * u, hy + .5 * u], 200, 340, fill=hx('#2A1208'), width=max(2, int(.08 * u)))  # moustache
+    if bow and not namaste:
+        im = _with_bow(im, Hh, arms[0], gold=True)
+    return im.transpose(Image.FLIP_LEFT_RIGHT) if flip else im
+
+
+def wheel_img(r=150, t=0.0, glow_=0.0):
+    """Wooden chariot wheel with gold rim and 8 spokes."""
+    n = int(r * 2.6)
+    cv = Cv(n, n)
+    c = n / 2
+    if glow_ > 0:
+        for k in range(6, 0, -1):
+            cv.ell(c, c, r * (1 + k * .07), r * (1 + k * .07), (255, 220, 130, int(28 * glow_)))
+    cv.ell(c, c, r, r, hx('#7A4A1E'))
+    cv.ell(c, c, r * .86, r * .86, hx('#3A2010'))
+    cv.ell(c, c, r * .99, r * .99, None, hx(GOLD), r * .07)
+    cv.ell(c, c, r * .86, r * .86, None, hx('#5A3212'), r * .05)
+    for k in range(8):
+        a = t + k * math.pi / 4
+        cv.line([(c, c), (c + math.cos(a) * r * .86, c + math.sin(a) * r * .86)], hx('#9A6A34'), r * .07)
+    cv.ell(c, c, r * .2, r * .2, hx(GOLD2))
+    cv.ell(c, c, r * .09, r * .09, hx('#5A3212'))
+    return cv.out()
+
+
+def war_ratha(w=640, t=0.0, wheel=True, flag=True):
+    """War chariot (side view facing right): carved body, big wheel, saffron dhwaja."""
+    h = int(w * .9)
+    cv = Cv(w, h)
+    base = h * .78
+    if flag:
+        cv.line([(w * .3, base - h * .3), (w * .3, h * .02)], hx('#6B4226'), w * .012)
+        wv = math.sin(t * 4) * w * .02
+        cv.poly([(w * .3, h * .03), (w * .55 + wv, h * .08), (w * .3, h * .15)], hx('#F08A24'))
+        cv.ell(w * .38, h * .085, w * .02, w * .02, hx('#FFF1D0'))
+    cv.poly([(w * .1, base - h * .32), (w * .68, base - h * .32), (w * .74, base - h * .06), (w * .06, base - h * .06)], hx('#8C2A1E'))
+    cv.poly([(w * .14, base - h * .27), (w * .64, base - h * .27), (w * .68, base - h * .1), (w * .1, base - h * .1)], hx('#B5402A'))
+    cv.rect(w * .08, base - h * .35, w * .7, base - h * .31, hx(GOLD))
+    for k in range(5):
+        cv.ell(w * (.18 + k * .11), base - h * .185, w * .022, w * .022, hx(GOLD))
+    cv.line([(w * .7, base - h * .12), (w * .98, base - h * .2)], hx('#6B4226'), w * .018)  # yoke pole
+    if wheel:
+        wi = wheel_img(int(h * .2), t)
+        cv.paste(wi, w * .38 - wi.width / 2, base - h * .14 - wi.height / 2)
+    return cv.out()
+
+
+def arrow_bed(w=820, n=26, seed=4):
+    """Rows of arrows standing up (Bhishma's shar-shayya)."""
+    h = int(w * .42)
+    cv = Cv(w, h)
+    rnd = random.Random(seed)
+    for k in range(n):
+        x = w * .05 + k * (w * .9 / (n - 1)) + rnd.uniform(-6, 6)
+        top = h * rnd.uniform(.08, .22)
+        tilt = rnd.uniform(-14, 14)
+        cv.line([(x, h * .98), (x + tilt, top)], hx('#C9A36A'), 4)
+        cv.poly([(x + tilt - 7, top + 26), (x + tilt + 7, top + 26), (x + tilt + 4, top), (x + tilt - 4, top)], hx('#E8E4DA'))
+        cv.poly([(x - 8, h * .9), (x, h * .8), (x + 8, h * .9)], hx('#B5262F'))
+    return cv.out()
+
+
+def bg_kuru_bhor():
+    """Kurukshetra at dawn: golden sky, two armies' banners on the horizon, open plain."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1200, hx('#3B2A5A'), hx('#F6B25A'))
+    _sun(cv, 760, 1020, 150, '#FFE8B0')
+    _hills(cv, 1130, hx('#7A4A3A'), 120, 151)
+    rnd = random.Random(15)
+    for side, cols in ((0, ('#F08A24', '#E8B84A')), (1, ('#B5262F', '#7A1A2C'))):
+        for k in range(14):
+            x = (60 + k * 32) if side == 0 else (600 + k * 32)
+            hh = rnd.randint(70, 130)
+            cv.line([(x, 1180), (x, 1180 - hh)], hx('#3A2010'), 3)
+            cv.poly([(x, 1180 - hh), (x + 26, 1180 - hh + 10), (x, 1180 - hh + 20)], hx(cols[k % 2]))
+    cv.vgrad(1170, H, hx('#B9874E'), hx('#5A3A1E'))
+    for k in range(18):
+        x = rnd.randint(0, W)
+        y = rnd.randint(1300, 1800)
+        cv.ell(x, y, rnd.randint(30, 80), 8, hx('#8E6438', 140))
+    _vignette(cv)
+    return cv
+
+
+def bg_kuru_sandhya():
+    """Quiet battlefield at dusk: purple-orange sky, setting sun, still plain."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1250, hx('#241640'), hx('#E07A4A'))
+    _sun(cv, 540, 1180, 170, '#FFC27A')
+    _hills(cv, 1200, hx('#3A2236'), 90, 77)
+    cv.vgrad(1230, H, hx('#5A3A3A'), hx('#1E1018'))
+    _sparkles(cv, 40, 9, 120, 700, '#FFF2C8')
+    _vignette(cv)
+    return cv
+
+
+BACKGROUNDS.update({'kuru_bhor': bg_kuru_bhor, 'kuru_sandhya': bg_kuru_sandhya})
