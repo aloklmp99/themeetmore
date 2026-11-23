@@ -5,7 +5,14 @@
     "name": "Pranit – Soothing & Devotional Narrator",
     "note": "हर वीडियो में यही आवाज़। सिर्फ़ तब बदलो जब यह उपलब्ध न हो, और बदलने पर यहीं लिख दो।"
   },
-  "in_progress": [],
+  "in_progress": [
+    {
+      "video_no": 14,
+      "deity": "शिव (ब्रह्मा-विष्णु)",
+      "title": "अनंत अग्नि-स्तंभ (लिंगोद्भव, अरुणाचल दीपम)",
+      "date": "2026-11-23"
+    }
+  ],
   "next_video_no": 14,
   "done": [
     {
