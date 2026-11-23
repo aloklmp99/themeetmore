@@ -3142,3 +3142,181 @@ def bg_raat_van():
 
 
 BACKGROUNDS.update({'matang_van': bg_matang_van, 'kutia_andar': bg_kutia_andar, 'raat_van': bg_raat_van})
+
+
+# ---------------------------------------------------------------- अनंत अग्नि-स्तंभ / अरुणाचल (added for story 014)
+def varaha_img(L=520, flip=False, dig=0.0, glow_=True):
+    """Varaha (divine boar form of Vishnu): sky-blue body, golden tusks, small crown, digging pose."""
+    w, h = int(L * 1.25), int(L * .85)
+    cv = Cv(w, h)
+    u = L / 10.0
+    body, body2, belly = hx('#3F7FD0'), hx('#2C5FA8'), hx('#7FB0EA')
+    cx, cy = w * .48, h * .55
+    if glow_:
+        cv.ell(cx + .6 * u, cy, 5.6 * u, 3.6 * u, hx('#CFE4FF', 60))
+    # legs
+    for lx, ph in ((-2.6, 0), (-1.4, 1.6), (1.6, 3.2), (2.8, 4.8)):
+        sw = math.sin(dig * 6 + ph) * .5 * u
+        cv.line([(cx + lx * u, cy + 1.2 * u), (cx + lx * u + sw, cy + 3.3 * u)], body2, 1.0 * u)
+        cv.ell(cx + lx * u + sw, cy + 3.4 * u, .55 * u, .3 * u, hx('#2A2A3A'))
+    cv.ell(cx, cy, 3.9 * u, 2.3 * u, body)
+    cv.ell(cx + .3 * u, cy + .9 * u, 3.0 * u, 1.2 * u, belly)
+    # mane ridge
+    for k in range(8):
+        x = cx - 2.6 * u + k * .75 * u
+        cv.poly([(x - .3 * u, cy - 2.0 * u), (x, cy - 2.8 * u + (k % 2) * .3 * u), (x + .3 * u, cy - 2.0 * u)], body2)
+    # head
+    hxp, hyp = cx + 3.6 * u, cy + .3 * u - dig * .6 * u
+    cv.ell(hxp, hyp, 1.9 * u, 1.5 * u, body)
+    cv.rrect(hxp + .8 * u, hyp - .2 * u, hxp + 3.0 * u, hyp + 1.2 * u, .6 * u, body)
+    cv.ell(hxp + 3.0 * u, hyp + .5 * u, .55 * u, .7 * u, hx('#E8A0B8'))
+    cv.ell(hxp + 3.05 * u, hyp + .35 * u, .12 * u, .12 * u, hx('#5A2A3A'))
+    cv.ell(hxp + 3.05 * u, hyp + .7 * u, .12 * u, .12 * u, hx('#5A2A3A'))
+    # tusks
+    cv.poly([(hxp + 1.9 * u, hyp + 1.0 * u), (hxp + 2.5 * u, hyp + 1.1 * u), (hxp + 2.9 * u, hyp - .3 * u)], hx('#FFF3D0'))
+    cv.poly([(hxp + 1.9 * u, hyp + 1.0 * u), (hxp + 2.3 * u, hyp + 1.15 * u), (hxp + 2.6 * u, hyp - .1 * u)], hx(GOLD))
+    # ear, eye, crown, tilak
+    cv.poly([(hxp - .6 * u, hyp - 1.0 * u), (hxp - .2 * u, hyp - 2.2 * u), (hxp + .5 * u, hyp - 1.1 * u)], body2)
+    cv.ell(hxp + .6 * u, hyp - .3 * u, .28 * u, .28 * u, hx('#FFFFFF'))
+    cv.ell(hxp + .66 * u, hyp - .3 * u, .15 * u, .15 * u, hx('#1E2433'))
+    cv.poly([(hxp - .5 * u, hyp - 1.2 * u), (hxp - .3 * u, hyp - 2.2 * u), (hxp + .2 * u, hyp - 1.6 * u), (hxp + .6 * u, hyp - 2.4 * u),
+             (hxp + 1.0 * u, hyp - 1.6 * u), (hxp + 1.4 * u, hyp - 2.2 * u), (hxp + 1.5 * u, hyp - 1.1 * u)], hx(GOLD))
+    cv.ell(hxp + .5 * u, hyp - 1.75 * u, .16 * u, .16 * u, hx('#D62828'))
+    cv.line([(hxp + 1.2 * u, hyp - .95 * u), (hxp + 1.4 * u, hyp - .6 * u)], hx('#F2EDE2'), .12 * u)
+    # tail
+    cv.arc(cx - 4.1 * u, cy - .6 * u, .6 * u, .6 * u, 90, 330, body2, .25 * u)
+    im = cv.out()
+    return im.transpose(Image.FLIP_LEFT_RIGHT) if flip else im
+
+
+def hamsa_img(L=480, flap=0.0, flip=False, glow_=True):
+    """Divine white swan (Brahma's hamsa form): white body, golden beak and small crown, wings up/down by flap."""
+    w, h = int(L * 1.3), int(L * 1.1)
+    cv = Cv(w, h)
+    u = L / 10.0
+    cx, cy = w * .45, h * .62
+    wh, sh = hx('#FFFFFF'), hx('#DCE3F0')
+    if glow_:
+        cv.ell(cx + .4 * u, cy - 1.4 * u, 5.2 * u, 3.6 * u, hx('#FFF1C8', 50))
+    lift = .55 + .45 * math.sin(flap * math.pi * 2)   # 0.1..1.0
+    for off, col in ((-.7, sh), (0.0, wh)):
+        bx, by = cx + off * u, cy - .6 * u
+        tipx, tipy = bx - 3.6 * u, by - 4.6 * u * lift - .4 * u
+        cv.poly([(bx + 1.8 * u, by), (bx + .6 * u, by - 2.4 * u * lift), (tipx, tipy), (bx - 2.2 * u, by - 1.2 * u * lift), (bx - 2.6 * u, by + .3 * u)], col)
+        for k in range(3):
+            fx = bx - 1.0 * u - k * .9 * u
+            cv.line([(fx, by - .2 * u), (fx - .6 * u, by - (1.6 + k * .9) * u * lift)], hx('#C9D2E2'), .12 * u)
+    cv.ell(cx, cy, 3.2 * u, 1.6 * u, wh)
+    cv.poly([(cx - 3.0 * u, cy - .2 * u), (cx - 4.4 * u, cy - 1.2 * u), (cx - 3.6 * u, cy + .5 * u)], wh)
+    # neck + head
+    cv.line([(cx + 2.2 * u, cy - .3 * u), (cx + 3.3 * u, cy - 1.6 * u), (cx + 3.2 * u, cy - 3.2 * u)], wh, 1.0 * u)
+    cv.ell(cx + 3.4 * u, cy - 3.5 * u, .8 * u, .7 * u, wh)
+    cv.poly([(cx + 4.0 * u, cy - 3.7 * u), (cx + 5.2 * u, cy - 3.3 * u), (cx + 4.0 * u, cy - 3.1 * u)], hx('#F59E0B'))
+    cv.ell(cx + 3.6 * u, cy - 3.7 * u, .14 * u, .14 * u, hx('#1E2433'))
+    cv.poly([(cx + 2.9 * u, cy - 4.0 * u), (cx + 3.0 * u, cy - 4.7 * u), (cx + 3.3 * u, cy - 4.3 * u), (cx + 3.5 * u, cy - 4.8 * u),
+             (cx + 3.7 * u, cy - 4.3 * u), (cx + 3.95 * u, cy - 4.6 * u), (cx + 3.9 * u, cy - 3.95 * u)], hx(GOLD))
+    im = cv.out()
+    return im.transpose(Image.FLIP_LEFT_RIGHT) if flip else im
+
+
+def ketaki_img(Hh=260, glow_=0.0):
+    """Ketaki (screw-pine) flower: long cream-yellow spathes around a golden spike, small leaves."""
+    w = int(Hh * .9)
+    cv = Cv(w, Hh)
+    cx, by = w / 2, Hh * .95
+    if glow_ > 0:
+        cv.ell(cx, Hh * .5, w * .48, Hh * .48, hx('#FFF4C0', int(90 * glow_)))
+    for a, L, col in ((-38, .62, '#5E9C4A'), (38, .62, '#5E9C4A'), (-24, .8, '#F3E7A8'), (24, .8, '#F3E7A8'), (-10, .9, '#FFF6D2'), (10, .9, '#FFF6D2')):
+        r = math.radians(a)
+        tx, ty = cx + math.sin(r) * Hh * L, by - math.cos(r) * Hh * L
+        nx, ny = math.cos(r) * Hh * .07, math.sin(r) * Hh * .07
+        mx, my = cx + math.sin(r) * Hh * L * .45, by - math.cos(r) * Hh * L * .45
+        cv.poly([(cx, by), (mx - nx, my - ny), (tx, ty), (mx + nx, my + ny)], hx(col))
+    cv.rrect(cx - Hh * .035, Hh * .25, cx + Hh * .035, by - Hh * .05, Hh * .03, hx('#E8B84A'))
+    for k in range(6):
+        cv.ell(cx, Hh * (.3 + k * .09), Hh * .04, Hh * .02, hx('#C98A1B'))
+    return cv.out()
+
+
+def bg_brahmand():
+    """Cosmic void: deep indigo-violet nebula, stars, a faint earth-rim below."""
+    cv = Cv(W, H)
+    cv.vgrad(0, H, hx('#0B0A26'), hx('#2A1446'))
+    rnd = random.Random(214)
+    for k in range(7):
+        x, y, r = rnd.random() * 1080, 200 + rnd.random() * 1500, 200 + rnd.random() * 260
+        cols = (('#1A1446', '#221A58', '#2C206A'), ('#141C4A', '#1A285E', '#223472'), ('#22123E', '#2E1850', '#3A1E60'))[k % 3]
+        for f, col in zip((1.0, .7, .45), cols):
+            cv.ell(x, y, r * f, r * f * .6, hx(col))
+    _sparkles(cv, 90, 215, 40, 1880, '#FFFFFF')
+    _sparkles(cv, 30, 216, 40, 1880, '#FFE9A8')
+    _vignette(cv)
+    return cv
+
+
+def bg_dharti_neeche():
+    """Inside the earth: layered soil and rock strata, glowing roots, darkness below."""
+    cv = Cv(W, H)
+    cols = ('#7A4A2A', '#6A3E24', '#5A331E', '#4A2A1A', '#3A2014', '#2A160E', '#1C0E08')
+    for i, c in enumerate(cols):
+        y0 = i * H / len(cols)
+        cv.rect(0, y0, W, y0 + H / len(cols) + 2, hx(c))
+        rnd = random.Random(300 + i)
+        pts = [(x, y0 + 30 * math.sin(x / 140 + i) + rnd.random() * 10) for x in range(0, W + 60, 60)]
+        cv.line(pts, hx('#2A160E', 120), 6)
+    rnd = random.Random(310)
+    for _ in range(46):
+        x, y, r = rnd.random() * 1080, rnd.random() * 1920, 10 + rnd.random() * 34
+        cv.ell(x, y, r, r * .7, hx('#8A7A6A' if rnd.random() < .5 else '#5A4A3E', 200))
+    for _ in range(8):
+        x = rnd.random() * 1080
+        pts, y = [(x, 0)], 0
+        while y < 700:
+            y += 60
+            x += rnd.uniform(-30, 30)
+            pts.append((x, y))
+        cv.line(pts, hx('#3A2A16'), 5)
+    _vignette(cv)
+    return cv
+
+
+def bg_gagan():
+    """Endless upper sky: pale gold-blue gradient, layered clouds streaming down (flying upward)."""
+    cv = Cv(W, H)
+    cv.vgrad(0, H, hx('#1E3A7A'), hx('#9FC8F0'))
+    rnd = random.Random(222)
+    for k in range(14):
+        x, y, s = rnd.random() * 1080, rnd.random() * 1900, 70 + rnd.random() * 110
+        for dx in (-1, 0, 1):
+            cv.ell(x + dx * s * .8, y + (0 if dx == 0 else s * .25), s * (1.0 if dx == 0 else .7), s * .5 * (1.0 if dx == 0 else .7), hx('#FFFFFF', 150))
+    _sparkles(cv, 40, 223, 30, 900, '#FFFFFF')
+    _vignette(cv)
+    return cv
+
+
+def bg_arunachala():
+    """Arunachala hill at dusk: red-ochre hill, temple gopuram below, orange-violet sky (deepam drawn per frame)."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1250, hx('#2B1A4A'), hx('#F07A3A'))
+    _sparkles(cv, 30, 231, 60, 520, '#FFFFFF')
+    _hills(cv, 1200, hx('#4A2A4A'), 70, 232, n=9)
+    cv.poly([(60, 1260), (330, 860), (470, 720), (540, 690), (610, 720), (760, 870), (1020, 1260)], hx('#9A3A22'))
+    cv.poly([(540, 690), (610, 720), (760, 870), (1020, 1260), (640, 1260)], hx('#7A2C1A'))
+    rnd = random.Random(233)
+    for _ in range(14):
+        x, y = 300 + rnd.random() * 480, 950 + rnd.random() * 280
+        cv.ell(x, y, 22 + rnd.random() * 20, 7, hx('#B04A2A'))
+    cv.rect(0, 1250, W, H, hx('#5A2A1A'))
+    cv.vgrad(1250, H, hx('#6A3420'), hx('#2A140C'))
+    # gopuram (temple tower) silhouettes
+    for gx, gw, gh in ((240, 200, 360), (820, 160, 280)):
+        for k in range(6):
+            ww = gw * (1 - k * .13)
+            cv.rect(gx - ww / 2, 1420 - (k + 1) * gh / 6, gx + ww / 2, 1420 - k * gh / 6, hx('#C98A3A' if k % 2 else '#B5762E'))
+        cv.rrect(gx - gw * .25, 1420 - gh - 30, gx + gw * .25, 1420 - gh + 4, 12, hx(GOLD))
+    cv.rect(0, 1420, W, 1440, hx('#8A5A2A'))
+    _vignette(cv)
+    return cv
+
+
+BACKGROUNDS.update({'brahmand': bg_brahmand, 'dharti_neeche': bg_dharti_neeche, 'gagan': bg_gagan, 'arunachala': bg_arunachala})
