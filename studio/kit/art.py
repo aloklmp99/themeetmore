@@ -3504,3 +3504,266 @@ def bg_kuru_sandhya():
 
 
 BACKGROUNDS.update({'kuru_bhor': bg_kuru_bhor, 'kuru_sandhya': bg_kuru_sandhya})
+
+
+# ---------------------------------------------------------------- story 017: लक्ष्मी पुराण (श्रिया, जगन्नाथ-बलभद्र)
+def puri_deity(kind='jagannath', Hh=600, mouth='smile', brows='calm', crown=True, arms_up=False):
+    """Original simplified Puri-style deity sprite (Jagannath / Balabhadra): big round head,
+    large round eyes, wide smile, stubby forward arms, garment body. Feet-less, base at bottom centre."""
+    w = int(Hh * .9)
+    pad = int(Hh * .22)
+    c = Cv(w, Hh + pad)
+    c.oy = pad
+    u = Hh / 10.0
+    cx = w / 2
+    if kind == 'jagannath':
+        face, rim, robe, robe2, band = '#17171C', '#2C2C36', '#F4C430', '#E0A21C', '#C8202E'
+    else:  # balabhadra
+        face, rim, robe, robe2, band = '#F4F1E8', '#D9D3C4', '#3E6FC4', '#2C5398', '#F2B632'
+    # body / garment (below head)
+    c.poly([(cx - 2.7 * u, 5.4 * u), (cx + 2.7 * u, 5.4 * u), (cx + 3.1 * u, 10 * u), (cx - 3.1 * u, 10 * u)], hx(robe))
+    c.poly([(cx - 2.9 * u, 7.6 * u), (cx + 2.9 * u, 7.6 * u), (cx + 3.0 * u, 8.3 * u), (cx - 3.0 * u, 8.3 * u)], hx(band))
+    c.poly([(cx - 3.05 * u, 9.4 * u), (cx + 3.05 * u, 9.4 * u), (cx + 3.1 * u, 10 * u), (cx - 3.1 * u, 10 * u)], hx(robe2))
+    for k in range(-2, 3):  # pleats
+        c.line([(cx + k * 1.1 * u, 8.4 * u), (cx + k * 1.2 * u, 9.4 * u)], hx(robe2), max(2, u * .12))
+    # flower garland
+    for k in range(13):
+        a = math.pi * (k / 12.0)
+        gx = cx - math.cos(a) * 2.3 * u
+        gy = 5.5 * u + math.sin(a) * 1.9 * u
+        c.ell(gx, gy, .32 * u, .32 * u, hx('#F59E0B' if k % 2 else '#F97316'))
+    # stubby arms (forward, slightly raised when blessing)
+    ay = 5.6 * u if not arms_up else 4.9 * u
+    for sg in (-1, 1):
+        x0 = cx + sg * 2.5 * u
+        x1 = cx + sg * 3.9 * u
+        c.line([(x0, ay + .3 * u), (x1, ay - (.4 * u if arms_up else 0))], hx(face), 1.1 * u)
+        c.ell(x1, ay - (.4 * u if arms_up else 0), .62 * u, .62 * u, hx(face), hx(GOLD), max(2, u * .12))
+    # head
+    c.rrect(cx - 2.75 * u, .9 * u, cx + 2.75 * u, 5.6 * u, 2.2 * u, hx(face), hx(rim), max(2, u * .1))
+    # crown (mukut)
+    if crown:
+        c.poly([(cx - 2.4 * u, 1.25 * u), (cx - 1.8 * u, -.6 * u), (cx - .9 * u, .3 * u), (cx, -1.7 * u),
+                (cx + .9 * u, .3 * u), (cx + 1.8 * u, -.6 * u), (cx + 2.4 * u, 1.25 * u)], hx(GOLD))
+        c.rect(cx - 2.5 * u, .85 * u, cx + 2.5 * u, 1.35 * u, hx(GOLD2))
+        c.ell(cx, -.1 * u, .32 * u, .32 * u, hx('#C8202E'))
+        for sg in (-1, 1):
+            c.ell(cx + sg * 1.6 * u, .45 * u, .22 * u, .22 * u, hx('#2E8B57'))
+    # tilak
+    if kind == 'jagannath':
+        c.poly([(cx - .3 * u, 1.6 * u), (cx + .3 * u, 1.6 * u), (cx + .12 * u, 2.5 * u), (cx - .12 * u, 2.5 * u)], hx('#F7F3E8'))
+        c.ell(cx, 2.55 * u, .14 * u, .14 * u, hx('#E63946'))
+    else:
+        c.poly([(cx - .25 * u, 1.6 * u), (cx + .25 * u, 1.6 * u), (cx + .1 * u, 2.5 * u), (cx - .1 * u, 2.5 * u)], hx('#E63946'))
+    # eyes
+    ey = 3.05 * u
+    for sg in (-1, 1):
+        ex = cx + sg * 1.25 * u
+        if kind == 'jagannath':
+            c.ell(ex, ey, .95 * u, .95 * u, hx('#FFFFFF'), hx('#D62828'), max(3, u * .18))
+            c.ell(ex, ey, .38 * u, .38 * u, hx('#111111'))
+        else:
+            c.ell(ex, ey, 1.0 * u, .72 * u, hx('#FFFFFF'), hx('#D62828'), max(3, u * .18))
+            c.ell(ex, ey, .34 * u, .34 * u, hx('#111111'))
+        # brows
+        by = ey - 1.25 * u
+        bcol = hx('#D62828') if kind == 'jagannath' else hx('#3A2A20')
+        if brows == 'angry':  # inner ends low
+            c.line([(ex - sg * .9 * u, by + .3 * u), (ex + sg * .7 * u, by - .25 * u)], bcol, max(3, u * .2))
+        elif brows == 'sad':  # inner ends high
+            c.line([(ex - sg * .9 * u, by - .25 * u), (ex + sg * .7 * u, by + .2 * u)], bcol, max(3, u * .2))
+        else:
+            c.arc(ex, by + .35 * u, .85 * u, .45 * u, 200, 340, bcol, max(3, u * .18))
+    # nose (small)
+    c.ell(cx, 3.85 * u, .22 * u, .18 * u, hx('#E07A2E' if kind == 'jagannath' else '#E8B48A'))
+    # mouth
+    mcol = hx('#D62828')
+    if mouth == 'smile':
+        c.arc(cx, 4.1 * u, 1.7 * u, .85 * u, 15, 165, mcol, max(4, u * .28))
+    elif mouth == 'sad':
+        c.arc(cx, 5.1 * u, 1.2 * u, .55 * u, 200, 340, mcol, max(4, u * .26))
+    else:
+        c.line([(cx - 1.1 * u, 4.75 * u), (cx + 1.1 * u, 4.75 * u)], mcol, max(4, u * .26))
+    return c.out()
+
+
+def jhoti_img(w=700):
+    """Odia 'jhoti/chita' style white rice-paste floor art (top-down flattened): lotus + feet motif + dots."""
+    h = int(w * .42)
+    c = Cv(w, h)
+    cx, cy = w / 2, h / 2
+    wc = hx('#FBF8F0', 235)
+    for k in range(12):
+        a = k / 12 * 2 * math.pi
+        px, py = cx + math.cos(a) * w * .16, cy + math.sin(a) * h * .3
+        c.ell(px, py, w * .06, h * .09, None, wc, 4)
+    c.ell(cx, cy, w * .07, h * .14, wc)
+    c.ell(cx, cy, w * .3, h * .45, None, wc, 5)
+    for k in range(28):
+        a = k / 28 * 2 * math.pi
+        c.ell(cx + math.cos(a) * w * .36, cy + math.sin(a) * h * .52 * .92, 4, 4, wc)
+    # small Lakshmi foot-prints on both sides (traditional motif)
+    for sg in (-1, 1):
+        fx = cx + sg * w * .44
+        c.ell(fx, cy + h * .05, w * .022, h * .11, wc)
+        for t_ in range(5):
+            c.ell(fx - w * .018 + t_ * w * .009, cy - h * .12, 3, 3, wc)
+    return c.out()
+
+
+def manabasa_img(Hh=200):
+    """Small cane measure (mana) heaped with golden paddy, with a tiny red-dotted cloth."""
+    w = int(Hh * 1.3)
+    c = Cv(w, Hh)
+    cx = w / 2
+    c.ell(cx, Hh * .42, w * .44, Hh * .3, hx('#E8B84A'))
+    rnd = random.Random(7)
+    for _ in range(60):
+        x = cx + (rnd.random() - .5) * w * .8
+        y = Hh * .42 + (rnd.random() - .5) * Hh * .4
+        if ((x - cx) / (w * .42)) ** 2 + ((y - Hh * .42) / (Hh * .28)) ** 2 < 1:
+            c.ell(x, y, 5, 3, hx('#C98A1B'))
+    c.poly([(cx - w * .46, Hh * .48), (cx + w * .46, Hh * .48), (cx + w * .36, Hh * .98), (cx - w * .36, Hh * .98)], hx('#A86B2A'))
+    for k in range(5):
+        y = Hh * (.56 + k * .09)
+        c.line([(cx - w * .43 + k * 4, y), (cx + w * .43 - k * 4, y)], hx('#7A4A1A'), 3)
+    c.ell(cx, Hh * .3, 9, 9, hx('#E63946'))
+    return c.out()
+
+
+def handi_img(Hh=160, steam=0.0):
+    """Earthen pot (Mahaprasad handi)."""
+    w = int(Hh * 1.1)
+    c = Cv(w, int(Hh * 1.4))
+    c.oy = int(Hh * .4)
+    cx = w / 2
+    c.ell(cx, Hh * .58, w * .46, Hh * .42, hx('#B5562E'))
+    c.ell(cx, Hh * .5, w * .4, Hh * .18, hx('#C96A3A', 120))
+    c.rrect(cx - w * .28, Hh * .05, cx + w * .28, Hh * .22, 8, hx('#8E3B1E'))
+    c.ell(cx, Hh * .08, w * .26, Hh * .06, hx('#F5E6C8'))
+    if steam > 0:
+        for k in range(3):
+            c.ell(cx - 20 + k * 20, -Hh * .1 - k * 12, 12, 18, hx('#FFFFFF', int(90 * steam)))
+    return c.out()
+
+
+def leaf_plate(w=300):
+    """Banana-leaf with rice, dal and sweets (prasad)."""
+    h = int(w * .45)
+    c = Cv(w, h)
+    c.ell(w / 2, h / 2, w * .48, h * .42, hx('#3E9B47'))
+    c.line([(w * .06, h / 2), (w * .94, h / 2)], hx('#2E7A36'), 3)
+    c.ell(w * .38, h * .5, w * .16, h * .22, hx('#FFFBEF'))
+    c.ell(w * .62, h * .45, w * .09, h * .14, hx('#F2B632'))
+    c.ell(w * .72, h * .62, w * .05, h * .08, hx('#F7E3B0'))
+    c.ell(w * .25, h * .62, w * .05, h * .08, hx('#E07A2E'))
+    return c.out()
+
+
+def _shikhara(cv, cx, base, w, h, body='#F1E4C8', shade='#D9C59E'):
+    """Odisha-style curved temple tower (rekha deula) with amalaka, kalasha, Nila-chakra and flag."""
+    pts = []
+    for k in range(21):
+        t = k / 20
+        x = cx - w / 2 * (1 - .55 * t ** 2.2)
+        pts.append((x, base - h * t))
+    pts2 = [(2 * cx - x, y) for x, y in pts[::-1]]
+    cv.poly(pts + pts2, hx(body))
+    for k in range(1, 12):  # horizontal courses
+        t = k / 12
+        hw = w / 2 * (1 - .55 * t ** 2.2)
+        cv.line([(cx - hw, base - h * t), (cx + hw, base - h * t)], hx(shade), 3)
+    for sg in (-1, 1):  # vertical rib
+        cv.line([(cx + sg * w * .12, base), (cx + sg * w * .12 * .45, base - h)], hx(shade), 4)
+    top = base - h
+    tw = w / 2 * .45
+    cv.ell(cx, top - 14, tw * 1.25, 26, hx(shade))  # amalaka
+    cv.ell(cx, top - 14, tw * 1.1, 20, hx(body))
+    cv.poly([(cx - 22, top - 34), (cx + 22, top - 34), (cx + 12, top - 80), (cx - 12, top - 80)], hx(GOLD))  # kalasha
+    return top - 80
+
+
+def bg_puri_mandir():
+    """Sunrise over Puri: tall rekha-deula with Nila-chakra & flag, temple wall, sea glimpse."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1250, hx('#F7A65A'), hx('#FFE9B8'))
+    _sun(cv, 230, 600, 120, '#FFF3C8')
+    for i, (x, y, r) in enumerate(((820, 300, 80), (140, 330, 60))):
+        cv.ell(x, y, r * 1.8, r * .5, hx('#FFF6E4', 190))
+    top = _shikhara(cv, 560, 1180, 420, 720)
+    # Nila chakra + flag
+    cv.line([(560, top), (560, top - 110)], hx('#6B6B6B'), 6)
+    cv.ell(560, top - 30, 40, 40, None, hx('#4A6FA5'), 8)
+    for k in range(8):
+        a = k / 8 * math.pi
+        cv.line([(560 - math.cos(a) * 38, top - 30 - math.sin(a) * 38), (560 + math.cos(a) * 38, top - 30 + math.sin(a) * 38)], hx('#4A6FA5'), 4)
+    cv.poly([(560, top - 110), (700, top - 80), (560, top - 50)], hx('#E63946'))
+    # smaller towers
+    _shikhara(cv, 250, 1190, 230, 300, '#EADBBB', '#CDB78F')
+    _shikhara(cv, 860, 1190, 230, 300, '#EADBBB', '#CDB78F')
+    # boundary wall
+    cv.rect(0, 1150, W, 1290, hx('#C9A472'))
+    for x in range(0, W, 60):
+        cv.rect(x + 8, 1130, x + 48, 1155, hx('#C9A472'))
+    cv.rect(0, 1280, W, 1296, hx(MAROON2))
+    cv.rect(0, 1296, W, H, hx('#D8B884'))
+    cv.vgrad(1296, H, hx('#E2C597'), hx('#8A5E33'))
+    _sparkles(cv, 26, 21, 120, 900, '#FFF6C0')
+    _vignette(cv)
+    return cv
+
+
+def bg_shriya_angan():
+    """Shriya's humble but spotless courtyard at dawn: mud walls with white chita, thatched hut, clean floor."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1200, hx('#8FC6E8'), hx('#FFE7C0'))
+    _sun(cv, 820, 520, 110, '#FFF4CF')
+    _hills(cv, 1000, hx('#9DBF8A'), 50, 3)
+    # hut
+    cv.rect(140, 760, 940, 1230, hx('#C98B55'))
+    cv.poly([(80, 790), (540, 520), (1000, 790)], hx('#B8913F'))
+    for k in range(18):
+        x = 100 + k * 50
+        cv.line([(x, 790), (540 + (x - 540) * .15, 540)], hx('#8E6C2A'), 3)
+    cv.rrect(450, 920, 630, 1230, 20, hx('#5C3A1C'))
+    # white chita on mud walls
+    for x0 in (210, 700):
+        for k in range(5):
+            cv.ell(x0 + k * 40, 990, 12, 18, None, hx('#FBF8F0', 230), 3)
+        cv.line([(x0 - 10, 1040), (x0 + 180, 1040)], hx('#FBF8F0', 220), 4)
+        for k in range(6):
+            cv.ell(x0 + k * 34, 1070, 6, 6, hx('#FBF8F0', 230))
+    cv.rect(0, 1230, W, H, hx('#B98A58'))
+    cv.vgrad(1230, H, hx('#C99A66'), hx('#7A4E28'))
+    # tulsi-chaura-like little altar on left, banana plant right
+    cv.rect(40, 1080, 130, 1250, hx('#D9B48A'))
+    for k in range(4):
+        cv.ell(1010 - k * 8, 900 + k * 60, 60, 22, hx('#3E9B47'))
+    cv.rect(1000, 900, 1016, 1250, hx('#6E8B3D'))
+    _sparkles(cv, 14, 5, 120, 700, '#FFFFFF')
+    _vignette(cv)
+    return cv
+
+
+def bg_sukha_path():
+    """Harsh dry road at noon: cracked earth, bare trees, heat haze — the hungry wandering."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1100, hx('#F2C46A'), hx('#FBE6B4'))
+    _sun(cv, 540, 360, 130, '#FFF7DA')
+    _hills(cv, 1050, hx('#C99A5A'), 60, 9)
+    cv.rect(0, 1080, W, H, hx('#C9925A'))
+    cv.vgrad(1080, H, hx('#D3A06A'), hx('#7E5230'))
+    cv.poly([(470, 1080), (610, 1080), (980, H), (100, H)], hx('#E3BE88'))
+    rnd = random.Random(4)
+    for _ in range(40):  # cracks
+        x, y = rnd.random() * W, 1150 + rnd.random() * 750
+        cv.line([(x, y), (x + (rnd.random() - .5) * 80, y + rnd.random() * 30), (x + (rnd.random() - .5) * 120, y + 40)], hx('#8E5E34', 150), 3)
+    for x, b in ((140, 1120), (930, 1110)):  # bare trees
+        cv.line([(x, b), (x, b - 330)], hx('#5C3A1C'), 20)
+        cv.line([(x, b - 220), (x - 90, b - 360)], hx('#5C3A1C'), 10)
+        cv.line([(x, b - 260), (x + 80, b - 400)], hx('#5C3A1C'), 10)
+    _vignette(cv)
+    return cv
+
+
+BACKGROUNDS.update({'puri_mandir': bg_puri_mandir, 'shriya_angan': bg_shriya_angan, 'sukha_path': bg_sukha_path})
