@@ -5,15 +5,8 @@
     "name": "Pranit – Soothing & Devotional Narrator",
     "note": "हर वीडियो में यही आवाज़। सिर्फ़ तब बदलो जब यह उपलब्ध न हो, और बदलने पर यहीं लिख दो।"
   },
-  "in_progress": [
-    {
-      "video_no": 19,
-      "deity": "विष्णु (देवी एकादशी)",
-      "title": "उत्पन्ना एकादशी (मुर दैत्य, हेमवती गुफा, विष्णु के शरीर से देवी एकादशी का जन्म)",
-      "date": "2026-11-26"
-    }
-  ],
-  "next_video_no": 19,
+  "in_progress": [],
+  "next_video_no": 20,
   "done": [
     {
       "video_no": 1,
@@ -148,6 +141,16 @@
       "elevenlabs_credits": 1288,
       "duration_s": 113.1,
       "file": "videos/bhakti-018-काल-भैरव.mp4",
+      "inbox": "ready"
+    },
+    {
+      "video_no": 19,
+      "deity": "विष्णु (देवी एकादशी)",
+      "title": "उत्पन्ना एकादशी (मुर दैत्य, चंद्रावती, हेमवती गुफा में योगनिद्रा, विष्णु के शरीर से देवी एकादशी का जन्म, एकादशी व्रत का आरंभ)",
+      "date": "2026-11-26",
+      "elevenlabs_credits": 1311,
+      "duration_s": 107.6,
+      "file": "videos/bhakti-019-उत्पन्ना-एकादशी.mp4",
       "inbox": "ready"
     }
   ]
