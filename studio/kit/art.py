@@ -3767,3 +3767,145 @@ def bg_sukha_path():
 
 
 BACKGROUNDS.update({'puri_mandir': bg_puri_mandir, 'shriya_angan': bg_shriya_angan, 'sukha_path': bg_sukha_path})
+
+
+# ---------------------------------------------------------------- Kaal Bhairav (added for story 018)
+def bhairav(Hh=760, eyes='open', mouth='flat', bless=False, kapal=False, trishul=True, halo=False):
+    """Kaal Bhairav: Shiva's fierce form, dark (saanwala) skin, trishul; face calm & respectful.
+    kapal=True draws the skull-bowl stuck in the left hand."""
+    im = tinted(shiva, 'shiva', '#34405E', Hh, eyes=eyes, mouth=mouth, bless=bless, trishul=trishul, halo=halo)
+    if kapal:
+        u = Hh / 10.0
+        w = im.width
+        cx = w / 2
+        k = kapal_img(int(.8 * u))
+        hx_, hy = cx - 1.5 * u, 5.7 * u + int(Hh * .3)
+        im.alpha_composite(k, (int(hx_ - k.width / 2), int(hy - k.height * .55)))
+    return im
+
+
+def kapal_img(r=70):
+    """Stylised skull-bowl (kapal), simple and non-gory: cream dome, two dark eye hollows."""
+    c = Cv(int(r * 2.4), int(r * 2.2))
+    x, y = r * 1.2, r * 1.0
+    c.ell(x, y, r, r * .9, hx('#EDE3CC'))
+    c.rect(x - r * .62, y + r * .3, x + r * .62, y + r * 1.0, hx('#EDE3CC'))
+    c.ell(x, y + r * 1.0, r * .62, r * .18, hx('#D8CBAE'))
+    for sg in (-1, 1):
+        c.ell(x + sg * r * .38, y + r * .15, r * .22, r * .2, hx('#4A3A30'))
+    c.poly([(x - r * .08, y + r * .55), (x + r * .08, y + r * .55), (x, y + r * .4)], hx('#6A5A48'))
+    for k in range(4):
+        c.line([(x - r * .36 + k * r * .24, y + r * .78), (x - r * .36 + k * r * .24, y + r * .98)], hx('#B9AA8C'), max(2, r * .05))
+    return c.out()
+
+
+def dog_img(L=300, flip=False, sit=True):
+    """Bhairav's vahana: a dark dog, sitting, loyal."""
+    c = Cv(int(L * 1.1), int(L * 1.1))
+    u = L / 10.0
+    col, col2 = hx('#2C2A30'), hx('#46424C')
+    # body (sitting)
+    c.ell(5.0 * u, 7.4 * u, 2.4 * u, 2.6 * u, col)
+    c.poly([(3.2 * u, 9.9 * u), (7.4 * u, 9.9 * u), (6.6 * u, 6.8 * u), (3.8 * u, 6.8 * u)], col)
+    # tail
+    c.line([(7.0 * u, 9.4 * u), (8.6 * u, 9.0 * u), (9.4 * u, 7.8 * u)], col, .55 * u)
+    # front legs
+    for x in (3.9, 5.0):
+        c.rrect(x * u, 6.4 * u, x * u + .7 * u, 10.0 * u, .3 * u, col2)
+        c.ell(x * u + .35 * u, 10.0 * u, .55 * u, .25 * u, col2)
+    # chest + neck
+    c.ell(4.3 * u, 5.4 * u, 1.5 * u, 1.9 * u, col)
+    # head
+    c.ell(3.6 * u, 3.4 * u, 1.35 * u, 1.2 * u, col)
+    c.ell(2.3 * u, 3.9 * u, .9 * u, .6 * u, col2)  # snout
+    c.ell(1.55 * u, 3.75 * u, .26 * u, .2 * u, hx('#111014'))  # nose
+    c.poly([(3.9 * u, 2.5 * u), (4.9 * u, 1.0 * u), (4.9 * u, 3.0 * u)], col)  # ear
+    c.poly([(3.0 * u, 2.4 * u), (3.4 * u, 1.0 * u), (4.0 * u, 2.4 * u)], col)
+    c.ell(3.2 * u, 3.2 * u, .2 * u, .2 * u, hx('#F2D27A'))  # eye
+    c.ell(3.2 * u, 3.2 * u, .09 * u, .12 * u, hx('#111014'))
+    # red collar with bell
+    c.arc(4.1 * u, 4.6 * u, 1.2 * u, .7 * u, 20, 160, hx('#B5262F'), .35 * u)
+    c.ell(4.1 * u, 5.4 * u, .22 * u, .22 * u, hx(GOLD))
+    im = c.out()
+    return im.transpose(Image.FLIP_LEFT_RIGHT) if flip else im
+
+
+def brahma5(Hh=760, fifth=True, namaste=False, bless=False):
+    """Brahma ji with side heads; fifth=True adds the small fifth head on top."""
+    base = tinted(person, 'raja', '#E3A27A', 'raja', Hh, namaste=namaste,
+                  arms=((-1.4, 5.6), (1.6, 3.4)) if bless else None)
+    base = _recolor(base, '#3A2618', '#F4F1EA', 14)
+    u = Hh / 10.0
+    pad = int(Hh * .16)
+    cx = base.width / 2
+    head = base.crop((int(cx - 1.25 * u), 0, int(cx + 1.25 * u), int(pad + 3.4 * u)))
+    out = Image.new('RGBA', (base.width + int(2 * u), base.height + int(2.2 * u)), (0, 0, 0, 0))
+    ox, oy = int(u), int(2.2 * u)
+    side = head.resize((int(head.width * .8), int(head.height * .8)), Image.LANCZOS)
+    sa = np.array(side).astype(float)
+    sa[..., :3] *= .86
+    side = Image.fromarray(sa.astype(np.uint8), 'RGBA')
+    for sg in (-1, 1):
+        sx = ox + cx + sg * 1.25 * u - side.width / 2
+        out.alpha_composite(side, (int(sx), int(oy + .45 * u)))
+    if fifth:
+        top = head.resize((int(head.width * .62), int(head.height * .62)), Image.LANCZOS)
+        out.alpha_composite(top, (int(ox + cx - top.width / 2), int(oy - 1.75 * u)))
+    out.alpha_composite(base, (ox, oy))
+    return out
+
+
+def chhaya_img(Hh=700, a=150):
+    """Brahmahatya: a dark smoky shadow-figure (no face), translucent."""
+    c = Cv(int(Hh * .7), int(Hh * 1.05))
+    u = Hh / 10.0
+    cx = c.w / 2
+    col = (24, 16, 30, a)
+    c.ell(cx, 1.6 * u, 1.0 * u, 1.1 * u, col)
+    c.poly([(cx - 1.0 * u, 2.6 * u), (cx + 1.0 * u, 2.6 * u), (cx + 2.4 * u, 10.2 * u), (cx - 2.4 * u, 10.2 * u)], col)
+    for k in range(5):
+        c.ell(cx - 2.0 * u + k * 1.0 * u, 10.0 * u, .7 * u, .5 * u, col)
+    c.ell(cx - .35 * u, 1.6 * u, .14 * u, .08 * u, (200, 40, 40, 200))
+    c.ell(cx + .35 * u, 1.6 * u, .14 * u, .08 * u, (200, 40, 40, 200))
+    return c.out()
+
+
+def bg_krodh_jyoti():
+    """Dark cosmos with a blazing red-orange column of fire (Bhairav's appearance)."""
+    cv = Cv(W, H)
+    cv.vgrad(0, H, hx('#14060E'), hx('#3A0A12'))
+    R = 700
+    yy, xx = np.mgrid[-R:R, -R:R]
+    d = np.sqrt(xx ** 2 + yy ** 2) / R
+    arr = np.zeros((2 * R, 2 * R, 4), np.uint8)
+    arr[..., 0], arr[..., 1], arr[..., 2] = 255, 96, 30
+    arr[..., 3] = (np.clip(1 - d, 0, 1) ** 1.8 * 210).astype(np.uint8)
+    g = Image.fromarray(arr, 'RGBA').resize((2 * R * S, 2 * R * S), Image.BILINEAR)
+    cv.im.alpha_composite(g, (int((540 - R) * S), int((900 - R) * S)))
+    cv.poly([(470, 1500), (610, 1500), (580, 250), (500, 250)], hx('#FFB547', 120))
+    cv.poly([(510, 1500), (570, 1500), (555, 250), (525, 250)], hx('#FFF0B0', 160))
+    _sparkles(cv, 60, 18, 120, 1700, col='#FFB070')
+    cv.rect(0, 1500, W, H, hx('#1E0A0E'))
+    _vignette(cv)
+    return cv
+
+
+def bg_sumeru():
+    """Golden Sumeru peak above the clouds, rishis' assembly at dawn."""
+    cv = Cv(W, H)
+    cv.vgrad(0, H, hx('#F7C77A'), hx('#F3E3C0'))
+    _sun(cv, 540, 520, 190)
+    cv.poly([(80, 1350), (540, 470), (1000, 1350)], hx('#E3A43A'))
+    cv.poly([(540, 470), (1000, 1350), (700, 1350)], hx('#C98A1B'))
+    cv.poly([(470, 600), (540, 470), (610, 600), (560, 570), (520, 610)], hx('#FFE9A8'))
+    for x, y, s in ((140, 1180, 1.2), (920, 1150, 1.1), (520, 1290, 1.4), (300, 1320, 1.0), (780, 1330, 1.0)):
+        for k in range(4):
+            cv.ell(x + (k - 1.5) * 70 * s, y, 80 * s, 50 * s, hx('#FFFFFF', 235))
+    cv.rect(0, 1350, W, H, hx('#F2E6CF'))
+    for k in range(5):
+        cv.ell(100 + k * 230, 1370, 160, 60, hx('#FFFFFF', 220))
+    _vignette(cv)
+    return cv
+
+
+BACKGROUNDS.update({'krodh_jyoti': bg_krodh_jyoti, 'sumeru': bg_sumeru})
