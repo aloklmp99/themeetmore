@@ -3909,3 +3909,153 @@ def bg_sumeru():
 
 
 BACKGROUNDS.update({'krodh_jyoti': bg_krodh_jyoti, 'sumeru': bg_sumeru})
+
+
+# ---------------------------------------------------------------- story 019: उत्पन्ना एकादशी
+SKIN['ekadashi'] = '#F0B88A'
+SAREE['ekadashi'] = ('#F08A24', '#C8163E', '#D06A12', '#8E1030', '#FFC24A')   # saffron-gold saree, red border
+JEWEL = JEWEL + ('ekadashi',)
+
+
+def khadga_img(L=300, glow_=True):
+    """Shining sword (khadga) pointing up; hilt at bottom centre."""
+    w = int(L * .5)
+    cv = Cv(w, L)
+    cx = w / 2
+    if glow_:
+        for r, a in ((.24, 50), (.17, 80)):
+            cv.ell(cx, L * .42, w * r * 2, L * .45, hx('#FFF2B0', a))
+    cv.poly([(cx - L * .035, L * .80), (cx - L * .045, L * .14), (cx, L * .02), (cx + L * .045, L * .14), (cx + L * .035, L * .80)], hx('#EEF3FA'))
+    cv.poly([(cx, L * .04), (cx + L * .04, L * .15), (cx + L * .03, L * .80), (cx, L * .80)], hx('#BFCCDD'))
+    cv.rrect(cx - L * .13, L * .79, cx + L * .13, L * .84, 6, hx(GOLD))
+    cv.rect(cx - L * .025, L * .84, cx + L * .025, L * .96, hx('#8E1030'))
+    cv.ell(cx, L * .975, L * .04, L * .03, hx(GOLD))
+    return cv.out()
+
+
+def devi_ekadashi(Hh=760, raise_sword=True, namaste=False, bless=False, eyes='open', mouth='smile', halo=True):
+    """Devi Ekadashi: radiant goddess born from Vishnu's body; saffron saree, gold crown, khadga raised."""
+    if namaste:
+        arms = None
+    elif raise_sword:
+        arms = ((-1.4, 5.4), (1.9, 1.9))
+    elif bless:
+        arms = ((-1.4, 5.6), (1.2, 3.5))
+    else:
+        arms = None
+    # reuse lakshmi head/crown drawing with ekadashi colours
+    SAREE['_tmp'] = SAREE['lakshmi']
+    SAREE['lakshmi'] = SAREE['ekadashi']
+    old = SKIN['lakshmi']
+    SKIN['lakshmi'] = SKIN['ekadashi']
+    try:
+        base = person('lakshmi', Hh, arms=arms, namaste=namaste, eyes=eyes, mouth=mouth)
+    finally:
+        SAREE['lakshmi'] = SAREE.pop('_tmp')
+        SKIN['lakshmi'] = old
+    w, h = base.size
+    pad = int(Hh * .16)
+    u = Hh / 10.0
+    cx = w / 2
+    c = Cv(w, h)
+    if halo:
+        hy = pad + 2.0 * u
+        for r, a in ((2.4, 50), (2.0, 80), (1.6, 115)):
+            c.ell(cx, hy, r * u, r * u, hx('#FFD97A', a))
+        for k in range(16):
+            ang = k * math.pi / 8
+            c.line([(cx + math.cos(ang) * 1.7 * u, hy + math.sin(ang) * 1.7 * u),
+                    (cx + math.cos(ang) * 2.3 * u, hy + math.sin(ang) * 2.3 * u)], hx('#FFE9A0', 120), 4)
+    im = c.out()
+    im.alpha_composite(base)
+    if raise_sword and not namaste:
+        sw = khadga_img(int(3.2 * u))
+        hxp = cx + 1.9 * u
+        hyp = pad + 1.9 * u
+        x0, y0 = int(hxp - sw.width / 2), int(hyp - sw.height * .9)
+        if y0 < 0:
+            big = Image.new('RGBA', (w, h - y0), (0, 0, 0, 0))
+            big.alpha_composite(im, (0, -y0))
+            im, y0 = big, 0
+        im.alpha_composite(sw, (max(0, x0), y0))
+    return im
+
+
+def mur_daitya(Hh=760, angry=True, point=False):
+    """Demon Mur: dark-green skin, black-red armour, horned crown look (asura sprite recoloured)."""
+    return ravana(Hh, angry=angry, point=point, heads=1, skin_col='#4E6A4A', dhoti='#2A0E12', cape='#5A1A0E')
+
+
+def vishnu_sleeping(Hh=760):
+    """Vishnu in yoga-nidra: closed-eyes figure laid on his side (rotated), feet to the right."""
+    im = vishnu(Hh, eyes='closed', mouth='smile', halo=False)
+    return im.rotate(90, expand=True, resample=Image.BICUBIC)
+
+
+def bg_hemavati_gufa():
+    """Inside the Hemavati cave: dark rock walls, single bright mouth, a stone ledge, soft lamp glow."""
+    cv = Cv(W, H)
+    cv.vgrad(0, H, hx('#2A2230'), hx('#120C14'))
+    # cave mouth (single entrance) with Himalayan light outside
+    cv.ell(540, 640, 300, 360, hx('#9FC4E6'))
+    cv.ell(540, 700, 250, 300, hx('#D8ECF8'))
+    for cx_, top, hw in ((420, 560, 160), (640, 520, 180)):
+        cv.poly([(cx_ - hw, 900), (cx_, top), (cx_ + hw, 900)], hx('#FFFFFF'))
+    cv.rect(260, 880, 820, 1000, hx('#2A2230'))
+    # jagged rock rim
+    rnd = random.Random(19)
+    pts = []
+    for k in range(40):
+        a = math.pi * 2 * k / 40
+        r = 1 + rnd.random() * .18
+        pts.append((540 + math.cos(a) * 300 * r, 640 + math.sin(a) * 360 * r))
+    rim = Cv(W, H)
+    rim.rect(0, 0, W, H, hx('#3A2E3E'))
+    rim.d.polygon(rim.P(pts), fill=(0, 0, 0, 0))
+    cv.im.alpha_composite(rim.im)
+    # rock strata
+    for y, col in ((1100, '#2E2432'), (1250, '#3A2E3E')):
+        cv.poly([(0, y), (260, y - 40), (540, y + 20), (820, y - 50), (W, y), (W, y + 60), (0, y + 70)], hx(col))
+    # floor + stone ledge
+    cv.rect(0, 1300, W, H, hx('#3E3240'))
+    cv.vgrad(1300, H, hx('#4A3C4C'), hx('#1A121C'))
+    cv.rrect(140, 1240, 940, 1330, 30, hx('#5C4E5E'))
+    cv.rrect(160, 1230, 920, 1262, 16, hx('#6E6070'))
+    _vignette(cv)
+    return cv
+
+
+def bg_badrikashram():
+    """Badrikashram: snowy Himalaya at dusk, a dark cave opening in the mountain side, pines."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1150, hx('#3A3A72'), hx('#F2A46A'))
+    _sun(cv, 820, 820, 90, '#FFE2B0')
+    for cx_, top, hw in ((220, 520, 360), (800, 470, 400), (520, 640, 330)):
+        cv.poly([(cx_ - hw, 1180), (cx_, top), (cx_ + hw, 1180)], hx('#6E6E9A'))
+        cv.poly([(cx_ - hw * .4, top + (1180 - top) * .4), (cx_, top), (cx_ + hw * .4, top + (1180 - top) * .4),
+                 (cx_, top + (1180 - top) * .3)], hx('#F4F0FA'))
+    cv.ell(540, 1080, 120, 150, hx('#140E1A'))
+    cv.rect(420, 1080, 660, 1200, hx('#140E1A'))
+    cv.rect(0, 1180, W, H, hx('#4A5A6A'))
+    cv.vgrad(1180, H, hx('#5A6A7A'), hx('#22282E'))
+    for x in (70, 170, 910, 1010):
+        cv.poly([(x - 55, 1300), (x, 1060), (x + 55, 1300)], hx('#23402E'))
+    _vignette(cv)
+    return cv
+
+
+def bg_chandravati():
+    """Mur's city Chandravati at war: crimson sky, dark fortress silhouettes, smoke."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1200, hx('#240814'), hx('#C24A2A'))
+    _sun(cv, 760, 700, 110, '#FFB070')
+    city = city_img('iron', 720)
+    cv.im.alpha_composite(city.resize((city.width * S, city.height * S)), (int(180 * S), int(560 * S)))
+    _hills(cv, 1200, hx('#3A1410'), 90, 191)
+    cv.rect(0, 1260, W, H, hx('#3A1A12'))
+    cv.vgrad(1260, H, hx('#5A2A1A'), hx('#1A0A06'))
+    _vignette(cv)
+    return cv
+
+
+BACKGROUNDS.update({'hemavati_gufa': bg_hemavati_gufa, 'badrikashram': bg_badrikashram, 'chandravati': bg_chandravati})
