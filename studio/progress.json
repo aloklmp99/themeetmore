@@ -5,15 +5,8 @@
     "name": "Pranit – Soothing & Devotional Narrator",
     "note": "हर वीडियो में यही आवाज़। सिर्फ़ तब बदलो जब यह उपलब्ध न हो, और बदलने पर यहीं लिख दो।"
   },
-  "in_progress": [
-    {
-      "video_no": 21,
-      "deity": "कृष्ण (यशोदा)",
-      "title": "कान्हा के मुख में ब्रह्मांड (मृद-भक्षण लीला)",
-      "date": "2026-11-27"
-    }
-  ],
-  "next_video_no": 21,
+  "in_progress": [],
+  "next_video_no": 22,
   "done": [
     {
       "video_no": 1,
@@ -168,6 +161,16 @@
       "elevenlabs_credits": 1102,
       "duration_s": 102.6,
       "file": "videos/bhakti-020-कुबेर-का-अहंकार.mp4",
+      "inbox": "ready"
+    },
+    {
+      "video_no": 21,
+      "deity": "कृष्ण (यशोदा, बलराम)",
+      "title": "मुख में ब्रह्मांड (कान्हा की मृद-भक्षण लीला, यशोदा ने मुख में ब्रह्मांड देखा, माया से विस्मृति)",
+      "date": "2026-11-27",
+      "elevenlabs_credits": 655,
+      "duration_s": 69.8,
+      "file": "videos/bhakti-021-मुख-में-ब्रह्मांड.mp4",
       "inbox": "ready"
     }
   ]
