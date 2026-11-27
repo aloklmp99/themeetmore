@@ -5,15 +5,8 @@
     "name": "Pranit – Soothing & Devotional Narrator",
     "note": "हर वीडियो में यही आवाज़। सिर्फ़ तब बदलो जब यह उपलब्ध न हो, और बदलने पर यहीं लिख दो।"
   },
-  "in_progress": [
-    {
-      "video_no": 20,
-      "deity": "गणेश (कुबेर)",
-      "title": "कुबेर का अहंकार (गणेश जी का भोज, शिव की मुट्ठी भर चावल) — संकष्टी चतुर्थी",
-      "date": "2026-11-27"
-    }
-  ],
-  "next_video_no": 20,
+  "in_progress": [],
+  "next_video_no": 21,
   "done": [
     {
       "video_no": 1,
@@ -158,6 +151,16 @@
       "elevenlabs_credits": 1311,
       "duration_s": 107.6,
       "file": "videos/bhakti-019-उत्पन्ना-एकादशी.mp4",
+      "inbox": "ready"
+    },
+    {
+      "video_no": 20,
+      "deity": "गणेश (कुबेर)",
+      "title": "कुबेर का अहंकार (कुबेर का महाभोज, गणेश जी की भूख, शिव की मुट्ठी भर भुने चावल, भाव से तृप्ति) — गणाधिप संकष्टी चतुर्थी",
+      "date": "2026-11-27",
+      "elevenlabs_credits": 1102,
+      "duration_s": 102.6,
+      "file": "videos/bhakti-020-कुबेर-का-अहंकार.mp4",
       "inbox": "ready"
     }
   ]
