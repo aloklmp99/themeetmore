@@ -4059,3 +4059,206 @@ def bg_chandravati():
 
 
 BACKGROUNDS.update({'hemavati_gufa': bg_hemavati_gufa, 'badrikashram': bg_badrikashram, 'chandravati': bg_chandravati})
+
+
+# ---------------------------------------------------------------- Kubera ka ahankar (added for story 020)
+def kubera(Hh=760, arms=None, namaste=False, eyes='open', mouth='smile', walk=0.0, flip=False, pot=False):
+    """Kubera: dhan ke devta - raja figure in golden dhoti, warm skin, dark beard; optional gold coin pot in left hand."""
+    im = tinted(person, 'raja', '#D9955F', 'raja', Hh, arms=arms, namaste=namaste, eyes=eyes, mouth=mouth, walk=walk)
+    im = _recolor(im, '#E0662A', '#F2B632', 12)
+    im = _recolor(im, '#B04A18', '#B8861A', 12)
+    if pot and not namaste:
+        a = arms or ((-1.5, 5.7), (1.5, 5.7))
+        u = Hh / 10.0
+        pad = int(Hh * .16)
+        p = coin_pot_img(int(2.0 * u))
+        x = im.width / 2 + a[0][0] * u
+        y = pad + a[0][1] * u
+        im.alpha_composite(p, (int(x - p.width / 2), int(min(im.height - p.height, y - p.height * .35))))
+    return im.transpose(Image.FLIP_LEFT_RIGHT) if flip else im
+
+
+def coin_pot_img(Hh=150):
+    w = int(Hh * 1.1)
+    cv = Cv(w, Hh)
+    cx = w / 2
+    cv.ell(cx, Hh * .62, w * .42, Hh * .36, hx(GOLD2))
+    cv.ell(cx, Hh * .6, w * .36, Hh * .3, hx(GOLD))
+    cv.rect(cx - w * .2, Hh * .2, cx + w * .2, Hh * .34, hx(GOLD2))
+    cv.ell(cx, Hh * .2, w * .26, Hh * .07, hx('#8A5A12'))
+    for k, (dx, dy) in enumerate(((-.12, .1), (0, .04), (.12, .1), (-.05, .14), (.07, .16))):
+        cv.ell(cx + dx * w, Hh * dy + Hh * .08, w * .1, Hh * .05, hx('#FFE08A'), hx('#B8861A'), 1.5)
+    cv.ell(cx - w * .14, Hh * .52, w * .07, Hh * .1, hx('#FFF2B3', 160))
+    return cv.out()
+
+
+def treasure_img(w=520, seed=4):
+    """Heap of gold coins, jewels and an open chest."""
+    h = int(w * .62)
+    cv = Cv(w, h)
+    rnd = random.Random(seed)
+    # chest
+    cv.rrect(w * .52, h * .30, w * .96, h * .92, 14, hx('#7A3E12'))
+    cv.rect(w * .52, h * .52, w * .96, h * .58, hx(GOLD2))
+    cv.rrect(w * .50, h * .10, w * .98, h * .34, 14, hx('#8E4A16'))
+    cv.rect(w * .72, h * .30, w * .76, h * .62, hx(GOLD))
+    # coin mound
+    cv.ell(w * .42, h * .90, w * .42, h * .14, hx(GOLD2))
+    cv.poly([(w * .02, h * .92), (w * .2, h * .5), (w * .4, h * .3), (w * .6, h * .5), (w * .82, h * .92)], hx(GOLD))
+    for _ in range(70):
+        x, y = rnd.uniform(.08, .78) * w, rnd.uniform(.42, .92) * h
+        top = h * .3 + abs(x - w * .4) / (w * .4) * h * .6
+        if y < top:
+            continue
+        cv.ell(x, y, w * .028, h * .018, hx('#FFE08A'), hx('#B8861A'), 1.2)
+    for _ in range(9):
+        x, y = rnd.uniform(.15, .65) * w, rnd.uniform(.55, .85) * h
+        col = rnd.choice(('#E63946', '#2E8B57', '#3A6FD8', '#FFFFFF'))
+        cv.poly([(x, y - 12), (x + 10, y), (x, y + 12), (x - 10, y)], hx(col))
+    # necklace spill
+    for t in np.linspace(0, 1, 12):
+        cv.ell(w * (.55 + t * .3), h * (.30 + math.sin(t * math.pi) * .12), 6, 6, hx('#FFF6DC'))
+    _sparkles(cv, 10, seed + 3, int(h * .1), int(h * .7), '#FFF6C0')
+    return cv.out()
+
+
+def food_thali_img(w=300, full=1.0, seed=2):
+    """Gold thali with sweets/food heaps; full 0..1 removes items."""
+    h = int(w * .62)
+    cv = Cv(w, h)
+    cv.ell(w / 2, h * .80, w * .48, w * .13, hx(GOLD2))
+    cv.ell(w / 2, h * .77, w * .44, w * .11, hx(GOLD))
+    cv.ell(w / 2, h * .77, w * .34, w * .075, hx('#FFE08A'))
+    im = cv.out()
+    if full <= 0.01:
+        return im
+    rnd = random.Random(seed)
+    c2 = Cv(w, h)
+    items = []
+    for j in range(5):
+        x = w / 2 + (j - 2) * w * .16
+        items.append((x, h * .72, rnd.choice(('ladoo', 'katori', 'jalebi', 'puri', 'ladoo'))))
+    for j in range(3):
+        items.append((w / 2 + (j - 1) * w * .18, h * .52, rnd.choice(('ladoo', 'modak', 'katori'))))
+    items.append((w / 2, h * .36, 'ladoo'))
+    keep = max(1, int(round(len(items) * full)))
+    for x, y, k in items[:keep]:
+        r = w * .07
+        if k == 'ladoo':
+            c2.ell(x, y, r, r, hx('#F29A1F'))
+            c2.ell(x - r * .3, y - r * .3, r * .3, r * .3, hx('#FFC46B'))
+        elif k == 'katori':
+            c2.ell(x, y, r * 1.1, r * .55, hx('#C98A1B'))
+            c2.ell(x, y - r * .2, r * .95, r * .35, hx('#E8E2C8'))
+        elif k == 'jalebi':
+            c2.arc(x, y, r, r * .8, 0, 360, hx('#F2A01F'), max(2, r * .3))
+            c2.arc(x, y, r * .45, r * .35, 0, 360, hx('#F2A01F'), max(2, r * .25))
+        elif k == 'puri':
+            c2.ell(x, y, r * 1.15, r * .7, hx('#E8B060'))
+            c2.ell(x - r * .2, y - r * .1, r * .5, r * .25, hx('#F6D28A'))
+        else:
+            c2.poly([(x - r, y + r * .5), (x, y - r * 1.3), (x + r, y + r * .5)], hx('#FFF1D0'))
+            c2.ell(x, y + r * .4, r, r * .45, hx('#FFF1D0'))
+    im.alpha_composite(c2.out())
+    return im
+
+
+def rice_handful_img(w=200, glow_=1.0):
+    """Leaf bowl (dona) with a handful of roasted rice."""
+    h = int(w * .8)
+    cv = Cv(w, h)
+    if glow_ > 0:
+        for k in range(6, 0, -1):
+            cv.ell(w / 2, h * .5, w * .08 * k, h * .08 * k, hx('#FFE9A8', int(30 * glow_)))
+    cv.poly([(w * .1, h * .55), (w * .9, h * .55), (w * .72, h * .88), (w * .28, h * .88)], hx('#3F8A3A'))
+    cv.line([(w * .2, h * .6), (w * .5, h * .86), (w * .8, h * .6)], hx('#2C6A2A'), 3)
+    cv.ell(w / 2, h * .55, w * .4, h * .1, hx('#F3E4C0'))
+    rnd = random.Random(9)
+    for _ in range(40):
+        x = w / 2 + rnd.uniform(-.34, .34) * w
+        y = h * .52 - rnd.uniform(0, .16) * h * (1 - abs(x - w / 2) / (w * .4))
+        cv.ell(x, y, w * .022, w * .014, hx(rnd.choice(('#FFF8E6', '#F2DFB0', '#E9CF96'))))
+    return cv.out()
+
+
+def vessel_img(kind=0, Hh=120):
+    """Gold palace items Ganesh 'eats': 0 lamp, 1 kalash, 2 bowl."""
+    w = int(Hh * 1.0)
+    cv = Cv(w, Hh)
+    cx = w / 2
+    if kind == 0:
+        cv.rect(cx - 6, Hh * .3, cx + 6, Hh * .85, hx(GOLD2))
+        cv.ell(cx, Hh * .9, w * .3, Hh * .08, hx(GOLD))
+        cv.ell(cx, Hh * .3, w * .3, Hh * .1, hx(GOLD))
+        cv.poly([(cx - 8, Hh * .26), (cx, Hh * .02), (cx + 8, Hh * .26)], hx('#FFB02E'))
+    elif kind == 1:
+        cv.ell(cx, Hh * .62, w * .36, Hh * .32, hx(GOLD))
+        cv.rect(cx - w * .14, Hh * .18, cx + w * .14, Hh * .34, hx(GOLD2))
+        for k in (-1, 0, 1):
+            cv.ell(cx + k * w * .16, Hh * .14, w * .12, Hh * .1, hx('#2E8B57'))
+        cv.ell(cx, Hh * .08, w * .1, Hh * .09, hx('#E8B060'))
+    else:
+        cv.ell(cx, Hh * .7, w * .44, Hh * .2, hx(GOLD2))
+        cv.ell(cx, Hh * .62, w * .42, Hh * .14, hx(GOLD))
+        cv.ell(cx, Hh * .6, w * .3, Hh * .08, hx('#FFE08A'))
+    return cv.out()
+
+
+def bg_alakapuri():
+    """Kubera's golden city at golden hour: gold domes, jewel lamps, purple-gold sky."""
+    cv = Cv(W, H)
+    cv.vgrad(0, 1260, hx('#3B1E5C'), hx('#F4B860'))
+    _sun(cv, 540, 1060, 150, '#FFE7A0')
+    _sparkles(cv, 26, 201, 120, 700, '#FFF6D8')
+    for i, (x, y) in enumerate(((170, 300), (880, 420), (620, 220))):
+        cv.ell(x, y, 150, 40, hx('#FFD9A8', 120))
+    _hills(cv, 1140, hx('#6E3A6A'), 120, 202)
+    for x, hgt, w_ in ((110, 360, 190), (330, 470, 210), (760, 470, 210), (980, 360, 190)):
+        _dome(cv, x, 1290, w_, hgt, hx('#F2C96A'), hx(GOLD), '#FFF2B3')
+    _dome(cv, 540, 1310, 330, 640, hx('#F7D57E'), hx('#E8A62A'), '#FFF2B3')
+    for x in (250, 450, 630, 830):
+        cv.ell(x, 1180, 16, 16, hx('#FFF2B3'))
+    cv.rect(0, 1290, W, H, hx('#B9822E'))
+    cv.vgrad(1290, H, hx('#D9A548'), hx('#7A4A16'))
+    for k in range(8):
+        y = 1330 + k * 75
+        cv.line([(0, y), (W, y)], hx('#C38C2E'), 3)
+    _sparkles(cv, 30, 203, 1300, 1800, '#FFF2B3')
+    _vignette(cv)
+    return cv
+
+
+def bg_bhoj_mandap():
+    """Kubera's feast hall: maroon-gold pillars, hanging lamps, long low table."""
+    cv = Cv(W, H)
+    cv.vgrad(0, H, hx('#8A2232'), hx('#3E0A16'))
+    for x in (70, 380, 700, 1010):
+        cv.rect(x - 45, 160, x + 45, 1240, hx(GOLD2))
+        cv.rect(x - 30, 170, x + 30, 1230, hx(GOLD))
+        for k in range(7):
+            cv.line([(x - 28, 250 + k * 140), (x + 28, 250 + k * 140)], hx(GOLD2), 4)
+    for x in (225, 540, 855):
+        cv.arc(x, 520, 160, 230, 180, 360, hx(GOLD), 18)
+        cv.line([(x, 120), (x, 330)], hx(GOLD2), 4)
+        cv.ell(x, 350, 34, 26, hx('#F4C430'))
+        cv.ell(x, 345, 16, 12, hx('#FFF2B3'))
+    # floor
+    cv.rect(0, 1240, W, H, hx('#5A1A1A'))
+    cv.vgrad(1240, H, hx('#9C4A2B'), hx('#4A1410'))
+    # long low chowki (table)
+    cv.rrect(40, 1150, 1040, 1250, 18, hx('#C9892B'))
+    cv.rect(40, 1150, 1040, 1172, hx('#E6B24A'))
+    for x in (80, 540, 1000):
+        cv.rect(x - 14, 1250, x + 14, 1310, hx('#8A5A12'))
+    # rangoli
+    for r, col in ((150, '#C0392B'), (110, '#F4C430'), (70, '#E8607A'), (32, '#FFF1D0')):
+        cv.ell(540, 1640, r * 2, r * .55, hx(col, 120))
+    for k in range(8):
+        ang = k * math.pi / 4
+        cv.ell(540 + math.cos(ang) * 250, 1640 + math.sin(ang) * 70, 26, 12, hx('#F4C430', 130))
+    _sparkles(cv, 18, 211, 300, 1000)
+    _vignette(cv)
+    return cv
+
+
+BACKGROUNDS.update({'alakapuri': bg_alakapuri, 'bhoj_mandap': bg_bhoj_mandap})
